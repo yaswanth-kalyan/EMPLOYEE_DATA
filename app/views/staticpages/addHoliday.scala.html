@@ -1,0 +1,169 @@
+@header("configureLeaves",7){
+<section>
+      <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="#" class="btn ">Leave Calendar</a> |
+                    <a href="#" class="btn">Leave Tracker</a> |
+                    <a href="/configureLeaves" class="btn text-orange">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3>Add Holiday </h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                        <div class="row">
+                            	 <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">Date</div>  
+                                 </div>         
+                                   <div class="col-md-3">
+                                         <div id="sandbox-container">
+                                             <input type="text" name="Date" class="form-control mydate1" required readonly>
+                                         </div>
+
+                                   </div>
+                             </div>
+                             <br>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                  <div class="pull-left leave-label">  Holiday For</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="FullName" class="form-control upload" id="inputEmail" required>
+                                </div>
+                            </div>
+                            
+                            <br>
+                            <div class="form-group is-empty">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-4 ">
+                                      	<div class="pull-left leave-label">  Carry Forword Balance</div> 
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="radio radio-primary">
+                                            <label>
+                                                <input type="radio" name="gender" value="yes" required>Yes
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="radio radio-primary">
+                                            <label>
+                                                <input type="radio" name="gender" checked="" value="no" required>No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                            	 <div class="col-md-2 col-md-offset-4 ">
+                                   <div class="pull-left leave-label"> Corresponding Working <br>day</div>  
+                                 </div>         
+                                   <div class="col-md-3">
+                                         <div id="sandbox-container">
+                                             <input type="text" name="Date" class="form-control mydate1" required readonly>
+                                         </div>
+
+                                   </div>
+                             </div>
+                            <br/>
+                             <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="reset" class="btn btn-warning btn-raised" >Reset</button>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+               		 <div class="col-md-12 heading-badge">
+	                    <h3 class=" ">Holidays Calender</h3>
+	                </div>
+                    </div>
+  
+                <div class="row">
+             
+	                <div class="text-center">
+							<div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    Select Year
+                                </div>
+                                <div class="col-md-2">
+                                     <div id="sandbox-container">
+                                             <input type="text" name="Date" class="form-control mydate2" required readonly>
+                                      </div>
+                                </div>
+                            </div>	                
+	                  
+	                 </div>
+                 </div>
+                 <div class="col-md-10 col-md-offset-1">
+                 	<table class="table table-bordered table-striped" id="Holiday-table" >
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Date</th>
+                 				<th>Holiday for</th>
+                 				<th>Day</th>
+                 				<th>Correspondig Working Day</th>
+                 				<th>Options</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			<tr>
+                 				<td>1</td>
+                 				<td>14-oct-2016</td>
+                 				<td>makara saktanthi</td>
+                 				<td>Friday</td>
+                 				<td>-</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a> <a href="#"><i class="fa fa-trash"></i></a> </td>
+                 			</tr>
+                 			<tr>
+                 				<td>2</td>
+                 				<td>30-feb-2016</td>
+                 				<td>sivaaratri</td>
+                 				<td>thursday</td>
+                 				<td>31-04-2016</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a> <a href="#"><i class="fa fa-trash"></i></a> </td>
+                 			</tr>
+                 			<tr>
+                 				<td>3</td>
+                 				<td>15-oct-2016</td>
+                 				<td>Republic Day</td>
+                 				<td>Friday</td>
+                 				<td>-</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a> <a href="#"><i class="fa fa-trash"></i></a> </td>
+                 			</tr>
+                 		</thead>	
+                 	</table>
+                 </div> 
+                
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+		$("#Holiday-table").dataTable();
+		
+		 $('.mydate1').datepicker({
+		       format: 'dd-mm-yyyy',
+		       endDate: new Date(),
+		       autoclose: true
+		  })
+		   $('.mydate2').datepicker({
+			    format: ' yyyy',
+			    viewMode: 'years',
+			    minViewMode: 'years',
+			    endDate: new Date() /*specify current year */
+        });
+	</script>
+ } 

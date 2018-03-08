@@ -1,0 +1,266 @@
+@( dates:List[java.util.Date], firstDate : Date,month:Integer, year:Integer,leavesMap : Map[Date,Integer] ,holidaysMap : Map[Date ,models.leave.Holidays],currentMonthLeaves : Map[Date,List[models.AppUser]],nextMonthLeaves:Map[Date,List[models.AppUser]],leavesTotal :Map[Date,Map[String,List[models.AppUser]]],leavesTotalNextMonth : Map[Date,Map[String,List[models.AppUser]]],todaysLeaves : Map[models.AppUser,String],todaysLeaves1 : List[models.AppUser],todaysLeavesPendingApproval : List[models.AppUser],absentUsers : List[models.AppUser], todaysLeavesWFH : List[models.AppUser])
+@import org.joda.time.DateTime;
+@header("Leave Calendar",7){
+<section>
+        <div class="container" style="background:#f2f2f2;padding-bottom:30px;padding:0px;">
+            <div class="panel">
+                 @secondNavbarLeaves(1)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Calender </h3>
+                </div>
+                 <div class="col-md-12 heading-badge">
+                    <h3 class="text-center">Today's Leaves </h3> 
+                    	@if(!todaysLeaves1.isEmpty || !todaysLeavesPendingApproval.isEmpty || !absentUsers.isEmpty || !todaysLeavesWFH.isEmpty){
+	               		<div class="text-center  todayleaves">
+	                	@if(!todaysLeaves1.isEmpty){
+	                	@for((appUser,index) <- todaysLeaves1.zipWithIndex){
+	               		 <a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@todaysLeaves.get(appUser)"   data-trigger="hover">
+	   @appUser.getAppUserFullName() </a><span>@if(index == (todaysLeaves1.size()-1)){}else{,}</span>
+	               		}
+	    }
+						</div>
+						<div class="text-center  todayleaves">
+	                	@if(!todaysLeavesPendingApproval.isEmpty){
+	                	@for((appUser,index) <- todaysLeavesPendingApproval.zipWithIndex){
+	               		 <a href="#" class="text-orange-new" data-toggle="popover" data-placement="top"  data-content="@todaysLeaves.get(appUser)"   data-trigger="hover">
+	   @appUser.getAppUserFullName()</a><span>@if(index == (todaysLeavesPendingApproval.size()-1)){}else{,}</span>
+	               		}
+	    }
+	    
+	    
+	    
+    
+	               			
+						</div>
+						
+						
+						<div class="text-center  todayleaves">
+	                	@if(!todaysLeavesWFH.isEmpty){
+	                	@for((appUser,index) <- todaysLeavesWFH.zipWithIndex){
+	               		 <a href="#" class="text-cyan-new" data-toggle="popover" data-placement="top"  data-content="@todaysLeaves.get(appUser)"   data-trigger="hover">
+	   						@appUser.getAppUserFullName()</a><span>@if(index == (todaysLeavesPendingApproval.size()-1)){}else{,}</span>
+	               		}
+	    }
+	    
+	    
+	    
+    
+	               			
+						</div>
+						
+									<div class="text-center  todayleaves">
+	                	@if(!absentUsers.isEmpty){
+	                	@for((appUser,index) <- absentUsers.zipWithIndex){
+	               		 <a href="#" class="leaves_color_absent"  data-toggle="popover" data-placement="top"  data-content="@todaysLeaves.get(appUser)"   data-trigger="hover">
+	   @appUser.getAppUserFullName()</a><span>@if(index == (absentUsers.size()-1)){}else{,}</span>
+	               		}
+	    }
+	    
+	    
+	   
+    
+	               			
+						</div>
+						
+						 }else{
+						 <div class="text-center  todayleaves">
+	    No Leaves
+	    </div>
+	    }
+               		
+                </div>
+           </div>
+       </div>
+       <div class="container" style="background:#f2f2f2;padding-bottom:30px;">
+            <div class="panel">  
+                <div class="col-md-2 hi">
+                		<h4 class="text-primary text-center color-white"> Current month</h4>
+                	<div class="row calender-left-part">
+                	@*	@if(!currentMonthLeaves.isEmpty){
+                		@for((currentMonth,appUserList) <- currentMonthLeaves){
+                		<h6 class="text-center color-white" >@currentMonth.format("dd-MMM"), @currentMonth.format("yyyy")</h6> 
+                		@for((appUser,index) <- appUserList.zipWithIndex){
+                		<div class="text-center">@appUser.getAppUserFullName()</div>
+                		<div class="margin-top-4"></div>
+                		}
+                	<hr>
+                	}*@
+                	@if(!leavesTotal.isEmpty()){
+                	@for((total,map2) <- leavesTotal){
+                	<h6 class="text-center color-white" >@total.format("dd-MMM")</h6>
+                	@for((name,users) <- map2){
+                	@for(user <- users){
+                	
+                	<div class="text-center @if(name.equals("p")){text-orange-new} @if(name.equals("a")){text-green-new} @if(name.equals("wfh")){text-cyan-new} @if(name.equals("na")){leaves_color_absent}">@user.getAppUserFullName()</div>
+                	
+                		<div class="margin-top-4"></div>
+                	}
+                	}
+                	<hr>
+                	}
+                	}else{
+                	<h6 class="text-center color-white" >No Leaves</h6>
+                	}
+                	</div>
+                	 
+                </div>
+                			<div class="col-md-8">
+				   				<div class="calender-division calender-fnt">
+				   					<div class="cal_ctrls">
+				   						<div class="col-md-1 text-left">
+				   						<a href="@routes.AdminLeaveController.getPreviousCalendar(month,year)"><i class="fa fa-chevron-circle-left"></i></a>	
+				   						</div>
+				   						<div class="col-md-8  col-md-offset-1 text-center">
+				   							<h3 style="color: black;">@firstDate.format("MMMMMM yyyy")</h3>
+				   						</div>
+				   						<div class="col-md-1 col-md-offset-1 text-right">
+				   						<a href="@routes.AdminLeaveController.getNextCalendar(month,year)"><i class="fa fa-chevron-circle-right"></i></a>
+				   						</div>
+				   						<div class="clearfix"></div>
+				   					</div>
+				   					<div class="days">
+				   						<div class="weeks">
+				   							<p>Sun</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Mon</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Tue</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Wed</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Thu</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Fri</p>
+				   						</div>
+				   						<div class="weeks">
+				   							<p>Sat</p>
+				   						</div>
+				   						<div class="clearfix"></div>
+				   						
+				   					</div>
+				   					<div class="days">
+				   						@for((date,index) <- dates.zipWithIndex) {
+				   							@if(date != null) {
+				   								@if(new DateTime(date).getDayOfWeek() == 6 || new DateTime(date).getDayOfWeek() == 7) {
+				   								@*@if(date.getDay()== 6 || date.getDay() == 0) {*@
+				   									@defining(models.leave.Holidays.find.where().eq("correspondingWorkingDay",date).findUnique()) { compensatoryHoliday =>
+				   										@if(compensatoryHoliday != null) {
+				   											<div class="dates @if(holidaysMap.get(date) != null){holiday}" >
+				   										} else {
+				   											<div class="dates @if(holidaysMap.get(date) != null){holiday} leave-holiday" >
+				   										}
+				   									}
+				   								} else {
+				   									<div class="dates @if(holidaysMap.get(date) != null){holiday}" >
+				   								}
+				   							} else {
+				   								<div class="dates @if(holidaysMap.get(date) != null){holiday} " >
+				   							}
+				   							<p >@if(date != null){  <p @if(models.leave.Days.getday().equals(date.format("ddMMyy")) ){class="todayyy"}>@date.format("dd")</p>}   </p>
+				   							<span class="leaves_color" id="previewList" value="@date">@if(leavesMap.get(date) != null &&  leavesMap.get(date) > 0){@leavesMap.get(date) @if(leavesMap.get(date) >1){ Leaves}else{Leave}} @if(holidaysMap.get(date) != null){@holidaysMap.get(date).holidayFor}</span>
+				   							</div>
+				   						}
+				   						<div class="clearfix"></div>
+				   							<div class="margin-top-15"><i class="fa fa-circle text-orange-new"></i> Pending Approval <i class="fa fa-circle text-green-new" ></i>  Approved <i class="fa fa-circle text-cyan-new"></i> WFH <i class="fa fa-circle leaves_color_absent"></i> Absent(Not Applied)  </div>		
+				   					</div>
+				   				</div>
+				   			</div>
+                <div class="col-md-8 hi hidden">
+					<div id="calendar"></div>
+                </div>
+                <div class="col-md-2 hi">
+                <h4 class="text-primary text-center color-white"> Next month</h4>
+                	<div class="row  calender-left-part">
+                	@*	@if(!nextMonthLeaves.isEmpty){
+                		@for((nextMonth,appUserList) <- nextMonthLeaves){
+                		<h6 class="text-center" >@nextMonth.format("dd-MMM"), @nextMonth.format("yyyy")</h6> 
+                		@for(appUser <- appUserList){
+                		<div class="text-center">@appUser.getAppUserFullName()</div>
+                		<div class="margin-top-4"></div> 
+                		} 
+                		<hr>
+                	}
+                	}else{
+                	<h6 class="text-center color-white" >No Leaves</h6>
+                	}*@
+                	@if(!leavesTotalNextMonth.isEmpty()){
+                	@for((total,map2) <- leavesTotalNextMonth){
+                	<h6 class="text-center color-white" >@total.format("dd-MMM")</h6>
+                	@for((name,users) <- map2){
+                	@for(user <- users){
+                	<div class="text-center @if(name.equals("p")){text-orange-new} @if(name.equals("a")){text-green-new} @if(name.equals("wfh")){text-cyan-new} @if(name.equals("na")){leaves_color_absent}">@user.getAppUserFullName()</div>
+                		<div class="margin-top-4"></div>
+                	}
+                	}
+                	<hr>
+                	}
+                	
+                	}else{
+                	<h6 class="text-center color-white" >No Leaves</h6>
+                	}
+                	</div>
+                	 
+                </div>
+            </div>
+        </div>
+      </div>
+      </div>
+     </div> 
+
+<div id=leavesPreviewModel class="modal fade">
+	     <div class="modal-dialog modal-lg">
+			<div class="modal-content">
+	            <div class="modal-body modalbody-scroll-on">
+	               <div class="col-md-12 text-center" id="leavesPreview-div" style="width:100%;min-height:600px; !important"></div>
+	            </div>
+	            <div class="modal-footer">
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</section>
+
+} @footer(""){
+
+@*<script src="http://arshaw.com/js/fullcalendar-1.6.3/fullcalendar/gcal.js"></script>
+<script src="http://arshaw.com/js/fullcalendar-1.6.3/fullcalendar/fullcalendar.min.js"></script>
+	<script>
+		$(".entitlement-table").dataTable();
+		 $('.mydate').datepicker({
+		       format: 'dd-mm-yyyy',
+		       endDate: ' new Date()',
+		       autoclose: true
+		  })
+		  $(document).ready(function () {
+			    $('#calendar').fullCalendar({
+			        header: {
+			            left: 'prev',
+			            center: 'title',
+			            right: 'next'
+			        }
+			    });
+			});
+	</script>*@
+<script>
+	$(document).on("click", "#previewList", function() {
+		var date = $(this).attr('value');
+		$.get("/leavesPreview/" + date, function(data) {
+			$("#leavesPreview-div").html(data);
+			$('#leavesPreviewModel').modal('show');
+		});
+	});
+	
+	$('[data-toggle="popover"]').popover();
+</script>
+	 
+ }
+ 
+ 
+
+ 

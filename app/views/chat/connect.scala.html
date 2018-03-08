@@ -1,0 +1,816 @@
+@(appUser : models.AppUser,gitstatus:String,channelName:String)
+@header("Connect",10){
+	<title>Chat room</title>
+</head>
+	@*<div class="color-picker-wrapper">
+	    <span class="color-pick"><i class="fa fa-cog"></i></span>
+		<div class="color-picker">
+			<ul>
+				<li><a href="javascript:void(0)" class="new-color green" data-color="green"></a></li>
+				<li><a href="javascript:void(0)" class="new-color red" data-color="red"></a></li>
+				<li><a href="javascript:void(0)" class="new-color blue" data-color="blue"></a></li>
+				<li><a href="javascript:void(0)" class="new-color pink" data-color="pink"></a></li>
+				<li><a href="javascript:void(0)" class="new-color yellow" data-color="yellow"></a></li>
+				<li><a href="javascript:void(0)" class="new-color marron" data-color="marron"></a></li>
+			</ul>
+		</div>
+	</div> *@
+	<div class="main-wrapper hidden">
+		<div class="left-panel color-left-panel hidden-xs">
+			<div class="user-settings">
+			<h4>@appUser.userName <span class="pull-right preference"  data-toggle="modal" data-target="#preferences-modal" data-controls-modal="preferences-modal" ><i class="fa fa-cog" data-placement="top" data-container="body" data-toggle="tooltip" title="Preferences" aria-hidden="true"></i>
+			</h4>
+			</div>
+		  <div class="left-panel-wrapper">
+			<div class="channels">
+				<div class="addChannel">
+					<h4 class="fs-15">GROUPS</h4>
+					<a data-toggle="modal" classs="addgropu-cst" data-target="#mychannel" data-controls-modal="mychannel"><span data-placement="top" data-container="body" data-toggle="tooltip" title="Create a New Group" class="add-newchannel"><i class="fa fa-plus" aria-hidden="true"></i></span></a>
+				 </div>	
+				
+				<ul class="lefttop-channelname">
+	  			   @for(group <- models.chat.ChatGroup.find.where().eq("isDisabled",false).findList()){
+		  			    @if(controllers.ChatController.isGroupMember(group)){
+	                    <input id=group@group.id class="hidden"  value='@group.name'>
+		  				<li class="active-group@group.id client link mff" id="@group.id"  data-userName="@group.name" data-role="group" data-id="@group.id">
+			  			 	<a href="/chat/connect/@group.name"> <span class="group-name"># @group.name</span>
+			  			 		<span class="messageNotificationGroup@group.id">
+			  			 			@if(ChatController.getGroupMessageNotificationCountAt(group.id)>=1){
+			  			 			<span class="label badge label-danger">@ChatController.getGroupMessageNotificationCountAt(group.id)</span>
+			  			 			}
+			  			 		</span>
+			  			 	</a>
+				  		</li>
+				  		}
+			  		}
+			  			
+			  	</ul>
+			</div>
+			<!--users-->
+			<div class="users">
+				<div class="addUser">
+				<h4 class="fs-15">DIRECT MESSAGES<span  style="color: #f16400" class='totalUserCount'></span></h4>
+					<span class="search-newUser add-newuser" data-placement="top" data-container="body" data-toggle="tooltip" title="Search Users / Group"><i class="fa fa-search" aria-hidden="true"></i></span>
+				</div>	
+				<ul class="search-users">
+		  			@for((client,notification) <- controllers.ChatController.getUserNotifications()) {
+	  			 	<input id=name@client.id class="hidden"  value='@client.userName'>
+			  		<li class="active-client@client.id client" id="@client.id" data-userName="@client.userName" data-role="user" data-id="@client.id">
+			  		  @if(Application.getLoggedInUser()!=client){
+			  		    <a href="/chat/connect/@@@client.userName" data-user="@client.userName">
+						  <div class="chat-left">
+				  		    <span class="dots"> <i class="fa fa-circle online-status@client.id"></i> </span> 
+				  		    <span class="group-name name">@client.userName</span>
+				  		    <span class="notifications messageNotification@client.id">
+				  		    	@if(notification>=1){
+                   			      <span class="label badge label-danger ">
+                    			    @notification
+                   			      </span>
+                  			    }
+				  		    </span>
+				  		  </div>  
+				  		</a>
+			  			}
+			  		</li>
+			  		}
+			  	</ul>
+				
+			</div>
+		  </div>	
+		</div>
+		<div class="right-panel color-right-panel">
+			<div class="logged-user">
+				<span>
+				        <div class="col-md-12 topfix  edit-group-dropdown">
+				        <a href="javascript:void(0)" class="dropdown-toggle hidden-lg showleftpannel" data-toggle="dropdown" ><i class="fa fa-server"></i>
+				         <b>Channels</b></a>
+					          <span class="dropdown group-drop">
+					            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" ><b><span class="toUserName"></span></b> <b class="caret"></b></a>
+					            <ul class="dropdown-menu " id="group-edit-icon">
+					              <li id="invite-add"><a data-href="javascript:void(0)" data-toggle="modal" data-target="#invite-others-channel"  data-backdrop="static" data-keyboard="false">Add Members</a></li>
+					              <li id="leave-li"><a data-href="javascript:void(0)" id="leave-channel">Leave Group</a></li>
+					              <li class="get-group-mm"><a data-href="javascript:void(0)" >Group Members</a></li>
+					              <li class="git-init-modal" ><a data-href="javascript:void(0)" >Add Custom Integration</a></li>
+					              <li id="remove-li" ><a data-href="javascript:void(0)" id="delete-channel">Delete Group</a></li> 
+					              <li id="rename-li" ><a data-href="javascript:void(0)" id="rename-channel">Rename Group</a></li>  
+					            </ul>
+					          </span>
+					          <span class="dropdown user-drop">
+						         <a href="#" class="dropdown-toggle" data-toggle="dropdown" >
+							         <b>
+							         <span class="dots active_usr active"></span>
+							         <span class="toUserName"></span>
+							         </b
+						          </a>
+							</span>
+						</div>
+				</span>
+			</div>
+				<div id="progressOuter" class="hidden">
+			            <div class="progress  progress1" style="width:100%;">
+					        <span class="percent">0%</span>
+					    </div>
+					    <div class="progress progress2 progress-bar-success" style="width:0%;">
+					    </div>
+				        <span class="pull-right cancleUpload btn btn-warning btn-xs" id="cancelFileUpload">Cancel</span>
+		              <div id="status"></div>
+		          </div>
+		         <div id="progressSocket" class="hidden">
+			            <div class="progress  progress1" style="width:100%;">
+					        <span class="percent">0%</span>
+					    </div>
+					    <div class="progress progress2 progress-bar-danger" style="width:100%;">
+					    </div>
+		              <div id="status"></div>
+		          </div>
+			<div class="chat-wrapper chat">
+			<div class="row text-center">
+				<a href="javascript:void(0)" class="btn btn-xs btn-link" id="loadMore">Load old messages&nbsp;&nbsp;<i class="fa fa-arrow-circle-up"></i></a><br><br>	
+			</div>
+			<div id="messages">
+				<div class="text-center">
+				<img src="/assets/images/loading-s.gif" ><br>Please Wait Loading Messagess...
+				</div>
+			</div>
+			<div id="preview-container"></div>
+			
+			</div>
+			<div class="chat-input chat-myupload file">
+				<div class="input-group input-with-upload">
+				  <input type="hidden" id="appUser" name="name" value="@Application.getLoggedInUser.id">
+ 
+				  <span class="input-group-addon" id="basic-addon1">
+				       <div class="dropup">
+					       <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">
+					        <i class="fa fa-upload"></i>
+					      </button>
+					      <ul class="dropdown-menu uploadbtn">
+					          <li class="uploadicon">
+							    <i class="fa fa-folder-open" aria-hidden="true"></i>
+							    <a href="javascript:void(0)">Upload a File</a>
+							  </li>
+							  <li class="createSnippet">
+							     <i class="fa fa-file-text-o" aria-hidden="true"></i>
+							     <a href="javascript:void(0)">Create a Snippet</a>
+							  </li>
+					      </ul>
+					    </div>
+				  
+				  </span>
+				  @*<textarea id="msgText" class="input-sm inputcustom input-dsgn comment" data-toggle="popover"  placeholder="Type your message here..." data-emojiable=true></textarea>*@
+				  <textarea id="msgText" class="form-control inputcustom input-dsgn comment js-auto-size" placeholder="Type your message here..." data-toggle="popover" style="border: 1px solid #ddd !important;" data-emojiable=true rows="1" autocomplete="off" autofocus ></textarea>
+				  <div class="textarea">  
+				  </div>
+				  <span class="input-group-btn emojisSpan input-group-btn custom pull-right" style="z-index:9999;position: absolute;top:10px;right:15px;display:block !important;">
+                  	<button type="button" class="btn" style="border:0px;font-size:24px;padding:0px;color: lightgray;" id="emoji"></button>
+                  </span>
+			</div>
+			<div class="type-wrapper">
+                 <div class="clearfix msg-typing" id="messageType-@Application.getLoggedInUser.id"></div>
+             </div> 
+		</div>
+		@emojicontainer()<br><br><br><br><br>
+	</div>
+		<div class="contentWIndow hidden">
+		<div class="panelContent panel panel-default">
+	    	<div class="panel-heading" id="right-window-heading"> Panel Heading </div>
+	    	<div class="panel-body" id="right-window-body">
+	    	</div>
+	  	 </div>
+		</div>
+	<!--Modal for search users-->
+	<div id="searchuser" class="modal" role="dialog">
+	  <div class="modal-dialog">
+
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Search Users / Group</h4>
+	      </div>
+	      <div class="modal-body">
+	       <div class="searchAll" id="searchAllUsers">
+	      <small class="pull-right"> Press <code>Ctrl+K</code> or <code>Cmd+K</code> to open switch channels</small>
+	       			<select class="form-control chosen-user">
+	       				@for(group <- models.chat.ChatGroup.find.where().eq("isDisabled",false).findList()){
+				           @if(controllers.ChatController.isGroupMember(group)){
+				         		  <option data-role="group" data-userName="@group.name" value=@group.id><span>#</span> @group.name</option>
+				           }
+					     }
+						 @for(appUser <- models.AppUser.find.where().ne("email","github@thrymr.net").eq("status", UserProjectStatus.Active).findList()) {
+						 	@if(appUser.id!=Application.getLoggedInUser().id){
+						 	 <option data-role="user" data-userName="@appUser.userName" value=@appUser.id><span class="dots">@@</span> @appUser.userName</option>
+						 	 }
+				         }
+	       			</select>
+	       </div>  
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+	<!-- end of search users -->
+	<!-- Leave fileUploadModel Confirm Modal -->					
+	<div id="fileUploadModel" class="modal fade">
+	
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title"><b>Upload File </b></h4>
+		      </div>
+		            <div class="modal-body ">
+		                File is Too Large
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+		            </div>
+		        </div>
+		    </div>
+	</div>
+	
+	<!-- End of Leave fileUploadModel Confirm Modal -->
+	<!-- Invite Others Modal -->	
+    <div class="modal fade" id="invite-others-channel" role="dialog" >
+	    <div class="modal-dialog">
+	     <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title">Invite to Group</h4>
+		            </div>
+	    <div class="modal-content">
+	     <div class="modal-body">
+	    	<form action="@controllers.routes.ChatController.saveChatGroup()" method="post" id="invite-save-form">
+				<div class="container-fluid" style="background:#fff;" id="invite-other-main">
+						<div class="pull-right">
+							close
+						</div>
+				</div>	
+			</form>
+	    </div>
+	    </div>
+	    </div>
+    </div>
+	<!--end Invite Others Modal -->	
+	<!-- Leave Channel Confirm Modal -->
+	<div id="leave-ch-modal" class="modal fade">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title">Leave Group Confirmation</h4>
+		            </div>
+		            <div class="modal-body leave-channelmd-body">
+		                
+		                
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+		                <button type="button" class="btn btn-primary lv-ch-confirmed">Yes</button>
+		            </div>
+		        </div>
+		    </div>
+	 </div>
+	<!--End of Leave Channel Confirm Modal -->				
+
+	<!-- modal for create group -->
+		  <div class="modal fade" id="mychannel" role="dialog">
+		    <div class="modal-dialog">
+		    <div class="modal-content">
+		    <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+		    			<h4>Create a new <span id="public-private-heading"> Public </span>channel</h4>
+		    </div>
+		    	<div class="moda-body">
+					<div class="col-md-12" style="background:white;">
+		    				<form action="@controllers.routes.ChatController.saveChatGroup()" method="post" class="create-group-modal" id="save-form" enctype="multipart/form-data">
+						<div class="col-md-offset-1 col-md-10">
+						       <a  class="myclose-btn hidden" style="display:block;" data-dismiss="modal" aria-label="Close">
+								 <div class="escape-butn pull-right">
+										<i class="fa fa-times fa-2x"></i>
+										<div class="key_label">esc</div>
+								</div>	
+							</a>
+							<div class="row hidden">
+								<div class="col-md-2">
+								 <ul class="list-group">
+					                    <li class="list-group-item">
+					                        <div class="material-switch pull-right">
+					                            <input id="someSwitchOptionDanger" class="groupcheck" name="someSwitchOption001" type="checkbox"  autocomplete="off"/>
+					                           
+					                            <label for="someSwitchOptionDanger" class="label-primary"></label>
+					                        </div>
+					                    </li>
+					                </ul>
+									<!-- <div class="onoffswitch">
+									    <input type="checkbox" name="groupType" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+									    <label class="onoffswitch-label" for="myonoffswitch">
+									        <span class="onoffswitch-inner"></span>
+									        <span class="onoffswitch-switch"></span>
+									    </label>
+									</div> -->
+									 <input type="hidden" name="groupType" id="group-type-id">
+								</div>
+								<div class="col-md-10">
+								    <div class="publicprivate-content">
+								    	Anyone on your team can join
+								    </div>
+								</div>
+							</div>	
+							<div class="privatecontetnonly"></div>
+							<br><br><br>
+							<div><lable> <b>Channel Name</b> </lable></div>
+							<div class="form-group">
+								<input type="text" name ="name" class="form-control mychanelname" placeholder="# Enter name here" autocomplete="off" required>
+								<small class="mychanleerror small-text-color">Names must be 21 characters or less,cannot contain spaces or periods.</small>
+							</div>
+							<div class="optlable"><lable><b class="mybold">Invite Others to join</b> (optional) </lable></div>
+							<div class="form-group">
+								<select name="members[]" class="chosen form-control mychosen create-channel-sel" multiple placeholder="Search by name" autocomplete="off" required>
+				  				  @for(AppUser <- models.AppUser.find.all()){
+					      			@if(AppUser.id != Application.getLoggedInUser().id && AppUser.status.equals(UserProjectStatus.Active)){
+					      			 <option  name="members" value="@AppUser.id">@AppUser.FullName</option>  
+					      			 }
+					      		 }
+							    </select>
+						    </div>
+						    <div class="mypurpose"><lable><b class="mybold">Purpose</b> (optional) </lable></div>
+						    <input class="form-control comment" name="description" placeholder="Briefly describe the purpose of this channel" autocomplete="off"/>
+						    <small class="mypurpose small-text-color"> Give Your Channel a purpose that describes what is will be used for</small>
+						    <br/>
+						    <div class="col-md-12 padding-left-0">
+						    	<button type="submit" class="btn btn-success btn-raised btn-md addchannel-cchannel pull-right">Create Channel</button>
+						    </div> 
+					    	<br><br><br><br>
+						    <br>
+						</div>
+					</form>
+					</div>
+				   </div>	
+				</div>
+		    </div>
+    	</div>
+	<!-- end of create group -->
+	<!--modal for uploadimage-modal-->
+ 	<div class="modal" id="uploadimage-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	  <div class="container">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+			<form action="/secure-chat/save-upload-image" method="POST"  enctype="multipart/form-data" id='uploadFileForm'>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="lineModalLabel">Upload Files</h4>
+			</div>
+			<div class="modal-body">
+				<input type="file" name="image" class="file-upload">
+					<div class="row form-group">
+						<div class="col-md-4">Title</div>
+						<div class="col-md-6">
+							<input type="text" class="form-control" placeholder="title here" id="imageTitle" readonly="readonly" />
+						</div>
+					</div>
+					<div class="row form-group hideforfile">	
+						<div class="col-md-6 col-md-offset-4">
+							<div class="img-wraper img-wraperheight">
+								<img src="" id="uploadImage" class="img-responsive" />
+							</div>	
+						</div>	
+					</div>
+					<div class="row form-group">
+						<div class="col-md-4">Share With</div>
+						<div class="col-md-6 mylist-wraper">
+							 <select name="toUserList" class="form-control chosen mylist">
+		  			    
+						         @for(group <- models.chat.ChatGroup.find.where().eq("isDisabled",false).findList()){
+						         	@if(controllers.ChatController.isGroupMember(group)){
+						         		 <option data-role="group" value=@group.id><span># @group.name</span></option>
+						           }
+						         }
+							 @for(appUser <- models.AppUser.find.all()) {
+							 	@if(appUser.status.equals(UserProjectStatus.Active)){
+							 	 <option data-role="user" data-img-src="http://i.stack.imgur.com/8lgcm.jpg" value=@appUser.id><span class=" dots"></span> @appUser.userName</option>
+							 	}
+							 	}
+						       
+						    </select>    
+
+						</div>
+					</div>	
+						<div class="row form-group" >
+						<div class="col-md-4">Add Comment</div>
+						<div class="col-md-6">
+							<textarea class="form-control" rows=5 style="border:1px solid #DCDCD9" id="fileComments" autocomplete="off"> </textarea>										 
+						</div>
+					</div>					              
+	
+			</div>
+				<div class="modal-footer">
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-danger btn-hover-green" data-dismiss="modal"  role="button" >Cancel</button>
+						<button type="submit" id="saveImage" class="btn btn-warning btn-hover-green" data-dismiss="modal" data-action="save" role="button" onclick="uploadFile(this)">Upload</button>
+					</div>
+				</div>
+	            </form>
+			</div>	
+		</div>
+	  </div>
+	</div>
+	<!--end modal for uploadimage-modal-->
+	<!-- show group members -->
+	<div class="modal fade custom-modal" id="groupmembers-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	  	<div class="container">
+		  <div class="modal-dialog modal-md custom-dialogmodal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="lineModalLabel">Group Members</h4>
+				</div>
+				<div class="modal-body">
+					<input type="text" class="form-control searchinput-new " placeholder="search users... ">
+					<div class="groupbody-modal"></div>
+			   </div>
+		    </div>	
+		  </div>
+	  </div>
+	</div>
+	<div class="modal custom-modal" id="preferences-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	  	<div class="container">
+		  <div class="modal-dialog modal-md custom-dialogmodal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="lineModalLabel">Preferences</h4>
+				</div>
+				<div class="modal-body">
+				  <div class="colors-container">
+					@*<h5 class="pref-head">Notificatins</h5>
+					<label><input type="checkbox" checked class="desktopNotification"> Enable Desktop Notifications</label><br>*@
+					<h5 class="pref-head">Choose Color Theme</h5>
+					<div id="Themes">
+					</div>
+					<br>
+					<div class="row">
+					<button type="button" class="btn btn-primary saveSettings pull-right">Save Preferences</button>
+					</div>
+				</div>
+			   </div>
+		    </div>	
+		  </div>
+	  </div>
+	</div>
+	<!-- end of show group members -->
+	
+	<!-- git intigration-->
+	<div class="modal fade " id="git-intig-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	  	<div class="container">
+		  <div class="modal-dialog modal-md custom-dialogmodal git-modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="lineModalLabel">Add an app or custom integration</h4>
+				</div>
+				<div class="modal-body git-init-modal-body">
+					<div class="git-conf-wrapper">
+						<span class="git-img">
+							<i class="fa fa-github-square fa-3x"></i>
+						</span>
+						<span class="git-msg"><b class="color-green">github</b></span>
+						<span class="git-conf">
+							<button type="button" class="btn btn-default git-confgtn">Configure</button>
+							<i class="fa fa-check fa-1x hidden git-conf-check"></i>
+						</span>
+						<div class="clearfix"></div>
+					</div>
+					<div class="git-conf-verify-wrapper margintop-20">
+						<p>Please contact github admin to configure this url in github: <b class="color-green git-conf-url">http://localhost:9000/chat/connect</b></p>
+					</div>
+					
+			   </div>
+		    </div>	
+		  </div>
+	  </div>
+	</div>
+	}
+	<!-- end of the git integration modal -->
+	<!-- delete Channel Confirm Modal -->
+	<div id="delete-ch-modal" class="modal fade">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title"><b>Delete Group Confirmation</b></h4>
+		            </div>
+		            <div class="modal-body delete-channelmd-body">
+		                
+		                
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+		                <button type="button" class="btn btn-primary dl-ch-confirmed">Yes</button>
+		            </div>
+		        </div>
+		    </div>
+	 </div>
+	 	<!--End of delete Channel Confirm Modal -->
+	 <div id="code-Snippet" class="modal">
+		  <form action="/secure-chat/save-code-snippet" id="save-snippet-form" method="POST" >
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title">Create Snippet</h4>
+		            </div>
+		            <div class="modal-body create-snippet-channelmd-body">
+			            <div class="row">
+			              <div class="col-md-9">
+			              <input type="text" class="form-control input-md" placeholder="Title (optional)" id="fileName" name="fileName" autocomplete="off"> 
+			              </div>
+			              <div class="col-md-3">
+			              	<select name="fileType" id="mode" class="form-control input-md">
+								<option data-js="scheme" value="scheme" selected>Auto Detect Type</option>
+								<option value="text/html">Plain Text</option>
+								<option data-js="clike" value="text/x-csrc">C</option>
+								<option data-js="clike" value="text/x-csharp">C#</option>
+								<option data-js="clike" value="text/x-c++src">C++</option>
+								<option data-js="css" value="text/css">CSS</option>
+								<option data-js="text" value="text/x-csv">CSV</option>
+								<option data-js="clojure" value="text/x-clojure">Clojure</option>
+								<option data-js="coffeescript" value="text/x-coffeescript">CoffeeScript</option>
+								<option data-js="d" value="text/x-d">D</option>
+								<option data-js="dart" value="text/x-dart">Dart</option>
+								<option data-js="django" value="text/x-django">Django</option>
+								<option data-js="diff" value="text/x-diff">Diff</option>
+								<option data-js="dockerfile" value="text/x-dockerfile">Docker</option>
+								<option data-js="erlang" value="text/x-erlang">Erlang</option>
+								<option data-js="fcl" value="text/x-fsharp">F#</option>
+								<option data-js="fortran" value="text/x-Fortran">Fortran</option>
+								<option data-js="Go" value="text/x-go">Go</option>
+								<option data-js="groovy" value="text/x-groovy">Groovy</option>
+								<option data-js="htmlmixed" value="text/html">HTML</option>
+								<option data-js="handlebars" value="text/x-handlebars-template">Handlebars</option>
+								<option data-js="haskell" value="text/x-haskell">Haskell</option>
+								<option data-js="haxe" value="text/x-haxe">Haxe</option>
+								<option data-js="javascript" value="text/x-java">Java</option>
+								<option data-js="jsx" value="application/x-jsp">JSP</option>
+								<option data-js="javascript" value="text/javascript">JavaScript/JSON</option>
+								<option data-js="css" value="text/css">Less</option>
+								<option data-js="clike" value="text/x-stex">Latext</option>
+								<option data-js="clike" value="text/x-octave">MATLAB</option>
+								<option data-js="nginx" value="text/nginx">Nginx</option>
+								<option data-js="clike" value="text/x-objectivec">Objective C</option>
+								<option data-js="php" value="application/x-httpd-php">PHP</option>
+								<option data-js="pascal" value="text/x-pascal">Pascal</option>
+								<option data-js="perl" value="text/x-perl">Perl</option>
+								<option data-js="pig" value="text/x-pig">Pig</option>
+								<option data-js="powershell" value="application/x-powershell">Powershell</option>
+								<option data-js="puppet" value="text/x-puppet">Puppet</option>
+								<option data-js="python" value="text/x-python">Python</option>
+								<option data-js="r" value="text/x-rsrc">R</option>
+								<option data-js="ruby" value="text/x-ruby">Ruby</option>
+								<option data-js="rust" value="text/x-rustsrc">Rust</option>
+								<option data-js="sql" value="text/x-sql">SQL</option>
+								<option data-js="sql" value="text/x-plsql">PLSQL</option>
+								<option data-js="Sass" value="text/x-sass">Sass</option>
+								<option data-js="scala" value="text/x-scala">Scala</option>
+								<option data-js="scheme" value="text/x-scheme">Scheme</option>
+								<option data-js="shell" value="text/x-sh">Shell</option>
+								<option data-js="smalltalk" value="text/x-stsrc">Smalltalk</option>
+								<option data-js="swift" value="text/x-swift">Swift</option>
+								<option data-js="vb" value="text/x-vb">VB.NET</option>
+								<option data-js="vbscript" value="text/vbscript">VBScript</option>
+								<option data-js="velocity" value="text/velocity">Velocity</option>
+								<option data-js="verilog" value="text/x-verilog">Verilog</option>
+								<option data-js="xml" value="application/xml">XML</option>
+								<option data-js="yaml" value="text/x-yaml">YAML</option>
+							</select>
+			              </div>
+		                </div>
+		                <br><br>
+		                <div class="row">
+			                <div class="col-md-12">
+				            	<textarea   id="code" rows="10" class="form-control" name="code" required="required"></textarea>
+				            	<input type="hidden" name="snippetName" id="snippetName" >
+			            	</div>  
+		                </div>
+		                <br><br>
+			                <div class="row form-group">
+							<div class="col-md-3 col-md-offset-1 line-height-32">Share With</div>
+							<div class="col-md-7 mylist-wraper">
+								 <select name="toUserList" class="form-control chosen mylist">
+							         @for(group <- models.chat.ChatGroup.find.where().eq("isDisabled",false).findList()){
+							         	@if(controllers.ChatController.isGroupMember(group)){
+							         		 <option data-role="group" value=@group.id><span># @group.name</span></option>
+							           }
+							         }
+								 @for(appUser <- models.AppUser.find.all()) {
+								 	@if(appUser.status.equals(UserProjectStatus.Active)){
+								 	 <option data-role="user" data-img-src="http://i.stack.imgur.com/8lgcm.jpg" value=@appUser.id><span class=" dots"></span> @appUser.userName</option>
+								 	}
+								 	}
+							       
+							    </select>    
+							</div>
+							</div>
+							<div class="row">
+							<div class="col-md-3 col-md-offset-1">
+								Comments
+							</div>
+							<div class="col-md-7">
+								<textarea class="form-control" rows=5  id="snippetComments" autocomplete="off"> </textarea>										 
+							</div>
+							</div>
+							<p style="color: gray" hidden>Current mode: <span id="modeinfo">text/plain</span></p>
+							<button type=button onclick="change()" class="hidden" >Change mode</button></p>
+		            </div>
+		            <div class="modal-footer">
+		              	 <button type="button" class="btn btn-danger btn-hover-green" data-dismiss="modal"  role="button" >Cancel</button>
+		                <button type="submit" id="saveSnippet" class="btn btn-warning btn-hover-green" data-dismiss="modal" data-action="save" role="button">Create Snippet</button>
+		            </div>
+		        </div>
+		    </div>
+		    </form>
+	 </div>
+
+	<!-- rename Channel  Modal -->
+	<div id="rename-ch-modal" class="modal fade">
+	<form action="@controllers.routes.ChatController.renameChatGroup()" method="post" id="rename-group-form">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title"><b>Rename Group</b></h4>
+		            </div>
+		            <div class="modal-body rename-channelmd-body">
+		                <input type="text" name="name" id="rn-grp-nm" class="form-control rename-ch-input">
+		                <input type="text" class="hidden prv-grp-name">
+		                <input type="text" name="id" class="form-control hidden rn-ch-grpId">
+		                <small class="help-block" id="chaneelMessage" data-fv-validator="notEmpty" data-fv-for="user[firstName]" data-fv-result="NOT_VALIDATED" style="display: none;">The group name already exist choose a different name.</small>
+		                 <small class="grp-help-block" id="emptychaneelMessage" data-fv-validator="notEmpty" data-fv-for="user[firstName]" data-fv-result="NOT_VALIDATED" style="display: none; color:red;">Please enter unique group Name.</small>
+		           
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		                <button type="button" class="btn btn-primary rn-ch-confirmed">Submit</button>
+		            </div>
+		        </div>
+		    </div>
+		   </form>
+	 </div>
+	 
+	<!--End of rename Channel  Modal -->
+	@footer2(""){ 
+	
+	@*<script src="/assets/js/bootstrap.min.js"></script>
+	<script src="https://malsup.github.com/jquery.form.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.linkify.js"></script>
+	<script src="/assets/js/bootstrap-suggest.js"></script>
+	<script src="/assets/js/bootbox.js" type="text/javascript"></script>
+	<script src="/assets/js/chat/Init.js" type="text/javascript"></script>
+	<script src="/assets/js/appusers.js" type="text/javascript"></script>
+	<script src="/assets/js/chat/caching.js" type="text/javascript"></script>*@
+	<script src="/assets/js/chat/EventsHandlers.js" type="text/javascript"></script>
+<script type="text/javascript">
+$('#loadMore').hide();
+//$('.header-navbar').hide();
+/*var bb8Messages=["Perception, reality and intention are rarely the same...",
+                 "Once you have accepted spirituality, scientific method and collective legislature religion becomes of very little value.",
+                 "Take your best, yesterday, and be better today.",
+                 "If you want to remember your recent thoughts look at your current circumstances ..",
+                 "Be a king in the crowd of lions!",
+                 "There are absolutely no limitations, except yourself, to what you can achieve with a small idea.",
+                 "Any fool can make a quote, but the main challenge is to follow it.",
+                 "When in doubt, just take the next small step.‎",
+                 "If we don't face a challenge when it is a challenge one day we have to face the grown up problem.‎‎",
+                 "If we don't face a challenge when it is a challenge one day we have to face the grown up problem.‎"];
+                 */
+function  getRandomMessage() {
+    var rnd = Math.floor(Math.random()*(bb8Messages.length-1))
+    console.log(rnd)
+    return bb8Messages[rnd];
+}
+//var x =getRandomMessage();
+//$('#welcomeMessage').html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br><br><br><br><br><br><br>"+x);
+$(document).ready(function(){
+EmojiDataByTab = {"0":{},"1":{},"2":{},"3":{},"4":{},"5":{}};
+allMsgsMap = {};
+
+$.ajax({
+	  type : 'GET',
+	  url: "/assets/js/emojJSON.json",
+	  async : false,
+	   complete: function(data){
+		  EmojiDataByTab = $.parseJSON(data.responseText);
+		  $.each(EmojiDataByTab,function(k,v){
+			  $.each(v,function(i,j){
+			  EmojiDataByName[i] = j;
+			  });
+		  });
+		  //console.log(EmojiDataByTab);
+		  //console.log(EmojiDataByName);
+		  $('.emojiTabs #tab1default').html(getEmojiTab(0));
+			$('#emoji').popover({
+				container: 'body',
+				html: true,
+				trigger: 'click',
+				placement: 'top',
+				content : $('#emojicontaeiner').html()
+			});		  
+			
+			var i = 0;$('.emoji-menu-tabs').each(function(){
+			
+				$('.emojiTabs #tab'+i+'default').html(getEmojiTab(i));
+				i++;});
+  }
+	});
+//var xass = getNameBadgeColor('bb8bot');
+//alert(xass);
+	
+
+$.get("/secure-chat/get-lastseentab", function(result){
+	$('#loadMore').hide();
+	$('.loadingSpinner').hide();
+	$('.loadingSpinner2').hide();
+	$('.main-wrapper').removeClass('hidden');
+	var url =window.location.url;
+    pushChannelToMap(result.channelData);
+    //console.log(allMsgsMap);
+    $('#msgText').focus().val('');
+ 	$('.messageNotificationConnectTo'+appuser+'').hide();
+ 	var hashes = window.location.pathname;
+		 clientId = result.lastSeenTab;
+		 Load_id  = clientId;
+		 var dataObj = result.channelData[Object.keys(result.channelData)[0]]
+		 loadMoreIndex=dataObj.firstRow;
+		 isLastRow=dataObj.isLastRow;
+		 //alert(isLastRow);
+		 //alert(loadMoreIndex);
+		 role = result.role;
+		 Load_role  = role;
+		 var groupLastSeenTab= result.lastSeenTab;
+		 if (role == 'USER' || role == 'user'){
+		  channelName =$('#name'+clientId+'').val();
+		  
+		  $('.active-client'+result.lastSeenTab+'').addClass('active');
+		    var name=$('#name'+clientId+'').val();
+			$('.toUserName').html(topChannelName(name));
+			$(".group-drop").hide();
+			$(".user-drop").show();
+			$('.messageNotification'+clientId+'').html('');
+			getChannelMessageDataCached(allMsgsMap[channelName],'0');
+		}else if(role == 'GROUP'){
+						channelName =$('#group'+clientId+'').val();
+						$('.active-group'+groupLastSeenTab+'').addClass('active');
+						$('.toUserName').text('#'+ channelName);
+						$(".group-drop").show();
+						$(".user-drop").hide();
+						if(channelName=='General'){
+							$('#leave-li').hide();
+							$('#remove-li').hide();
+							$('#rename-li').hide();
+						}else{
+							$('#leave-li').show();
+							$('#remove-li').show();
+							$('#rename-li').show();
+							isGroupAdmin();	
+						}
+						$('.activegrpId').val(clientId);
+						$('.messageNotificationGroup'+clientId+'').html('');
+						getChannelMessageDataCached(allMsgsMap[channelName],'0');
+		}
+		if (!("Notification" in window)) {
+		  alert("This browser does not support desktop notification");
+		}
+		$('.logged-user,.chat-input').css('min-width',$('.right-panel').innerWidth());
+		$('#progressOuter').css('width',$('.right-panel').innerWidth());
+		$('#progressSocket').css('width',$('.right-panel').innerWidth());
+		rightPanelWidth = $('.right-panel').innerWidth();
+		setLeftPanelColor();
+	 });
+$.post("/secure-chat/get-all-channels-jsondata", function(result){
+	 pushChannelToMap(result);
+	 channelsLoaded = true;
+});
+
+}); //ready
+
+$(".mff").click(function(){
+	var channelName = $(this).prev('input').attr('value');
+	//alert(channelName);
+	if(channelName=='General'){
+		$('#leave-li').hide();
+		$('#remove-li').hide();
+		$('#rename-li').hide();
+	}else{
+		$('#leave-li').show();
+		$('#remove-li').show();
+		$('#rename-li').show();
+		isGroupAdmin();	
+	}
+    //$("p").hide();
+});
+
+$('.totalUserCount').text('      ('+$('.search-users li').length+")")
+
+</script>
+	}
+	
+	

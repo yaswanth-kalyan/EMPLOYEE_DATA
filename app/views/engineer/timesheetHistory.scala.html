@@ -1,0 +1,183 @@
+@(projects : List[Projects])
+@header("Time Sheet History",4){
+<section>
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row">
+					<a href="/engineer/fill-timesheet" class="btn">Today's</a> | <a href="/engineer/timesheet-history" class="btn text-orange">History</a>
+				</div>
+				<div class="row heading-badge">
+					<div class="col-md-12">
+						<h3>Time Sheet History</h3>
+					</div>	
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<section>
+							<div class="col-md-12" style="border-right: 1px solid #D5D5D5;">
+								<div class="row">
+									<div class="col-md-8 col-md-offset-2">
+										<fieldset>
+											<div class="col-md-8 col-md-offset-2">
+												<div class="form-group">
+													<label for="select111" class="col-md-4 control-label">User</label>
+													<div class="col-md-8">
+														<h5>@session.get("AppUserName")</h5>
+													</div>
+												</div>
+											</div>
+
+										</fieldset>
+									</div>
+								</div>
+								<br />
+								<br />
+								<h5 class="text-center bold">Weekly Report</h5>
+								<div class="col-md-6 col-md-offset-4">
+									<div id="sandbox-container">
+										<input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY" value="@models.Timesheet.getTodayDate()">
+									</div>
+								</div>
+								<br>
+								<br>
+								<br>
+							<div class="col-md-12" id="timeSheet">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Projects</th>
+											<th>No. of Hours</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+							</div>
+						</section>
+					</div>
+					<div class="col-md-6"  style="padding-left:0px">
+						<section>
+							<div class="col-md-12" style="padding-left:0px">
+								<div class="row">
+									<div class="col-md-8 col-md-offset-2">
+										<fieldset>
+											<div class="col-md-8 col-md-offset-2">
+												<div class="form-group">
+													<label for="select222" class="col-md-4 control-label">Project</label>
+
+													<div class="col-md-8">
+														<select id="select222" class="form-control">
+															@if(!projects.isEmpty) {
+															<option value='0'>Select</option>
+										 					@for(project <-projects ) {
+															<option value="@project.getId()">@project.getProjectName</option>
+															 } } else {
+										 					<option value="">No Projects</option>
+										 					}
+														</select>
+													</div>
+												</div>
+											</div>
+
+										</fieldset>
+									</div>
+								</div>
+								<br>
+								<br>
+								<h5 class="text-center bold">Weekly Report</h5>
+								<div class="col-md-6 col-md-offset-4">
+									<div id="sandbox-container">
+										<input type="text" class="form-control mydate1" placeholder="DD-MM-YYYY - DD-MM-YYYY">
+									</div>
+								</div>
+								<br>
+								<br>
+								<br>
+							<div class="col-md-12" id="ptimeSheet">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>No. Of Hours</th>
+											
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+}
+@footer(""){
+<script>
+$(document).ready(function() {
+ $('.mydate,.mydate1').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true
+  });
+});
+
+ $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	   
+	    $.get('/getWeekEnTimeSheet/' + firstDate + '/' + lastDate, function(data) {
+	         console.log(data)
+	         $("#timeSheet").html(data);
+	     }); 
+	    
+	});
+
+
+
+$('.mydate1').on('changeDate', function (e) {
+	    value = $(".mydate1").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate1(dateVar)
+		    },10);
+	    $(".mydate1").val(dateVar);
+	   
+	    $.get('/getWeekEnPTimeSheet/' + firstDate + '/' + lastDate + '/' + $('#select222').val(), function(data) {
+	         console.log(data)
+	         $("#ptimeSheet").html(data);
+	     }); 
+	    
+	});
+
+$(document).on('change', '#select222', function() {
+  var projectVal = $(this).val();
+  if (projectVal == '0') {
+ 	 alert("Select Project");
+  }
+});
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+}
+	function changeDate1(dateVar){
+		$(".mydate1").val(dateVar);
+}
+</script>
+}

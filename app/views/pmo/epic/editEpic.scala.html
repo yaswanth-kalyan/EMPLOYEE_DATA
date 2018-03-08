@@ -1,0 +1,36 @@
+@(epic:models.pmo.Epic,roadmapId:Long)
+<form id="epic-edit-form"  method="post" action="@controllers.pmo.routes.EpicController.updateEpic()">
+	  <div class="form-group">
+	    <label for="formGroupExampleInput">Name</label>
+	    <input type="text" class="form-control" id="formGroupExampleInput" name="name" value="@epic.getName()" placeholder="Epic Name" required="required">
+	  </div><br>
+	  <div class="form-group">
+	    <label for="formGroupExampleInput2">Descriptions</label>
+	   <div class="form-group">
+	    <textarea class="form-control" placeholder="Descriptions" name="description" rows="6">@epic.getDescription()</textarea>
+	</div>
+		<input type="hidden" name="epicId" value="@epic.id">
+		<input type="hidden" name="roadmapId" value="@roadmapId">
+	 <div class="form-group">
+	     <div class="col-sm-offset-4 col-sm-10">
+	       <button type="submit" class="btn btn-primary btn-raised">update</button>
+	     </div>
+	   </div>
+	                   
+	  </div>
+</form>
+<script> 
+	$("#epic-edit-form").bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	name: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                } 
+	            }
+	        } 
+	    }
+	});	</script>

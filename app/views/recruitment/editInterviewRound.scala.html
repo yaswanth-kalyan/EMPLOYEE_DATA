@@ -1,0 +1,234 @@
+@(round:models.recruitment.RecruitmentSelectionRound)
+@import models.recruitment.RecruitmentInterviewType;
+@import models.recruitment.RecruitmentQuestionTemplate;
+@import models.recruitment.RecruitmentSelectionRound;
+@import models.recruitment.SelectionRoundStatus;
+@import models.recruitment.InterviewSelectionResult;
+@import models.recruitment.InterviewerAppUser;
+
+<div  id="addRoundsForm" class="">
+	<div class="col-md-12 ow well well-sm">   
+		<form class="form-horizontal" id="updateRoundPostForm" action="/selectionRoundEdit" method="post">
+			<input type="hidden" value="@round.recruitmentApplicant.id" name="recruitmentId">
+            <input type="hidden" value="@round.id" name="id">
+            <div class="col-md-12 heading-badge">
+	            <div class="col-md-12">
+   					<div class="col-md-2"><h3>Selection Process</h3></div>
+   					 <div class="col-md-8 text-center">
+   					 	<h3>Applicant ID - Name : <span class="fontweight-500">@round.recruitmentApplicant.applicationId - @round.recruitmentApplicant.applicantName</span></h3>
+   					 </div>
+   				</div> 		          		 
+     		</div>
+            <div class="col-md-6 col-md-offset-3">
+            	<div class="row">
+                	<div class="form-group is-empty">
+                    	<label for="inputEmail" class="control-label">Interview Type <span class="asterisk"> * </span></label>
+                        	<select name="interviewType" class="form-control text-left" >
+                            	<option value="">Select</option>
+                           			@for(interviewType<-RecruitmentInterviewType.find.all){
+                         	     		@if(round.recruitmentInterviewType==interviewType){
+                        					<option value="@interviewType.id" selected="selected">@interviewType.interviewTypeName</option>
+                        				}else{
+                        					<option value="@interviewType.id">@interviewType.interviewTypeName</option>
+                        				}
+                        			}
+                         	</select>
+                    </div> 
+              	</div>
+                <div class="row">
+                	<div class="form-group is-empty">
+                    	<label for="inputEmail" class="control-label">Interviewer <span class="asterisk"> * </span></label>
+                        	<div class="row">
+                            	<div class="col-md-9">
+                                	<select name="interviewer[]" id="interviewer" multiple="multiple" class=" chosen form-control text-left ">
+                              			@for(appUser<-InterviewerAppUser.find.all){
+                         					@if(round.interviewer.contains(appUser)){
+                         				    	<option value="@appUser.id" selected="selected">@appUser.interviewer.getFullName</option>
+                        			        }else{
+                            					<option value="@appUser.id">@appUser.interviewer.getFullName</option>
+                            				}
+                            			}
+                           			</select>
+                           		</div>
+                           	 	<div class="col-md-3">
+	             			  		<button type="button" class="btn btn-primary btn-sm btn-raised marginAll0px" id="addInterviewer1">Add Interviewer</button>  
+                           		</div> 
+                           </div>		
+                    </div> 
+               </div> 
+               <div class="row"> 
+               		<div class="form-group is-empty">
+             			<label for="inputEmail" class="control-label"> Select Date & Time <span class="asterisk"> * </span></label> 
+                     	<div id="sandbox-container">
+                        	<input class="form-control mydate" name="interviewConductDate"  type="text" value="@round.conductDate.format("dd-MM-yyyy hh:mm a")" id="datewisePicker">
+                     	</div> 
+               		</div>  
+         	  </div>
+         	  <div class="row"> 
+               		<div class="form-group is-empty">
+             			<label for="inputEmail" class="control-label"> Interview Venue <span class="asterisk"> * </span></label> 
+                     	<div id="sandbox-container">
+							<select name="interviewVenue" id="" class="form-control text-left" >
+                       			@for(interviewVenue <- models.recruitment.InterviewVenue.values()){
+                       				@if(round.interviewVenue.equals(interviewVenue)){
+                       					<option value="@interviewVenue" selected="selected">@interviewVenue</option>
+                       				}else{
+                       					<option value="@interviewVenue">@interviewVenue</option>
+                       				}
+                      					
+                      			}
+					        </select>
+                     	</div> 
+               		</div>  
+         	  </div>
+              <div class="row">
+              		<div class="form-group is-empty">
+                    	<label>Remarks</label>   
+                  		<textarea class="form-control" name="remark" rows="5" id="textArea">@round.remark</textarea>
+                  	</div>	 
+              </div>
+              <div class="row">
+              		<div class="form-group is-empty">
+                   		<label for="inputEmail" class="control-label">Interview Status <span class="asterisk"> * </span></label>
+                       <select name="selectionRoundStatus" id="selectionRoundStatusUpdate" class="form-control text-left" >
+                 			@for(selectionRoundStatus<-SelectionRoundStatus.values()){
+                 	 			@if(round.selectionStatus==selectionRoundStatus){
+                					<option value="@selectionRoundStatus" selected="selected">@selectionRoundStatus</option>
+                				}else{
+                					<option value="@selectionRoundStatus">@selectionRoundStatus</option>
+                				}
+                			}
+              		 </select>
+               	</div> 
+              </div>
+              <div class="row hidden" id="interviewSelectionResultUpdateId">
+              		<div class="form-group is-empty">
+                           <label for="inputEmail" class="control-label">Interview Result </label>
+                           	<select name="interviewSelectionResult" id="interviewSelectionResultUpdate" class="form-control text-left" >
+                    		   <option value="">Select</option>
+                         			@for(selectionResult<-InterviewSelectionResult.values()){
+                         	  			@if(round.selectionResult==selectionResult){
+                        					<option value="@selectionResult" selected="selected">@selectionResult</option>
+                        				}else{
+                        					<option value="@selectionResult">@selectionResult</option>
+                        				}
+                        			}
+                      		</select>
+                   </div> 
+             </div>
+             <div class="row">
+                  <div class="col-md-12 text-center" >
+                      <input type="submit" value="Update" class="btn btn-primary btn-raised">
+                  </div>
+             </div>
+			</div> 
+		</form>
+	</div>
+</div> 
+                            
+                            
+<div id="modalConfirmYesNo41" class="modal fade">
+	<div class="modal-dialog ">
+    	<div class="modal-content">
+        	<div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                	<span aria-hidden="true">&times;</span>
+            	</button>
+            	<h3 id="lblTitleConfirmYesNo" class="modal-title text-center">select Interviewer</h3>
+        	</div>
+        	<form class="form-horizontal" id="addInterviewerForm" action="/recruitment/addInterviewer" method="post">
+	         	<div class="modal-body">
+		           	<div class="row">
+		            	<div class="col-md-12">
+		                   	<div class="form-group is-empty">
+		                          <label for="inputEmail" class="control-label">AppUser List</label>
+		                          	<select name="ids[]" id="addInterviewerSelect" multiple="multiple" class=" chosen form-control text-left" required="required" >
+		                      			 @for(appUser<-AppUser.find.where.eq("status",UserProjectStatus.Active).findList){
+		                      			 	  @if(!InterviewerAppUser.getAppUserListThoseAreInterviewer.contains(appUser)){
+		                      					<option value="@appUser.id">@appUser.getFullName</option>
+		                      					}
+		                      			}
+		                        	</select>
+		              		</div> 
+		                    <div class="text-center"><br />
+		            			<button type="button" class="btn btn-primary btn-sm btn-raised marginAll0px" id="addInterviewerSubmit1" >Add</button>
+		           			</div> 
+				        </div>
+			        </div>
+			     </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+<script>
+$('.chosen').chosen();
+
+$('#addInterviewer1').click(function(e){
+	$('#modalConfirmYesNo41').modal('show');
+});
+
+$('#addInterviewerSubmit1').click(function(e){
+	$.post('/recruitment/addInterviewer', $('#addInterviewerForm').serialize()).done(function(data){
+	  jQuery('#btnNoConfirmYesNo4').click();
+	  location.reload();
+	});
+});
+
+$(document).ready(function() {
+	$("#datewisePicker").datetimepicker({format: 'DD-MM-YYYY hh:mm A'});
+});
+
+$(document).ready(function() {
+   if('@round.selectionStatus'=='@SelectionRoundStatus.Completed') {
+        $("#interviewSelectionResultUpdateId").removeClass("hidden");
+    }
+});
+
+$(document).on('change', '#selectionRoundStatusUpdate', function() {
+	//alert($("#source").text())
+	if($("#selectionRoundStatusUpdate option:selected").text()=='@SelectionRoundStatus.Completed') {
+		$("#interviewSelectionResultUpdateId").removeClass("hidden");
+	} else {
+		$("#interviewSelectionResultUpdateId").addClass("hidden");
+	}
+});
+
+ $('#updateRoundPostForm').bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	interviewType: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose interviewType'
+		                }
+		            }
+		        },
+		        'interviewer[]': {
+            		validators: {
+                		notEmpty: {
+                    		message: 'Please Choose interviewer'
+                		}
+            		}
+        		},
+		        selectionRoundStatus: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose Selection Round Status'
+		                }            
+		            }
+		        },interviewVenue: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose interviewVenue'
+		                }            
+		            }
+		        }
+		    }
+		});
+
+</script>	

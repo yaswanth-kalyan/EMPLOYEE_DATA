@@ -1,0 +1,372 @@
+@(appliedLeaves : models.leave.AppliedLeaves)
+@import java.text.SimpleDateFormat;
+<style>
+.lableEss{
+font-size:15px !important;
+}
+span.leavetracklable{
+    position: relative;
+    top: -3px;
+}
+.rejectedReason{
+    margin-top: 15px !IMPORTANT;
+
+}
+</style>
+           <div class="col-md-12 heading-badge">
+                 	<div  class="col-md-6">
+                    	<h3 class="text-right">Employee Id : @if(appliedLeaves.appUser.getEmployeeId() != null && !appliedLeaves.appUser.employeeId.isEmpty &&  !appliedLeaves.appUser.getEmployeeId().isEmpty ){@appliedLeaves.appUser.getEmployeeId()}   </h3>
+                    </div>
+                    <div  class="col-md-6">
+                    	<h3 class="text-left">Employee Name : @appliedLeaves.appUser.getAppUserFullName()   </h3>
+                    </div>
+                </div>
+                <h4 class="text-center"><b>Leave Details</b></h4>
+                @defining(models.leave.AppliedLeaves.find.where().eq("appUser",appliedLeaves.appUser).eq("leaveStatus",models.leave.LeaveStatus.APPROVED).order("startDate desc").findList()){appledleavesList =>
+                	@if(!appledleavesList.isEmpty){
+		                <div class="row">
+		                	<div class="col-md-3 col-md-offset-4">
+		                		<div class='text-left'>
+		                			<label  class="control-label lableEss"> Last Leave Taken on </label>
+		                		</div>
+		                	</div>
+		                	<div class="col-md-4">
+		                		<div class='text-left'>
+		                		<label  class="control-label text-left">
+		                		@(new SimpleDateFormat("dd-MM-yyyy").format(appledleavesList.get(0).startDate))
+		                		
+		                			</label>
+		                		</div>
+		                	</div>
+		                </div>
+                	}
+                }
+                @if(appliedLeaves.leaveType != null || !appliedLeaves.deductLeaves.isEmpty() ){
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss"> Leave Type </label>
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                		@if(appliedLeaves.leaveType != null){
+							@appliedLeaves.leaveType.leaveType
+						}else{
+							@for(deductLeave <- appliedLeaves.deductLeaves){
+								@deductLeave.leaveType.leaveType - @deductLeave.deductLeaves,
+							}
+						}
+						</label>
+                		</div>
+                	</div>
+                </div>
+                }
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss"> Period </label>
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			@(new SimpleDateFormat("dd-MM-yyyy").format(appliedLeaves.startDate)) To @(new SimpleDateFormat("dd-MM-yyyy").format(appliedLeaves.endDate)) (<span class="noDaysApplied" data-applied="@appliedLeaves.totalLeaves">@appliedLeaves.totalLeaves</span> Days)
+                		</label>
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>     
+                		    <label  class="control-label text-left lableEss"> Manager </label>           			
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left">
+                			@if(appliedLeaves.appUser.reportMangerId > 0 ){@AppUser.getReptManager(appliedLeaves.appUser.reportMangerId).FullName}
+                			</label>
+                		</div>
+                	</div>
+                </div>
+                @if(appliedLeaves.approvedBy != null){
+                 <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss">  Approved By </label>   
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			@appliedLeaves.approvedBy.getAppUserFullName()
+                		</label>
+                		</div>
+                	</div>
+                </div>
+                }
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss">Status</label>   
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			@appliedLeaves.leaveStatus
+                			</label>
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss"> Apply Status </label>   
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			@appliedLeaves.dateLeaves.get(0).appliedLeaveType
+                			</label>
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss">Reason</label>
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			@if(appliedLeaves.reason != null && !appliedLeaves.reason.isEmpty){@appliedLeaves.reason}
+                			</label>
+                		</div>
+                	</div>
+                </div>
+                @if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+                @if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.PENDING_APPROVAL)){
+                <form class="form-horizontal" id="leaveStatuForm" action="@routes.AdminLeaveController.approvalByAdmin()"  method="post">
+                <input type ="hidden" name="appliedId" value="@appliedLeaves.id">
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss">Action</label>
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			 <label  class="control-label text-left">
+                			 	<input type="radio" name="leaveStatus" value="@models.leave.LeaveStatus.APPROVED" lvalue="@appliedLeaves.appUser.id" class="LApprove" required>
+                			 		<span class="leavetracklable">Approve</span> 
+                			 </label>
+                			 <label  class="control-label text-left">
+                			 	<input type="radio" name="leaveStatus" value="@models.leave.LeaveStatus.REJECTED" class="LReject " required>
+                			 	<span class="leavetracklable asterisk">Reject</span>
+                			 </label>	
+                		</div>
+                	</div>
+                </div>
+                <div class="row rejectReason">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			<label  class="control-label text-left lableEss rejectedReason">Reject Reason</label>
+                		</div>
+                	</div>
+                	<div class="col-md-4">
+                		<div class='text-left'>
+                		<label  class="control-label text-left">
+                			<textarea type="text" name="rejectedReason" minlength="3" maxlength="200" class="form-control" required="required">N/A</textarea>
+                			</label>
+                		</div>
+                	</div>
+                </div>
+                <div id="LeApprove"></div>
+                <div class="row">
+                	<div class="col-md-12">
+						<div class="text-center">
+							<input class="btn btn-primary btn-raised submitLeave " type="submit" value="submit">
+						</div>
+					</div>
+                	<!-- <div class="col-md-3">
+                		<div class='text-left'>
+                			<input type="button" class="btn btn-warning  btn-raised" value="reset" />
+                		</div>
+                	</div> -->
+                </div>
+                 </form>
+                }
+                
+                @if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.APPROVED)){
+                <form class="cancel-form" id="#" action="@routes.AdminLeaveController.cancelLeaveApproved()"  method="post">
+                <div class="row">
+                <input type ="hidden" name="appLiedLeaveId" value="@appliedLeaves.id">
+                	<div class="col-md-12">
+						<div class="text-center">
+							<input class="btn btn-primary btn-raised approved-cancel" valueId="@appliedLeaves.id" type="button" value="Cancel">
+						</div>
+					</div>
+                	<!-- <div class="col-md-3">
+                		<div class='text-left'>
+                			<input type="button" class="btn btn-warning  btn-raised" value="reset" />
+                		</div>
+                	</div> -->
+                </div>
+                </form>
+                }
+                }
+                <div class="col-md-12 heading-badge">
+                    	<h3 class=""> Entitlement Status   </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-12">
+                	<div class="col-md-12">
+	                    <table class="table table-bordered table-striped" id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th class="text-center">Leave Type</th>
+	                    			<th class="text-center">Year To Date Earned</th>
+	                    			<th class="text-center">Approved</th>
+	                    			@*<th>Pending Approval</th>*@
+	                    			<th class="text-center">Available Balance</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    	@defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+	                    	@for(leave <- models.leave.Leaves.find.where().eq("appUser",appliedLeaves.appUser).eq("year",date1).findList()){
+	                    		@if(!leave.leaveType.leaveType.equals("Leave Without Pay")){
+	                    		<tr>
+	                    			<td>@leave.leaveType.leaveType</td>
+	                    			<td>@leave.addedLeaves</td>
+	                    			@*<td>@models.leave.AppliedLeaves.approvedLeaves(appliedLeaves.appUser,leave.leaveType)</td>*@
+	                    			<td>@leave.usedLeaves</td>
+	                    			@*<td>@models.leave.AppliedLeaves.appliedLeaves(appliedLeaves.appUser,leaveType)</td>*@
+	                    			<td>@leave.remainingLeaves</td>
+	                    		</tr>
+	                    		}
+	                    		}
+	                    		}
+	                    		}
+	                    		@*<tr>
+                 				<td>Total</td>
+                 				<td>@models.leave.Leaves.totalAddedLeaves(appliedLeaves.appUser)</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(appliedLeaves.appUser,models.leave.LeaveStatus.APPROVED)</td>
+                 				@*<td>@models.leave.AppliedLeaves.totalLeaves(appliedLeaves.appUser,models.leave.LeaveStatus.PENDING_APPROVAL)</td>*@
+                 				@*<td>@models.leave.Leaves.totalRemainingLeaves(appliedLeaves.appUser)</td>
+                 			</tr>*@
+	                    		
+	                    		
+	                    	</tbody>
+	                    </table>
+	                	</div>
+	                </div>
+                </div> 
+                <div class="modal  fade" id="bulk-unblock-note" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      	<div class="modal-dialog modal-md">
+        	<div class="modal-content">
+            	<div class="modal-header">
+            	<input type="text" class="hidden" value="">
+               		<button type="button" class="close custom-close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                	<h3 class="modal-title fontweight_500" >Cancel Note</h3>
+           		 </div>
+            <div class="modal-body">
+                <div class="row margintop-10">
+                     <div class="col-md-12">
+                           <h5 class="fz-16">Are you sure you want to cancel ?</h5>
+                    </div>
+                    
+                    <div class="col-md-12 text-right">
+                    	
+                	</div> 
+               </div>
+             </div>
+             <form id="deleteForm">
+                <div class="modal-footer">
+                   <button type="button" class=" btn btn-danger   btn-sm btn-raised " data-dismiss="modal">NO</button>  
+                    	<button deleteButton="true" type="button" class="btn btn-success btn-sm btn-raised btn-cancel-confirm">YES</button>
+                </div>
+                </form>
+        </div>
+      </div>
+    </div>
+                <script>
+                $(".rejectReason").hide();
+              /*  $('.cancel-form').submit(function(ev){
+                	alert();
+                	$("#bulk-unblock-note").modal('show');
+                	$("#btn-cancel-confirm").click(function(){
+                		$('.cancel-form').submit();
+                	});
+                });  */
+                 $(".approved-cancel").click(function(){
+                	$("#bulk-unblock-note").modal('show');
+                	$(".btn-cancel-confirm").click(function(){
+                		$.post("@routes.AdminLeaveController.cancelLeaveApproved()", $(".cancel-form").serialize(),function(data){
+                			window.location.href=window.location.href;
+                		});
+                	});
+                }); 
+                
+                $('#leaveStatuForm').bootstrapValidator({
+				    framework: 'bootstrap',
+				    // This option will not ignore invisible fields which belong to inactive panels
+				    excluded: ':disabled',
+				    fields: {
+				        leaveStatus: {
+				            validators: {
+				                notEmpty: {
+				                    message: 'Please select Action '
+				                }
+				            }
+				        }
+				    }
+				});
+                
+                $(".LApprove").click(function(){
+                	
+                	var id = $(this).attr('lvalue');
+                	$.get("/leave-approve-by-hr/"+id,function(data){
+                		$(".rejectReason").hide();
+                		$("#LeApprove").html(data);
+                		$('.submitLeave').attr('disabled',true);
+ 					});
+                });
+                
+                $(".LReject").click(function(){
+                $("#LeApprove").html('');
+                $(".rejectReason").show();
+                $('.submitLeave').removeAttr('disabled');
+                });
+                
+                $(document).on('keyup','.checkMaxLimit',function(e){
+                    var limit = Number(0);
+                    var lType = Number($(this).attr('ltype'));
+                	/*if($(this).val() > limit && lType != "Leave Without Pay"){
+               		  $(this).val(0);
+                	} */
+                	
+                	if($(this).val() < limit){
+               		  $(this).val(0);
+                	}
+                	
+                    var noDaysApplied = parseFloat($('.noDaysApplied').attr('data-applied'));
+                    var allInputValues=0;
+                	$('.checkMaxLimit').each(function(){
+                		allInputValues += Number($(this).val());
+                		if(noDaysApplied != allInputValues){
+                		$('.submitLeave').attr('disabled',true);
+	                	}else{
+	                		$('.submitLeave').removeAttr('disabled');
+	                	} 
+                	});
+                	
+                	
+                	
+                });
+                </script>

@@ -1,0 +1,165 @@
+@*@(message: String,list:List[ProjectDetails])*@
+@header("Home",0){
+<section class="container">
+<form action="@routes.EngineerController.dailyStatus1()" method="post" id="PayPalWizardForm" class="form-horizontal">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row heading-badge">
+				@if(session.get("AppUserRole")  == "Engineer"){
+						<h3>Engineer Home</h3>
+				}else {
+					@if(session.get("AppUserRole")  == "HR"){
+					<h3>HR DashBoard</h3>
+					} else {
+						<h3>Marketing DashBoard</h3>
+					}
+				}
+	        </div>
+	        <br><br><br>
+	        <div class="panel-body col-md-12">
+	        		<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/engineer/projects" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Projects</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/engineer/fill-status" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-hourglass-start fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Daily Status</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/engineer/fill-timesheet" class="panel panel-primary">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-text-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Time Sheet</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/week-wise-attendance" class="panel panel-danger">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-building-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Attendence</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/leave-calendar" class="panel panel-primary">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-list fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Leaves</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/taskRender" class="panel panel-success">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-user-secret fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Task</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/reportsLandingPage" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-area-chart fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Reports</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/chat/connect" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-comment fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Chat</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div> 
+				</div>
+          </div>
+	</div>
+  </form>
+</section>
+
+}
+@footer(""){
+
+<!-- Twitter Bootstrap Wizard -->
+<script src="/assets/bower_components/twitter-bootstrap-wizard-jquery/jquery.bootstrap.wizard.min.js"></script>
+
+<!-- formValidation -->
+<script src="/assets/includes/js/formvalidation/formValidation.min.js"></script>
+<script src="/assets/includes/js/formvalidation/framework/bootstrap.min.js"></script>
+
+<!-- Bootstrap Material Design -->
+<script src="/assets/bower_components/bootstrap-material-design/dist/js/material.js"></script>
+<script src="/assets/bower_components/bootstrap-material-design/dist/js/ripples.js"></script>
+
+<!-- Custom JavaScript -->
+<script src="/assets/includes/js/pp-wizard-scripts.js"></script>
+<script>
+$(function(){
+ $(".alert").eq(1).hide(0).delay(100).fadeIn(1400);
+ $(".alert").eq(2).hide(0).delay(300).fadeIn(1800);
+ $(".alert").eq(3).hide(0).delay(600).fadeIn(2200);
+})
+</script>
+} 

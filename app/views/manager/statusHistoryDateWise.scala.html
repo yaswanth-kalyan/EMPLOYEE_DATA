@@ -1,0 +1,83 @@
+	
+	@header("Team Daily Status Datewise",2){
+	<section>
+        <div class="container">
+    <div class="panel">
+    	<div class="panel-body">
+        <div class="row">
+      		 <a href="/manager/fill-status" class="btn ">Today's</a> | <a href="/manager/status-history" class="btn ">History</a>|<a href="/manager/team-status-report" class="btn">Team Status Report</a>|<a href="/dailyStatusDateWiseRender" class="btn text-orange">Status report datewise</a>
+        </div>
+        <div class="row">
+	        <div class="col-md-12 heading-badge">
+	             <h3>Team Daily Status Datewise </h3>
+	         </div>
+	    </div>     
+			<div class="col-md-12">
+					
+					<div class="row">
+						<div class="col-md-4 col-md-offset-4">
+							<div class="form-group is-empty">
+		                             <label for="inputEmail" class="control-label"> Select Date</label>
+		                              <div class="row">
+		                                 <div class="col-md-4">
+		                                       <div id="sandbox-container">
+		                                           <input class="form-control mydate" name="startedDate" value="@models.DailyReport.getTodayDate()" placeholder="DD-MM-YYYY" type="text" id="datewise">
+		                                       </div>
+		                                 </div>
+		                               </div>   
+		
+		                       	<span class="material-input"></span>
+		                       </div>
+		                    </div>
+		                </div>
+		                <br ><br ><br >       
+					
+	              <table class="table table-bordered table-striped">
+			 	<div class="col-md-12" id="dailyReportweek">
+	            	<!--   <table class="table">
+
+				   	<thead>
+								 <tr>
+									<th>S.No</th>
+									<th>Date</th>
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								</tr>
+							</thead>
+				
+				       
+				</table>-->
+			</div>
+    </div>  
+    </div>
+    </div>  
+</section>
+	
+}
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable()
+	});
+	
+	$('.mydate').on('changeDate', function (e) {
+        var projectVal = $('.mydate').val();
+        if (projectVal != '0') {
+            $.get('/dailyStatusDateWiseManager/' + projectVal, function(data) {
+                console.log(data)
+                $("#dailyReportweek").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+        
+    });
+</script>
+} 

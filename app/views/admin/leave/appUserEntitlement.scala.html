@@ -1,0 +1,109 @@
+@header("Check Entitlement",7){
+<section>
+	<div class="alert alert-success mail-sucess text-center hidden">
+		<span></span>
+	</div>
+	<div class="container">
+		<div class="panel">
+			@secondNavbarLeaves(6)
+			<div class="col-md-12 heading-badge">
+				<h3 class="">Add Entitlement</h3>
+			</div>
+			<div class="row paddingbot-30">
+				<div class="col-md-12">
+					<div class="">
+						<div class="row">
+							<div class="col-md-2 col-md-offset-3">
+								<div class="pull-left leave-label">Employee</div>
+							</div>
+							<div class="col-md-3">
+								<select class="form-control chosen" name="appuser"
+									id="entitle-user">
+									<option value="0" selected>Select Employee</option> @for(emp <-
+									models.AppUser.find.where().eq("status",models.UserProjectStatus.Active).findList()){
+									<option value="@emp.id">@emp.getAppUserFullName()</option> }
+
+								</select>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="col-md-12" id="entitle-div">
+									<table class="table table-bordered table-striped"
+										id="leave-Tracker-table">
+										<thead>
+											<tr>
+												<th>Leave Type</th>
+												<th class="hidden">Last Year B/F</th>
+												<th>Year To Date Earned</th>
+												<th class="hidden">Total Entitlement</th>
+												<th class="hidden">Year To Date Taken</th>
+												<th>Approved</th>
+												<th>Pending Approval</th>
+												<th>Available Balance</th>
+												<th>To Be Applied</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="loading-spinner" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<center>
+						<img src="/assets/images/loaderimage.gif" width="30"> Please
+						wait while we are sending email ...
+					</center>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+} @footer(""){
+<script>
+	
+</script>
+<script type="text/javascript">
+	$('.chosen').chosen();
+
+	$(document).on("change", "#entitle-user", function() {
+		$('.mail-sucess').addClass('hidden')
+		if ($(this).val() == "0") {
+			$("#entitle-div").html('');
+		} else {
+			$.get("/user-entitlement/" + $(this).val(), function(data) {
+				$("#entitle-div").html(data);
+			});
+		}
+	});
+
+	$(document).on("click", "#applySendMail", function() {
+		var id = $(this).attr('value');
+		//alert(id);
+		$('#loading-spinner').modal({
+			backdrop : 'static',
+			keyboard : false,
+			show : true
+		});
+		$.get("/toBeApplyLeaveSendMAil/" + id, function(data) {
+	         $('.mail-sucess').removeClass('hidden')
+			 $('#applySendMail').removeClass('btn-success');
+	      	 $('#applySendMail').addClass('btn-danger');
+			 $('.mail-sucess span').text(data)
+		     $('#loading-spinner').modal('hide');
+		});
+	});
+</script>
+}
+

@@ -1,0 +1,195 @@
+@(appUsers : List[models.AppUser], mailingList : List[models.AppUser])
+@header(" Mailing List",11){
+	<style>
+.userslist.col-md-4.text-left {
+    margin-top: 15px !important;
+        margin-left: -44px !important;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 14px 44px 0 !important;
+    line-height: normal;
+    height: 23px !important;
+}
+</style>
+<style type="text/css">
+	.checkbox label:after, 
+.radio label:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.checkbox .cr,
+.radio .cr {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    border-radius: .25em;
+    width: 1.3em;
+    height: 1.3em;
+    float: left;
+    margin-right: .5em;
+}
+
+.radio .cr {
+    border-radius: 50%;
+}
+
+.checkbox .cr .cr-icon,
+.radio .cr .cr-icon {
+    position: absolute;
+    font-size: .8em;
+    line-height: 0;
+    top: 50%;
+    left: 20%;
+}
+
+.radio .cr .cr-icon {
+    margin-left: 0.04em;
+}
+
+.checkbox label input[type="checkbox"],
+.radio label input[type="radio"] {
+    display: none;
+}
+
+.checkbox label input[type="checkbox"] + .cr > .cr-icon,
+.radio label input[type="radio"] + .cr > .cr-icon {
+    transform: scale(3) rotateZ(-20deg);
+    opacity: 0;
+    transition: all .3s ease-in;
+}
+
+.checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+.radio label input[type="radio"]:checked + .cr > .cr-icon {
+    transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+}
+
+.checkbox label input[type="checkbox"]:disabled + .cr,
+.radio label input[type="radio"]:disabled + .cr {
+    opacity: .5;
+}
+</style>
+<section>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                   <a href="/recruitment/category" class="btn">Category</a> |
+                    <a href="/recruitment/roles" class="btn">Roles</a> |
+                    <a href="/recruitment/skills" class="btn">Skills</a>|
+                    <a href="/recruitment/source" class="btn">Source</a> |
+                    <a href="/recruitment/interviewType" class="btn">InterviewType</a> |
+                    <a href="/recruitment/mailContent" class="btn">Mails</a> | 
+                    <a href="/recruitment/MailingList" class="btn text-orange">Mailing list</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">HR Mailing List </h3>
+                </div>
+                <div class="row">
+                <div class="col-md-12">
+                        <div class="text-center">
+                        <form class="form-horizontal" id="jobSourceForm" action="/recruitment/MailingListSubmission"  method="post">
+                                @for(appUser <- appUsers){
+                            <div class="col-md-12 col-md-offset-5">
+                            	<div class="checkbox col-md-6 text-left">
+						            <label style="font-size: 1.5em">
+						               	<input class="form-control" type="checkbox"  value="@appUser.id" name="appUsersidList[]" @if(mailingList.contains(appUser)){checked="checked"} >
+						                <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                			<span class="userslist">@appUser.getFullName</span>
+						            </label>
+						        </div>
+                                 <div class="userslist col-md-4 text-left">
+                                </div>
+                            </div>
+                                }
+                           <div class="row">
+                                <div class="col-md-12 col-md-offset-5" >
+                                	<div class="col-md-1 text-right" >
+                                		<input type="reset" value="Clear" class="btn btn-danger btn-raised">
+                                	</div>
+                                	<div class="col-md-2 text-left" >
+                                    	<input type="submit" value="Submit" class="btn btn-primary btn-raised">
+                                	</div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+      <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+</section>
+
+} @footer(""){
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-checkbox/1.4.0/bootstrap-checkbox.min.js"></script>
+<script>
+$('.deleteSource').click(function(e) {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url');
+    $('#lblMsgConfirmYesNo').html("Are you sure, you want to delete Source : " + name);
+    $('#modalConfirmYesNo').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+});
+
+$('.input1').checkboxpicker({
+	  html: true,
+	  offLabel: '<span class="glyphicon glyphicon-remove">',
+	  onLabel: '<span class="glyphicon glyphicon-ok">'
+});
+
+$("#allTaskStatusTable").DataTable(); 
+$('#jobSourceForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	sourceName: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Source Name'
+                },
+               	remote: {
+                	message: 'Source Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistSource',
+                    data: function(validator) {
+                        return {
+                        	sourceName: validator.getFieldElements('sourceName').val()
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 
+ 

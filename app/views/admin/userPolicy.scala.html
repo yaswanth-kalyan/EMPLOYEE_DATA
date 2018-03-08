@@ -1,0 +1,235 @@
+@header("Policy",0){
+<section>
+	<div class="container">
+		<div class="panel">
+			<div class="col-md-12">
+				<div class="row">
+					@if(session.get("AppUserRole") == "Admin" ||
+					session.get("AppUserRole") == "HR"){ <a href="/user-policy"
+						class="btn text-orange">User Policy</a> | } <a href="/all-policy"
+						class="btn">All Policies</a>
+				</div>
+			</div>
+			<div class="col-md-12 heading-badge">
+				<h3>Add New Policy</h3>
+			</div>
+			<div class="row">
+				<div class="col-md-12" id="">
+					<form class="form-horizontal" id="addPolicieForm"
+						action="/addPolicy" enctype="multipart/form-data" method="post">
+						<div class="row">
+							<div class="col-md-12">
+								<fieldset>
+									<div class="col-md-10 col-md-offset-1">
+										<div class="row">
+											<div class="form-group">
+												<div class="col-md-4 text-right">
+													<label for="select111" class=" control-label">Name
+														of Policy <font color="red">*</font>
+													</label>
+												</div>
+												<div class="col-md-4">
+													<input type="text" class="form-control" name="policyName" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="form-group text-right">
+												<div class="col-md-4">
+													<label for="select111" class=" control-label">Uplaod
+														PDF <font color="red">*</font>
+													</label>
+												</div>
+												<div class="col-md-2 text-left">
+													<label for="inputFile" class="control-label btn btn-raised">Upload
+														Pdf</label> <input type="file" name="file" id="inputFile"
+														class="uploadpdf" accept="application/pdf">
+												</div>
+												<div class="col-md-3 text-left">
+													<br />
+													<div class="viewpdf">file name</div>
+												</div>
+											</div>
+										</div>
+										<br />
+										<div class="row">
+											<div class="text-center">
+												<button type="submit" class="btn btn-primary btn-raised">Submit</button>
+											</div>
+										</div>
+
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-12 heading-badge">
+				<div class="col-md-6">
+					<h3>All Policies List</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-12">
+						<table class="table" id="incidentTable">
+							<thead>
+								<tr>
+									<th class="text-center">S.No.</th>
+									<th class="text-center">Policy Name</th>
+									<th class="text-center">Date - Time</th>
+									<th class="text-center">Uploaded By</th>
+									<th class="text-center">File Name</th>
+									<th class="text-center">Options</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for((policy,index) <-
+								models.incident.Policy.getAllIncident().zipWithIndex){
+								@if(session.get("AppUserRole") == "Admin" ||
+								session.get("AppUserRole") == "HR"){
+								<tr>
+									<td class="text-center">@(index+1)</td>
+									<td class="text-center">@policy.policyName</td>
+									<td class="text-center">@policy.createdOn.format("dd-MM-yyyy - hh:mm a")</td>
+									<td class="text-center">@policy.appUser.getFullName()</td>
+									<td class="text-center">@policy.fileName</td>
+									<td class="text-center">@if(policy.file != null){
+										<button type="button"
+											class="btn btn-primary btn-sm btn-raised editPolicy"
+											value="@policy.id">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+										</button>
+										<button type="button"
+											class="btn btn-danger btn-sm btn-raised deletePolicy"
+											value="@policy.id" plname="@policy.policyName" url="/deletePocily/@policy.id">
+											<i class="fa fa-trash-o" aria-hidden="true"></i>
+										</button> } }
+									</td>
+								</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="updatePlicyData" class="modal fade">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="col-md-12 " id="editPolicyFormAppend"></div>
+				</div>
+				<div class="modal-footer">
+					<button id="btnNoConfirmYesNo" type="button"
+						class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="deletedPlicyData" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h3 id="lblTitleConfirmYesNo" class="modal-title">Delete
+						Confirmation</h3>
+				</div>
+				<div class="modal-body">
+					<h5 id="lblMsgConfirmYesNo"></h5>
+				</div>
+				<div class="modal-footer">
+					<button id="btnYesConfirmYesNo" type="button"
+						class="btn btn-success btn-sm btn-raised">Yes</button>
+					<button id="btnNoConfirmYesNo" type="button"
+						class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+} @footer(""){
+<script>
+	$("#incidentTable").dataTable()
+	$('.uploadpdf').change(function() {
+		if (this.files && this.files[0]) {
+			var reader = new FileReader();
+			reader.onload = imageIsLoaded;
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+
+	function imageIsLoaded(e) {
+		var res = $(".uploadpdf").val();
+		$('.viewpdf').html(res);
+	};
+
+	$('.editPolicy').on('click', function(e) {
+		var pid = $(this).attr('value');
+		$.get('/editPocily/' + pid, function(data) {
+			$("#editPolicyFormAppend").html(data);
+			$('#updatePlicyData').modal('show');
+		});
+	});
+
+	$('.deletePolicy').on('click', function(e) {
+		var pid = $(this).attr('value');
+		var pName = $(this).attr('plname');
+		var url = $(this).attr('url');
+		$('#lblMsgConfirmYesNo').html("Are You sure wnt to delete Policy name : "+pName);
+		$('#deletedPlicyData').modal('show');
+		$('#btnYesConfirmYesNo').on('click', function(e) {
+			$('#deletedPlicyData').modal('hide');
+			window.location.href = url;
+		});
+	});
+
+	$('#addPolicieForm').bootstrapValidator({
+		framework : 'bootstrap',
+		// This option will not ignore invisible fields which belong to inactive panels
+		excluded : ':disabled',
+		fields : {
+			policyName : {
+				validators : {
+					notEmpty : {
+						message : 'Please fill policy Name'
+					},
+					remote : {
+						message : 'Policy name already exist',
+						type : 'POST',
+						url : '/isExistPolicyName',
+						data : function(validator) {
+							return {
+								policyName : validator.getFieldElements('policyName').val()
+							}
+						}
+					}
+				}
+			},
+			file : {
+				validators : {
+					notEmpty : {
+						message : 'Please upload PDF file'
+					},
+					remote : {
+						message : 'Upload Only PDF file',
+						type : 'POST',
+						url : '/isPDFfile',
+						data : function(validator) {
+							return {
+								file : validator.getFieldElements('file').val()
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+</script>
+
+}

@@ -1,0 +1,84 @@
+@(appUserList : List[models.AppUser])
+@header(" Employee Appraisal ",12){
+<section>
+<style>
+
+</style>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/performance/selfAppraisal" class="btn ">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn text-orange">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-5" >
+            			<h3 class="">Employee Appraisal </h3>
+             		</div>
+             		<div class="col-md-4 text-left" >
+            			<button type="button" class="btn btn-raised btn-default margin-0">
+							<span>@PEController.getMonth.format("MM-yyyy")</span >
+						</button>
+             		</div>
+             		<div class="col-md-3 text-right">
+             			<a href="/performance/employeeAppraisalHistory">
+							<button type="button" class="btn btn-primary btn-raised margin-0">History</button>
+						</a>
+		     		</div>
+                </div>
+               <div class="row">
+               		<div class=" text-center">
+                 		<div class="col-md-12">
+                 			@if(PEController.getCondition){
+                 				@if(!appUserList.isEmpty){
+	                        	<div class="col-md-4 text-right">
+	                               <label for="inputEmail" class="control-label">Select Team Member </label>
+	                            </div>   
+	                            <div class="col-md-4">
+	                                  <select name="teamMember"  class="form-control text-left" id="teamMember" required="required">
+		                               		<option value="0">Select</option>
+		                                     @for( appUser <- appUserList) { 
+				                               <option value="@appUser.id">@appUser.getFullName()</option>
+						                     }
+		                           		</select>
+	                            </div>
+	                            }else{
+	                            	<h3 class="text-center">No Team Members !</h3>
+	                            }
+                             }else{
+                           		<h3 class="text-center">Appraisal Form will be available from 27th till 3rd of next month !</h3>
+                           	}
+	                        <br /><br /><br />
+                        </div>
+                        <div class="col-md-12" id="thisMonthForm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+} @footer(""){
+<script>
+$('#teamMember').chosen();
+$(document).on('change', '#teamMember', function(e) {
+	var id = $(this).val();
+    if (id != '0') {
+    	$.get('/performance/employeeAppraisalForm/' + id, function(data) {
+            $("#thisMonthForm").html(data);
+        });
+    } else {
+    	 $("#thisMonthForm").html('<h3>Select Team Member</h3>');
+       // alert("Select Team Member");
+    }
+});
+</script>
+}
+ 
+ 
+ 

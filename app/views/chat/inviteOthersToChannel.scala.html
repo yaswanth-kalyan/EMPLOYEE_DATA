@@ -1,0 +1,82 @@
+@(group : models.chat.ChatGroup,appUsers:List[models.AppUser])
+		 @*<a  class="myclose-btn invite-modal-close " style="display:block;" data-dismiss="modal" aria-label="Close">
+			 <div class="escape-butn pull-right">
+					<i class="fa fa-times fa-2x"></i>
+					<div class="key_label">esc</div>
+			</div>	
+		</a> *@
+		<form action="@controllers.routes.ChatController.saveChatGroup()" method="post" id="invite-addto" >
+		<div class="col-md-12">
+			<div class="col-md-11">
+				<h4 class="">
+					Invite others to #<i class="fa fa-hash"></i>@group.name
+				</h4>
+				<div class="row">
+					<div class="col-md-10">
+						<select name="members[]" id="invite-user-list" class="chosen invite-sel" multiple style="width: 500px;">
+						@if(appUsers!= null){
+					       @for(AppUser <- appUsers){
+					       	@if(AppUser.status.equals(UserProjectStatus.Active)){
+	      					 <option name="members" value="@AppUser.id">@AppUser.FullName</option>  
+	      					 }
+	      					 }
+	      				 }
+					    </select>
+					
+					    
+					</div>
+					<div class="col-md-2">
+						<input type="button" class="btn btn-warning margin-top-0" id="invite-btn" value="Invite">
+						<input type="hidden" name="id" value="@group.id">
+					</div>
+				</div>
+				<div class="row invite-msg col-md-10">
+					<span><b>Everyone on your team is already in this group</b></span>
+				</div>
+			</div>	
+		</div>
+		</form>	
+<script>
+	   $('select.chosen').chosen();
+			$('#invite-btn').attr('disabled','disabled');
+			//$('#invite-btn:disabled').css("background-color","#59BBB2");
+			var userlength = $('#invite-user-list > option').length;
+			
+			if(userlength > 0){
+				
+			$(".invite-msg").hide();
+				}
+			
+			$('.invite-sel').on('change', function (e) {
+	 		  var length = $('#invite-user-list > option:selected').length;
+	  			 if(length == 0){
+	  				$('#invite-btn').attr('disabled','disabled');
+	  				$('#invite-btn:disabled').css("background-color","#59BBB2");
+		   			}
+			    if(length>0){
+			    	$('#invite-btn').prop("disabled", false);
+				    }
+			});
+			
+	       $('.invite-modal-close').click(function(){
+		      // $('.btn-dwn').removeAttr('aria-expanded');
+		       //$('.btn-dwn').attr('aria-expanded','true');
+		   });
+
+	       $('#invite-btn').click(function(){
+	   	    $.ajax({
+	   	        url: '/secure-chat/save-chat-group',
+	   	        type: 'post',
+	   	        dataType: 'json',
+	   	        data: $('#invite-addto').serialize(),
+	   	        success: function(data) {
+		   	       if(data.status==true){
+		   	    	$('#invite-others-channel').modal('hide');  
+		   	       }
+	   	        	
+	   	        }
+	   	    });
+	   	
+	   });
+	
+</script>	   

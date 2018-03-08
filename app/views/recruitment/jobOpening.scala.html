@@ -1,0 +1,281 @@
+@(jobOpening : List[models.recruitment.RecruitmentJob], flag : java.lang.Boolean, jobId : models.recruitment.RecruitmentJob, historyList : List[models.recruitment.RecruitmentReference])
+@header("Refer a friend",11){
+<section>
+        <div class="container">
+            <div class="panel">
+                 <div class="row">
+                	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+                        <a href="/recruitment/openings" class="btn ">Openings<div class="ripple-container"></div></a> |
+               			<a href="/recruitment/applicants" class="btn ">Applicants</a> |
+				        <a href="/recruitment/recruitmentlandingpage" class="btn ">Configure</a> |
+				    	<a href="/recruitment/jobReferralHistory" class="btn">Referrals</a> | 
+				    }
+				    @if(models.recruitment.InterviewerAppUser.checkAppUser(Long.parseLong(session.get("AppUserId")))){
+				        <a href="/recruitment/interviewerFeedback" class="btn  ">Interviewer Feedback</a> |
+				    }
+				        <a href="/recruitment/jobOpening" class="btn text-orange">Refer a friend</a>
+				        
+                </div>
+                <div class="col-md-12 heading-badge">
+                @if(flag){
+                    <div class="col-md-9" >
+            			<h3 class="">Job Opening List</h3>
+            		 </div>
+            		<div class="col-md-3 text-right">
+             			<a href="/recruitment/jobReferenceEmpHistory">
+							<button type="button" class="btn btn-primary btn-raised margin-0">History</button>
+						</a>
+		     		</div>
+                 }else{
+                 	@if(historyList == null){
+                 	<div class="col-md-9" >
+            			<h3 class="">Refer a friend </h3>
+            		 </div>
+            		<div class="col-md-3 text-right">
+             			<a href="/recruitment/jobReferenceEmpHistory">
+							<button type="button" class="btn btn-primary btn-raised margin-0">History</button>
+						</a>
+		     		</div>
+		     		}else{
+		     			<h3 class="">History </h3>
+		     		}
+                 }
+                </div>
+                <div class="row">
+                <div class="col-md-12">
+                        <div class="text-center">
+                        @if(!flag){
+                        	@if(historyList == null){
+	                         <form class="form-horizontal" id="jobCategoryForm" action="/recruitment/addReference" enctype="multipart/form-data" method="post">
+	                         	<input type="hidden" name="jobId" class="form-control upload" value="@jobId.id">
+	                            <div class="row">
+	                                <div class="col-md-2 col-md-offset-3">
+	                                    <div class="pull-left leave-label">  <label>Name <span class="asterisk"> * </span></label></div>
+	                                </div>
+	                                <div class="col-md-4">
+	                                    <input type="text" name="candidateName" class="form-control upload" id="inputEmail" required="">
+	                                </div>
+	                            </div>
+	                            <div class="row">
+	                                <div class="col-md-2 col-md-offset-3">
+	                                    <div class="pull-left leave-label">  <label>Email Id <span class="asterisk"> * </span></label></div>
+	                                </div>
+	                                <div class="col-md-4">
+	                                    <input type="email" name="candidateEmail" class="form-control upload" id="inputEmail" required="">
+	                                </div>
+	                            </div>
+	                            <div class="row">
+	                                <div class="col-md-2 col-md-offset-3">
+	                                <div class="pull-left leave-label">  <label>Experience <span class="asterisk"> * </span></label> </div>
+	                                </div>
+	                                <div class="col-md-4">
+	                                	<input type="text" name="experience"  pattern="^\d*(\.\d{1})?$" class="form-control upload" id="inputEmail" required="">
+	                                </div>
+	                            </div>
+	                            <div class="row">
+		            	 			<div class="form-group">
+		                                <div class="col-md-4 col-md-offset-4">
+					            	 	<div id="img_text" ></div>
+			            	     		<div class="file-input-wrapper">
+						              		<button class="btn-file-input">Upload Resume</button>
+						              		<input type="file" name="resume" id="image" value="">      
+						         		</div>
+					         		</div>
+					         		</div>
+		                           <div class="form-group">
+		                           			<br>
+		                                    <input type="submit" value="Submit" class="btn btn-primary btn-raised">
+		                            </div>
+			          			</div> 
+	                            </form>
+	                          }else{
+	                          <div class="col-md-12">
+		                          <table class="table table-bordered " id="dtable1">
+		                           <thead>
+		                               <tr>
+		                                   <th class="text-center">Date Referred</th>
+		                                   <th class="text-center">Job Id</th>
+		                                   <th class="text-center">Category</th>
+	                                   	   <th class="text-center">Role</th>
+		                                   <th class="text-center">Candidate Name</th>
+		                                   <th class="text-center">Candidate Email ID</th>
+		                                   <th class="text-center">Experience</th>
+		                                   @*<th class="text-center">Resume</th>
+		                                   <th class="text-center">Status</th>*@
+		                                    @* <th class="text-center">Option</th>*@
+		                               </tr>
+		                           </thead>
+	                                <tbody>
+	                                @for(job <-historyList){
+											<tr>
+												<td>@job.createdOn.format("dd-MM-yyyy")</td>
+												<td>@job.recruitmentJob.jobId</td>
+												<td>@job.recruitmentJob.recruitmentCategory.jobCategoryName</td>
+												<td>@job.recruitmentJob.recruitmentRole.jobRoleName</td>
+												<td>@job.candidateName</td>
+												<td>@job.candidateEmail</td>
+												<td>@job.experience</td>
+											@*	<td>@job.resumeName</td>
+												<td>@models.recruitment.RecruitmentReference.getReferenceStatus(job.id)</td>*@
+											@*	<td>
+		                    			 			<button class="btn btn-warning btn-sm btn-raised taskdelbtn deleteReference marginAll0px" url= "/recruitment/deleteReference/@job.id"  id ="deleteReference" userName="@job.candidateName" ><i class="fa fa-trash"></i></button>
+												</td>*@
+											</tr>
+										
+										}	
+	                                </tbody>
+	                              </table>
+	                              </div>
+	                          }
+                         } 
+		                <div class="col-md-12">
+		                @if(flag){
+                        
+                          <div class="col-md-12">
+                          @*<h4 class="text-center recrumentbold">All Openings</h4>*@
+                              <table class="table table-bordered " id="dtable2">
+	                           <thead>
+	                               <tr>
+	                               	   <th hidden="">S ID</th>
+	                                   <th>Job Id</th>
+	                                   <th>Opened On</th>
+	                                   <th>Category</th>
+	                                   <th>Role</th>
+	                                   <th>Experience</th>
+	                                   <th>No Of Openings</th>
+	                                   <th>Location</th>
+	                                   <th>Job Type</th>
+	                                   <th>Refer</th>
+	                               </tr>
+	                           </thead>
+                                <tbody>
+                                @for(job <-jobOpening){
+										<tr>
+											<td hidden="">@job.id</td>
+											<td>@job.jobId</td>
+											<td>@job.openDate.format("dd-MM-yyyy")</td>
+											<td>@job.recruitmentCategory.jobCategoryName</td>
+											<td>@job.recruitmentRole.jobRoleName</td>
+											<td class="text-right">@job.jobExperience</td>
+											<td class="text-right">@job.noOfOpenning</td>
+											<td>@job.jobLocation</td>
+											<td>@job.jobType</td>
+											<td>
+												<a href="/recruitment/jobReference/@job.id" class="btn btn-primary btn-sm btn-raised marginAll0px">
+												<i class="fa fa-share-square" aria-hidden="true"></i>
+												</a>
+											</td>
+										</tr>
+									
+									}	
+                                </tbody>
+                              </table>
+                              
+                              
+                        </div>
+		                    }
+		               </div>     
+                           
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+     <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+			
+</section>
+
+} @footer(""){
+<script>
+
+$('.deleteReference').click(function(e) {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url');
+    $('#lblMsgConfirmYesNo').html("Are you sure, you want to delete Job Reference : " + name);
+    $('#modalConfirmYesNo').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+});
+$("#dtable1").DataTable(); 
+$("#dtable2").DataTable({
+	"order": [ 0, 'desc' ],
+	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300,350,400,450,500 ],
+    "iDisplayLength": 100
+});
+$('#jobCategoryForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	candidateName: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Candidate Name'
+                }
+            }
+        },
+        candidateEmail: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Candidate Email'
+                },
+                remote: {
+                	message: 'User Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistCandidateEmail',
+                    data: function(validator) {
+                        return {
+                        	candidateEmail: validator.getFieldElements('candidateEmail').val()
+                        }
+                    }
+            	}
+            }
+        },
+        experience: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Candidate Experience'
+                }
+            }
+        },
+        resume: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Upload Candidate Resume'
+                }
+            }
+        }
+    }
+});
+      
+$('input[type="file"]').bind('change',function(){  
+    $("#img_text").html($('input[type="file"]').val());
+});
+
+</script>
+ }
+ 
+ 
+ 

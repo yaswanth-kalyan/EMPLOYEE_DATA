@@ -1,0 +1,267 @@
+@(appliedLeaves : models.leave.AppliedLeaves)
+@import java.text.SimpleDateFormat;
+
+           <div class="col-md-12 heading-badge">
+                 	<div  class="col-md-6">
+                    	<h3 class="text-right">Employee Id : @if(appliedLeaves.appUser.getEmployeeId() != null && !appliedLeaves.appUser.employeeId.isEmpty &&  !appliedLeaves.appUser.getEmployeeId().isEmpty ){@appliedLeaves.appUser.getEmployeeId()}   </h3>
+                    </div>
+                    <div  class="col-md-6">
+                    	<h3 class="">Employee Name : @appliedLeaves.appUser.getAppUserFullName()   </h3>
+                    </div>
+                </div>
+                <h5 class="text-center">Leave Details</h5>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Last Leave Taken on
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                		@defining(models.leave.AppliedLeaves.find.where().eq("appUser",appliedLeaves.appUser).eq("leaveStatus",models.leave.LeaveStatus.APPROVED).order("startDate desc").findList()){appledleavesList =>
+                			@if(!appledleavesList.isEmpty){@(new SimpleDateFormat("dd-MM-yyyy").format(appledleavesList.get(0).startDate))}
+                			}
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Leave Type
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                		
+						@appliedLeaves.leaveType.leaveType
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Period
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			@(new SimpleDateFormat("dd-MM-yyyy").format(appliedLeaves.startDate)) To @(new SimpleDateFormat("dd-MM-yyyy").format(appliedLeaves.endDate)) (@appliedLeaves.totalLeaves Days)
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Reason
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			@if(appliedLeaves.reason != null && !appliedLeaves.reason.isEmpty){@appliedLeaves.reason}
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>     
+                		    Manager           			
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			@if(appliedLeaves.appUser.reportMangerId > 0 ){@AppUser.getReptManager(appliedLeaves.appUser.reportMangerId).FullName}
+                		</div>
+                	</div>
+                </div>
+                 <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Approved/Rejected By
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			@if((appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.APPROVED) || appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.TAKEN) || appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.REJECTED)) && appliedLeaves.approvedBy != null){@appliedLeaves.approvedBy.getAppUserFullName()}
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Status
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			@appliedLeaves.leaveStatus
+                		</div>
+                	</div>
+                </div>
+                @if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.PENDING_APPROVAL)){
+                <form class="form-horizontal" id="leaveStatuForm" action="@routes.AdminLeaveController.approvalByAdmin()"  method="post">
+                <input type ="hidden" name="appliedId" value="@appliedLeaves.id">
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Action
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			 <input type="radio" name="leaveStatus" value="@models.leave.LeaveStatus.APPROVED" required>Approve  &nbsp;&nbsp;&nbsp;&nbsp; 
+                			  &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="leaveStatus" value="@models.leave.LeaveStatus.REJECTED" required>Reject
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-12">
+						<div class="text-center">
+							<input class="btn btn-primary btn-raised" type="submit" value="submit">
+						</div>
+					</div>
+                	<!-- <div class="col-md-3">
+                		<div class='text-left'>
+                			<input type="button" class="btn btn-warning  btn-raised" value="reset" />
+                		</div>
+                	</div> -->
+                </div>
+                 </form>
+                }
+                @if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.APPROVED)){
+                <form class="cancel-form" id="#" action="@routes.AdminLeaveController.cancelLeaveApproved()"  method="post">
+                <div class="row">
+                <input type ="hidden" name="appLiedLeaveId" value="@appliedLeaves.id">
+                	<div class="col-md-12">
+						<div class="text-center">
+							<input class="btn btn-primary btn-raised approved-cancel" valueId="@appliedLeaves.id" type="button" value="Cancel">
+						</div>
+					</div>
+                	<!-- <div class="col-md-3">
+                		<div class='text-left'>
+                			<input type="button" class="btn btn-warning  btn-raised" value="reset" />
+                		</div>
+                	</div> -->
+                </div>
+                </form>
+                }
+                <div class="col-md-12 heading-badge">
+                    	<h3 class=""> Entitlement Status   </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-12">
+                	<div class="col-md-12">
+	                    <table class="table table-bordered table-striped" id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th class="hidden">Last Year B/F</th>
+	                    			<th>Year To Date Earned</th>
+	                    			<th class="hidden">Total Entitlement</th>
+	                    			<th class="hidden">Year To Date Taken</th>
+	                    			<th>Approved</th>
+	                    			<th>Pending Approval</th>
+	                    			<th>Available Balance</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	@for(leaveType <- models.leave.LeaveType.find.all()){
+	                    		<tr>
+	                    			<td>@leaveType.leaveType</td>
+	                    			<td class="hidden">2</td>
+	                    			@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    			@defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+	                    			@defining(models.leave.Leaves.find.where().eq("leaveType",leaveType).eq("appUser",appliedLeaves.appUser).eq("year",date1).findUnique()){leave =>
+	                    			<td>@if(leave != null){@leave.addedLeaves}</td>
+	                    			<td class="hidden">2</td>
+									<td class="hidden">@models.leave.AppliedLeaves.takenLeaves(appliedLeaves.appUser,leaveType)</td>
+	                    			<td>@models.leave.AppliedLeaves.approvedLeaves(appliedLeaves.appUser,leaveType)</td>
+	                    			<td>@models.leave.AppliedLeaves.appliedLeaves(appliedLeaves.appUser,leaveType)</td>
+	                    			<td>@if(leave != null){@leave.remainingLeaves}</td>
+	                    			}
+	                    			}
+	                    			}
+	                    		</tr>
+	                    		}
+	                    		<tr>
+                 				<td>Total</td>
+                 				<td class="hidden">2</td>
+                 				<td>@models.leave.Leaves.totalAddedLeaves(appliedLeaves.appUser)</td>
+                 				<td class="hidden">38</td>
+                 				<td class="hidden">@models.leave.AppliedLeaves.totalLeaves(appliedLeaves.appUser,models.leave.LeaveStatus.TAKEN)</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(appliedLeaves.appUser,models.leave.LeaveStatus.APPROVED)</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(appliedLeaves.appUser,models.leave.LeaveStatus.PENDING_APPROVAL)</td>
+                 				<td>@models.leave.Leaves.totalRemainingLeaves(appliedLeaves.appUser)</td>
+                 			</tr>
+	                    		
+	                    		
+	                    	</tbody>
+	                    </table>
+	                	</div>
+	                </div>
+                </div> 
+                <div class="modal  fade" id="bulk-unblock-note" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      	<div class="modal-dialog modal-md">
+        	<div class="modal-content">
+            	<div class="modal-header">
+            	<input type="text" class="hidden" value="">
+               		<button type="button" class="close custom-close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                	<h3 class="modal-title fontweight_500" >Cancel Note</h3>
+           		 </div>
+            <div class="modal-body">
+                <div class="row margintop-10">
+                     <div class="col-md-12">
+                           <h5 class="fz-16">Are you sure you want to cancel ?</h5>
+                    </div>
+                    
+                    <div class="col-md-12 text-right">
+                    	
+                	</div> 
+               </div>
+             </div>
+             <form id="deleteForm">
+                <div class="modal-footer">
+                   <button type="button" class=" btn btn-danger   btn-sm btn-raised " data-dismiss="modal">NO</button>  
+                    	<button deleteButton="true" type="button" class="btn btn-success btn-sm btn-raised btn-cancel-confirm">YES</button>
+                </div>
+                </form>
+        </div>
+      </div>
+    </div>
+                <script>
+              /*  $('.cancel-form').submit(function(ev){
+                	alert();
+                	$("#bulk-unblock-note").modal('show');
+                	$("#btn-cancel-confirm").click(function(){
+                		$('.cancel-form').submit();
+                	});
+                });  */
+                 $(".approved-cancel").click(function(){
+                	$("#bulk-unblock-note").modal('show');
+                	$(".btn-cancel-confirm").click(function(){
+                		$.post("@routes.AdminLeaveController.cancelLeaveApproved()", $(".cancel-form").serialize(),function(data){
+                			window.location.href=window.location.href;
+                		});
+                	});
+                }); 
+                
+                $('#leaveStatuForm').bootstrapValidator({
+				    framework: 'bootstrap',
+				    // This option will not ignore invisible fields which belong to inactive panels
+				    excluded: ':disabled',
+				    fields: {
+				        leaveStatus: {
+				            validators: {
+				                notEmpty: {
+				                    message: 'Please select Action '
+				                }
+				            }
+				        }
+				    }
+				});
+                
+                </script>

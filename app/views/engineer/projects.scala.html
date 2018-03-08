@@ -1,0 +1,101 @@
+@(finalProjects : Map[Role, List[Projects]])
+@import java.lang.Long; var index=0l;
+@header("My Projects",2){
+	<section>
+        <div class="container">
+    <div class="panel">
+        <div class="col-md-12"><br>
+        @*<a href="/engineer/projects" class="btn  text-orange">My Projects</a>*@
+        </div>
+        <div class="col-md-12 heading-badge">
+                <h3>My Projects </h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="">
+                    <div class="bs-component">
+                          <div class="col-md-12">
+                          
+	                        @*   @if(!finalProjects.get(role).isEmpty()){ *@
+	                              <table class="table table-bordered" id="dtable1">
+		                           <thead>
+		                               <tr>
+		                                	<th>S.No</th>
+		                                   <th>Project Name</th>
+		                                   <th>Client</th>
+		                                   <th>Start Date</th>
+		                                   <th>End Date</th>
+		                                   <th>PM</th>
+		                                   <th>PM Contact Number</th>
+		                                   <th>PM Email Id</th>
+		                                   <th>Projects Status</th>
+		                                   <th>Role</th>
+		                               </tr>
+		                           </thead>
+	                               <tbody>
+	                                @for(role <- finalProjects.keySet) {
+	                                	 @if(!finalProjects.get(role).isEmpty()){
+		                                 	@for((project)<- finalProjects.get(role) ) { 
+		                                 	@(index+=1)
+												<tr>
+													<td>@{index}</td>
+													<td>@project.projectName</td>
+													<td>@project.client</td>
+												<td>
+								   					@if(project.getStartedDate != null) {
+								   					@project.getStartedDate().format("dd-MM-yyyy")
+								   					}
+								   					</td>
+								   					<td>
+								   					@if(project.getEndedDate != null) {
+								   					@project.getEndedDate.format("dd-MM-yyyy")
+								   					}
+								   					</td>
+								   						
+													<td>@project.getProjectManager.getFullName()	</td>
+													<td> @project.getProjectManager.getMobileNo()  </td>
+													<td> @project.getProjectManager.getEmail </td>
+													
+													<td>@project.status</td>
+													<td>@if(role.getRole.equals(Roles.Engineer.toString()) || role.getRole.equals(Roles.HR.toString()) || role.getRole.equals(Roles.Marketing.toString())){
+															Team Member
+														}else{
+															@role.getRole
+														}</td>
+												</tr>
+												 }
+											 }
+										}            
+		                                </tbody>
+	                              </table>
+						@*	}else{
+	    						<h3 class="text-center">No Project available </h3><br><br>
+	    					} *@
+	    				                 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    </div>  
+</section>
+	
+}
+
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable({
+			"order": [ 8, 'desc' ],
+			"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+		    "iDisplayLength": 100
+		});
+	});
+</script>
+}

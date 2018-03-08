@@ -1,0 +1,265 @@
+@(tabid : Integer)
+@if((tabid != -1)){
+   @if(tabid == 10){
+   	<div class="overlay hidden-lg hidden"></div>
+	<div class="loadingSpinner">
+	<div class="bb8">
+	  <div class="bb8-head">
+	    <div class="eye big"></div>
+	    <div class="eye little"></div>
+	  </div>
+	  <div class="bb8-body">
+	    <div class="port port-1"></div>
+	    <div class="port port-2"></div>
+	    <div class="port port-3"></div>
+	  </div>
+	</div>
+	<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome to BB8 Chat</h4>
+	</div>
+	@*<div class="loadingSpinner2"><br><br><br><br>
+	<h3 id="welcomeMessage" style="color:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome to BB8 Chat</h3>
+	</div>*@
+	<body>	
+	<div class="header-navbar">
+	<nav class="navbar navbar-default navbar-fixed-top">
+	}else{
+	<body>	
+	<div class="header-navbar">
+	<nav class="navbar navbar-default">
+	}
+		<div class="container-fluid">
+		      <div class="row">
+		        <div class="bs-component">
+		         
+		          @if(tabid == 10){
+		          <div class="">
+		            <div class="container-fluid">
+		            }else{
+		             <div class="navbar navbar-black">
+		             <div class="container-fluid">
+		            }
+		              <div class="navbar-header">
+		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+		                  <span class="icon-bar"></span>
+		                  <span class="icon-bar"></span>
+		                  <span class="icon-bar"></span>
+		                </button>
+		                <a class="navbar-brand" href="/home-page" > 
+		                 <img src="/assets/images/bb8_logo_thrymr-min.png" style="height:35px;">
+		                </a>
+		
+		              </div>
+		              <div class="navbar-collapse collapse navbar-responsive-collapse">
+		              @if(session.get("AppUserRole") == "Admin") {
+		                <ul class="nav navbar-nav">
+		                  <li class="@if(tabid == 1){active}"><a href="/all-user">User</a></li>
+		                  <li class="@if(tabid == 2){active}"><a href="/all-project">Projects</a></li>
+		                  <li class="@if(tabid == 3){active}"><a href="/daily-status-date">Daily Status</a></li>
+		                  <li class="@if(tabid == 4){active}"><a href="/time-sheets-date">Time Sheet</a></li>
+		                  <li class="@if(tabid == 5){active}"><a href="/date-wise-attendance">Attendance</a></li>
+		                  <li class="@if(tabid == 6){active}"><a href="/all-leads">Leads</a></li>
+		                  <li class="@if(tabid == 7){active}"><a href="/leave-calendar">Leaves</a></li>
+		                  <li class="@if(tabid == 9){active}"><a href="/taskRender">Tasks</a></li>  
+		                  <li class="@if(tabid == 11){active}"><a href="/recruitment/openings">Recruitment</a></li>
+		                  <li class="@if(tabid == 12){active}"><a href="/performance/selfAppraisal">PE</a></li>
+		                  <li class="@if(tabid == 8){active}"><a href="/reportsLandingPage">Reports</a></li> 
+		                  <li class="@if(tabid == 10){active}"><a href="/chat/connect">Chat
+			                  @if(ChatController.getNotificationsByAllUsers()>1){
+			                         <span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+			                  }else{
+			                       <span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"></span>
+			                  }</a>
+		                 </li>
+		                 <li class="@if(tabid == 13){active}"><a href="/wiki/pages">Wiki</a></li> 
+		                 
+
+		                </ul>
+		              } else{ @if(session.get("AppUserRole") == "Manager") {
+				        <ul class="nav navbar-nav">
+				          <li class="@if(tabid == 1){active}"><a href="/manager/projects">Projects</a></li>
+				          <li class="@if(tabid == 2){active}"><a href="/manager/fill-status">Daily Status</a></li>
+				          <li class="@if(tabid == 3){active}"><a href="/manager/fill-timesheet">Time Sheet</a></li>
+				          <li class="@if(tabid == 4){active}"><a href="/attendance-history">Attendance</a></li>
+				          <li class="@if(tabid == 7){active}"><a href="/leave-calendar">Leaves</a></li> 
+		                  <li class="@if(tabid == 9){active}"><a href="/taskRender">Tasks</a></li>
+		                  <li class="@if(tabid == 11){active}"><a href="/recruitment/jobOpening">Recruitment</a></li> 
+		                  <li class="@if(tabid == 12){active}"><a href="/performance/selfAppraisal">PE</a></li>  
+		                  <li class="@if(tabid == 8){active}"><a href="/reportsLandingPage">Reports</a></li>
+				          <li class="@if(tabid == 10){active}"><a href="/chat/connect">Chat
+				          	   @if(ChatController.getNotificationsByAllUsers()>1){
+		                    	    <span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+		                    	}else{
+		                        	<span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"></span>
+		                   		}</a>
+		                  </li>
+		                   <li class="@if(tabid == 13){active}"><a href="/wiki/pages">Wiki</a></li> 
+				        </ul>
+		              } else{ @if(session.get("AppUserRole") == "Engineer" || session.get("AppUserRole") == "HR" || session.get("AppUserRole") == "Marketing") {
+		                  <ul class="nav navbar-nav">
+		                		@if(session.get("AppUserRole") == "HR"){
+		                		  <li class="@if(tabid == 1){active}"><a href="/all-user">User</a></li>
+		                		  <li class="@if(tabid == 2){active}"><a href="/engineer/projects">Projects</a></li>
+				                  <li class="@if(tabid == 3){active}"><a href="/engineer/fill-status">Daily Status</a></li>
+				                  <li class="@if(tabid == 4){active}"><a href="/engineer/fill-timesheet">Time Sheet</a></li>
+				                  <li class="@if(tabid == 5){active}"><a href="/add-attendence">Attendance</a></li>
+				                  <li class="@if(tabid == 7){active}"><a href="/leave-calendar">Leaves</a></li>
+				                  <li class="@if(tabid == 11){active}"><a href="/recruitment/openings">Recruitment</a></li>
+		                		}else{
+				                  <li class="@if(tabid == 2){active}"><a href="/engineer/projects">Projects</a></li>
+				                  <li class="@if(tabid == 3){active}"><a href="/engineer/fill-status">Daily Status</a></li>
+				                  <li class="@if(tabid == 4){active}"><a href="/engineer/fill-timesheet">Time Sheet</a></li>
+				                  <li class="@if(tabid == 5){active}"><a href="/week-wise-attendance">Attendance</a></li>
+				                  <li class="@if(tabid == 7){active}"><a href="/leave-calendar">Leaves</a></li>
+		                  		  <li class="@if(tabid == 11){active}"><a href="/recruitment/jobOpening">Recruitment</a></li> 
+		                  		  
+				                }
+								
+								@if(session.get("AppUserRole") == "Marketing"){
+									<li class="@if(tabid == 6){active}"><a href="/all-leads">Leads</a></li>
+								} 
+								
+								  <li class="@if(tabid == 9){active}"><a href="/taskRender">Tasks</a></li> 
+								  <li class="@if(tabid == 12){active}"><a href="/performance/selfAppraisal">PE</a></li>
+								  <li class="@if(tabid == 8){active}"><a href="/reportsLandingPage">Reports</a></li> 
+				                  <li class="@if(tabid == 10){active}"><a href="/chat/connect">Chat 
+				                    @if(ChatController.getNotificationsByAllUsers()>1){
+		                           		 <span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"><i class="fa fa-star-o" aria-hidden="true"></i></span>
+		                    		}else{
+		                      			 <span class=" messageNotificationConnectTo@Application.getLoggedInUser.id"></span>
+		                    		} </a>
+		                   		  </li>
+		                	 <li class="@if(tabid == 13){active}"><a href="/wiki/pages">Wiki</a></li> 
+		                	</ul>
+		                		}
+		                	}
+		                }
+		              
+		                <ul class="nav navbar-nav navbar-right">
+		                  <li class="dropdown">
+		                    <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle text-orange text-capitalize" data-toggle="dropdown">@session.get("AppUserName")
+		                      <b class="caret"></b></a>
+		                    <ul  class="dropdown-menu">
+		                      <li><a href="#"><div align="center"><img  class="img-circle img-thumbnail" src=@{routes.AdminController.getimage(Long.parseLong(session.get("AppUserId")))} width="50%" height="50%"></div></a></li>
+		                      <li><a href="/user-profile"><div align="center">Settings</div></a></li>
+		                      <li><a href="/report-critical-incident"><div align="center">CIR</div></a></li>
+		                      <li><a href="/all-policy"><div align="center">Policies</div></a></li>
+		                      <li><a id="loggedout-google" onclick="logout()"><div align="center">Logout</div></a></li>
+		                    </ul>
+		                  </li>
+		                </ul>
+		                @if(Application.getLoggedInUser().role.size() >0){
+		                   <ul class="nav navbar-nav navbar-right">
+		                  <li class="dropdown">
+		                  @if(Application.getLoggedInUser().role.size() <2){
+		                  	<a href="/home-page" class="text-orange">@if(Application.isLoggedIn()){ @Application.getLoggedInUserRole()} </a>
+		                  }else{
+		                    <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle text-orange text-capitalize " data-toggle="dropdown">@if(Application.isLoggedIn()){ @Application.getLoggedInUserRole()}
+		                       <b class="caret"></b></a>
+		                    <ul class="dropdown-menu">
+		                    @if(Application.isLoggedIn()){
+		                    @defining(Application.getLoggedInUser()){appUser =>
+		                    @if(!appUser.role.isEmpty()){
+		                    @for(role <- appUser.role){
+		                    @if(!role.role.equals(Application.getLoggedInUserRole())){
+		                    <li><a href="@routes.Application.getDynamicDashboard(role.role,appUser.id)">@role.role</a></li>
+		                    }
+		                    }
+		                    }
+		                    }
+		                    }
+		         
+		                    </ul>
+		                     }
+		                   
+		                  </li>
+		                </ul>
+		                } 
+				        <ul class="nav navbar-nav navbar-right">
+			               <li class="dropdown notifynavbar">
+		                  		<a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle text-orange text-capitalize " data-toggle="dropdown"><i class="fa fa-bell"></i>
+		                   			@if(models.lead.NotificationAlert.getNotificationCount() > 0){ <span class="label label-danger" id="countSize">@models.lead.NotificationAlert.getNotificationCount()</span>}
+		                      		<b class="caret"></b></a>
+		                    	<ul class="dropdown-menu" id="readALl" >
+		                    		@if(!models.lead.NotificationAlert.getListNotifications().isEmpty()){
+		                    			<li style="border-bottom:1px solid #ddd;padding-bottom:5px"><div align="center" ><a href="#" id="markAll"><font size="2" style="color:#000" ><b>Mark All as Read</b></font></a></div></li>
+				                 <ul class="inner-notifi">  	
+				                   	@for((newNotification,index) <- models.lead.NotificationAlert.getListNotifications().zipWithIndex){
+				                   	<li class="notiHeight">
+				                   		<div class="notfiywrap">
+					                   		<a href="/update-notification/@newNotification.id">
+					                   			<div class="notifidiv">@newNotification.notification</div>
+					                   			<div class="notifidivdate">@newNotification.notificationDate.format("MMM dd, yyyy HH:mm:ss")</div>
+					                   		</a>
+					                   	</div>	
+				                   	</li>
+				                   	}
+				                 </ul>  	
+		                    }else{
+		                      <li class="notfiywrap"><a href="#" id="nnn">No New Notification</a></li>
+		                      }
+		                     <div class="allnotifications"> <a href="/lead/allNotification"><div align="center"><b><font size="2" style="color:#000">See All Notifications</font></b></div></a></div>
+		                    </ul>
+		                  </li>
+		                </ul>
+		              </div>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		 </div>
+	 </nav>
+</div>	 	    
+} else{
+<body class="body" style="background: rgb(66,103,145) !important;background: -moz-linear-gradient(-45deg,  rgba(66,103,145,1) 0%, rgba(48,35,60,1) 100%) !important ;background: -webkit-linear-gradient(-45deg,rgba(66,103,145,1) 0%,rgba(48,35,60,1) 100%) !important;background: linear-gradient(135deg,  rgba(66,103,145,1) 0%,rgba(48,35,60,1) 100%) !important; filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#426791', endColorstr='#30233c',GradientType=1 ) !important; height:100vh !important;"></body>
+}
+<div id="modalConfirmYesNoLogout" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 id="lblTitleConfirmYesNoLogout" class="modal-title">Confirmation Message</h3>
+            </div>
+            <div class="modal-body">
+                <h5 id="lblMsgConfirmYesNoLogout"></h5>
+            </div>
+            <div class="modal-footer">
+               	<button id="btnYesConfirmYesNoLogout" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+                <button id="btnNoConfirmYesNoLogout" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var logout = function(){
+	$('#lblMsgConfirmYesNoLogout').html("Are you sure you want to logout?");
+    $('#modalConfirmYesNoLogout').modal('show');
+};
+
+$(document).on('click','#btnYesConfirmYesNoLogout',function(e){
+	$('#modalConfirmYesNoLogout').modal('hide');
+	if(@utils.Constants.IS_LOGOUT.equals("false")){
+		document.location.href = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://developer.thrymr.net";
+	}else{
+		document.location.href = "/logout";
+	}
+});
+
+$(document).on('click','.cN',function(e){
+	window.location.href = '/lead/clearNotification';
+});
+
+$(document).on('click','#markAll',function(e){
+	e.preventDefault();
+	var option = '';
+	var size = '';
+	option = $('<li><a href="#">No New Notification</a></li> <li><a href="/lead/allNotification"><div align="center"><b><font size="2">See All Notifications</font></b></div></a></li>');
+	     $.get('/lead/markAllRead',function(data) {
+	    	 $("#readALl").html(option);
+	    	 $("#countSize").html(size);
+	     }); 
+});
+</script>
+

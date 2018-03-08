@@ -1,0 +1,104 @@
+@(projects : List[Projects])
+@header("Fill Time Sheet",4){
+<section>
+ <form action="@routes.EngineerController.timeSheet()" id="fillTimesheet" method="post">	
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row">
+					<a href="/engineer/fill-timesheet" class="btn text-orange">Today's</a> | <a href="/engineer/timesheet-history" class="btn">History</a> 
+				<div class="col-md-12 heading-badge">
+					<h3>Fill TeamSheet </h3>
+				</div>
+			@if(!projects.isEmpty){
+				@if(EngineerController.getIsDoneTS.equals(false)){
+				<div class="col-md-12">
+					<center>
+						<button type="button" class="btn btn-raised btn-link">
+							<h5  id="demo"></h5>
+						</button>
+					</center>
+				</div>
+				<div class="col-md-8 col-md-offset-2">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Project</th>
+								<th class="width30p">No.of Hours Spent</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+							@for(project <- projects) {
+								@if(project.getStatus.equals(models.UserProjectStatus.Active)){
+								<tr>
+								<td>@project.getProjectName<font color="red">*</font>
+								<input type="hidden" name="projectId[]" value="@project.getId" class="form-control" />
+								</td>
+								<td>
+							<!-- 	<div class="input-group clockpicker" data-align="top" data-autoclose="true">
+								    <input type="time"  class="form-control" value="09:30" class="form-control timeSpent" required="required" readonly>
+								    <span class="input-group-addon">
+								        <span class="fa fa-clock-o"></span>
+								    </span>
+								</div>  -->
+									<input type="text" name="hours[]" min="0" max="24" pattern="^\d*(\.\d{1,2})?$" class="form-control" required="required"/>   
+								</td>
+								</tr>
+								}
+							}
+							
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="col-md-8 col-md-offset-2">
+					<div class="form-group is-empty">
+					<label>Any Remarks</label>
+					<textarea class="form-control" name="remark" ></textarea>
+					</div>
+					<center><button type="submit" class="btn btn-raised btn-success">Submit</button></center>
+				</div>
+				} else{
+					<h3 class="text-center">You have filled TimeSheet Today</h3>
+				}
+			} else {
+		<h3 class="text-center">No Projects</h3>
+		}
+			</div>
+		</div>
+	</div>
+	</div>
+	</form>
+	
+</section>
+
+}
+@footer(""){
+<script>
+$('.clockpicker').clockpicker();
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd
+} 
+if(mm<10){
+    mm='0'+mm
+} 
+var today = dd+'-'+mm+'-'+yyyy;
+$('#demo').html(today);
+$(document).ready(function() {
+	$('.mydate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	});
+	$("#dtable1").DataTable()
+});
+
+$('#fillTimesheet').formValidation();
+</script>
+} 

@@ -1,0 +1,132 @@
+@(roadmapId :Long)
+@header("Tasks",2){
+
+<div class="container">
+	<div class="panel">
+		<br />
+		<div class="col-md-12 heading-badge">
+			<h3>Create Epic</h3>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				    <form id="epicForm" action="@controllers.pmo.routes.EpicController.saveEpics()" method="post">
+				        <div class="form-group">
+				            <div class="row">
+				                <div class="col-md-6 col-md-offset-2">
+				                    <input type="text" class="form-control" id="formGroupExampleInput" name="name" placeholder="Epic Name">
+				                </div>
+				                <button type="submit" class="btn btn-warning btn-raised btn-sm margin-0" id="Epic">Create Epic</button>
+				            </div>
+				        </div>
+				        <!-- <input type="hidden" name="epicId" value="">  -->
+				        <input type="hidden" name="roadmapId" id="roadmapId" value="@roadmapId">
+				    </form>
+			</div>	
+		</div><br>
+			<div class="row">
+				<div class="col-md-12 col-md-offset-1" id="epicTable"> </div>
+			</div>
+				@*<div class="">
+				   <div class="hidden editshowEpic">
+						<h5>Edit Roadmap</h5>
+					</div>
+				    <div  id="right-panel">
+				    
+				    </div>
+				</div>*@
+	</div>
+</div>
+			<div id="modalEditEpic" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header heading-badge">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleEditEpic" class="modal-title ">Edit Epic</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="right-panel"></h5>
+			            </div>
+			            <div class="modal-footer">
+			               @* <button id="btnYesEditRoadmap" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoEditRoadmap" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>*@
+			            </div>
+			        </div>
+			    </div>
+			</div>
+@footer(""){
+<script>
+ $(document).ready(function(){
+	 $("#epicForm").bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	name: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please fill this field'
+		                } 
+		            }
+		        } 
+		    }
+		});		
+
+	  var roadmapId = $('#roadmapId').val();
+		if (roadmapId) {
+			epicListByRoadmap(roadmapId);
+		} else{
+			alert("no epic available for roadmap !!!");
+		}
+ });
+ 
+ function editEpic(epicId){
+	 console.log("roadMapId " + epicId);
+		$.get("/epic/edit/" + epicId, function(data) {
+			if (data.status == "true") {
+				$('#right-panel').empty();
+				$('#right-panel').append(data.page);
+				$(".editshowEpic").removeClass("hidden");
+				$('#modalEditEpic').modal('show');
+			}
+		});
+ }
+
+ function deleteEpic(epicId) {
+		 var roadmapId = $('#roadmapId').val();
+		$.post('/epic/delete/' + epicId, function(data) {
+			if (data.status=="true") {
+				if(roadmapId){
+					epicListByRoadmap(roadmapId);
+					alert(data.message);
+				}
+				//updatedTable();
+			}
+		});
+	}
+
+/*function updatedTable() {
+	$.get("/epic/list",function(data){
+		console.log(data);
+		if(data.status=="true"){
+			$('#epicTable').empty();
+			$('#epicTable').append(data.page);
+     		//$("#dtable2").DataTable();
+		}
+	});
+}*/
+
+function epicListByRoadmap(roadmapId){
+	$.get("/epic/list-by-road-map/"+roadmapId, function(data) {
+		if (data.status == "true") {
+			$('#epicTable').empty();
+			$('#epicTable').append(data.page);
+			$("#dtable2").DataTable();
+		}
+	});
+}
+</script>
+</div>
+}
+}

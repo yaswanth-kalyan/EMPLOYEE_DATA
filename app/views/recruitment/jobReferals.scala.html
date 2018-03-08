@@ -1,0 +1,146 @@
+@(referalsList : List[models.recruitment.RecruitmentReference])
+@header("Referrals",11){
+<section>
+        <div class="container">
+            <div class="panel">
+                 <div class="row">
+                	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+                        <a href="/recruitment/openings" class="btn ">Openings<div class="ripple-container"></div></a> |
+               			<a href="/recruitment/applicants" class="btn ">Applicants</a> |
+				        <a href="/recruitment/recruitmentlandingpage" class="btn ">Configure</a> |
+				        <a href="/recruitment/jobReferralHistory" class="btn text-orange">Referrals</a> | 
+				    }
+				    @if(models.recruitment.InterviewerAppUser.checkAppUser(Long.parseLong(session.get("AppUserId")))){
+				        <a href="/recruitment/interviewerFeedback" class="btn  ">Interviewer Feedback</a> |
+				    }
+				        <a href="/recruitment/jobOpening" class="btn">Refer a friend</a>
+				        
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Referral History </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-12">
+                        <div class="text-center">
+			                <div class="col-md-12">
+	                              <table class="table table-bordered " id="dtable2">
+		                           <thead>
+		                               <tr>
+		                               	   <th class="text-center">Referred On</th>
+		                                   <th>Job Id</th>
+		                                   <th>Category</th>
+		                                   <th>Role</th>
+		                                   <th>ReferedBy - Emp ID</th>
+		                                   <th>ReferedBy - Emp Name</th>
+		                                   <th>Candidate Name</th>
+		                                   <th>Candidate Email ID</th>
+		                                   <th>Experience</th>
+		                                   <th>Resume</th>
+		                               </tr>
+		                           </thead>
+	                                <tbody>
+	                                @for(job <-referalsList){
+											<tr>
+												<td>@job.createdOn.format("dd-MM-yyyy")</td>
+												<td>@job.recruitmentJob.jobId</td>
+												<td>@job.recruitmentJob.recruitmentCategory.jobCategoryName</td>
+												<td>@job.recruitmentJob.recruitmentRole.jobRoleName</td>
+												<td>@job.referedBy.getEmployeeId</td>
+												<td>@job.referedBy.getFullName</td>
+												<td>@job.candidateName</td>
+												<td>@job.candidateEmail</td>
+												<td>@job.experience</td>
+												<td>													
+													<div class="col-md-2">	
+		            	      						<button type="button"><a href="/downloadReferralResume/@job.id"><i class="fa fa-download" aria-hidden="true"></i></a></button>
+		            	      						</div>
+		            	      						@* <div class="col-md-2">	
+		            	      							@if(models.recruitment.RecruitmentReference.getFileType(job.id)) {
+		            	      							<button type="button" id="viewJobDescription"><i class="fa fa-eye" aria-hidden="true"></i></button>
+		            	      							}*@
+		            	      						</div>
+												</td>
+											</tr>
+											}
+	                                </tbody>
+	                              </table>
+		               			</div>     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+    <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">View Job Description</h3>
+			            </div>
+			            <div class="modal-body">
+			          @*  @if(job != null){
+			               <iframe src="/getJobDescription/@job.id" style="width:100%;min-height:600px;" frameborder="0"></iframe>
+			               }*@
+			            </div>
+			            <div class="modal-footer">
+			               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>*@
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>    
+			
+</section>
+
+} @footer(""){
+<script>
+$('#viewJobDescription').click(function(e){
+	$('#modalConfirmYesNo').modal('show');
+});
+$("#dtable2").DataTable({
+	"order": [ 0, 'desc' ],
+	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300,350,400,450,500 ],
+    "iDisplayLength": 100
+});
+$('#jobCategoryForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	candidateName: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Candidate Name'
+                }
+            }
+        },
+        experience: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Candidate Experience'
+                }
+            }
+        },
+        resume: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Upload Candidate Resume'
+                }
+            }
+        }
+    }
+});
+      
+$('input[type="file"]').bind('change',function(){  
+    $("#img_text").html($('input[type="file"]').val());
+});
+
+</script>
+ }
+ 
+ 
+ 

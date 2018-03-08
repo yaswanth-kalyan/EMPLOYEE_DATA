@@ -1,0 +1,50 @@
+     @(roadMapList:List[models.pmo.RoadMap])
+  <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="">
+                    <div class="bs-component">
+                          <div class="col-md-10">
+                              <table class="table table-bordered " id="dtable2" >
+	                           <thead>
+	                               <tr>
+	                                   <th>S.No</th>
+	                                   <th>Name</th>
+	                                   <th>UserStory</th>
+	                                   <th>Tasks</th>
+	                                   <th>Test Secnarios</th>
+	                                   <th>Test Cases</th>
+	                                   <th>Total Estimate</th>
+	                                   <th>Total Done</th>
+	                                   <th>%Done</th>
+	                                  <th>Action</th>
+	                                  <th>Epics</th>
+	                                 </tr>
+	                           </thead>
+                                <tbody>
+                                @for((roadMap,index) <- roadMapList.zipWithIndex){
+										<tr>
+											<td>@{index+1}</td>
+											<td><a href="#" onclick="editRoadMap(@roadMap.getId())">@roadMap.title</a></td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td> 
+											<td></td>
+											<td></td>
+											<td></td>
+											<td><button type="button"  onClick ="deleteRoadMap(@roadMap.getId())" class="btn btn-warning btn-xs btn-raised margin-0" id="delete-roadmap">Delete </button></td>
+											@defining(models.pmo.Epic.find.where().eq("road_map_id",roadMap.id).findList()){epicList =>
+											<td><a  href="@controllers.pmo.routes.EpicController.getEpicPage(roadMap.getId())" class="btn btn-primary btn-xs btn-raised margin-0">@epicList.size()</a></td>
+											}
+										</tr>
+								}
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+</div>

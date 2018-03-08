@@ -1,0 +1,186 @@
+<style>
+.highlight {
+    background-color: #59b75c !important;
+    background-image :none !important;
+    color: #ffffff !important;
+    
+}
+.back-days {
+color: #999999 !important;
+}
+</style>
+<div class="col-md-12 heading-badge">
+                    	<h3 class="">Apply WFH</h3>
+                </div>
+                <form action="@routes.AdminLeaveController.applyWFH()" id="applyLeavesForm" method="post">
+                <div class="row">
+                	<div class="col-md-6 col-md-offset-3">
+	                    <table class="table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Work Form Home</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    		<tr>
+	                    		@*	<td>From  <span class="asterisk"> * </span> </td>
+	                    			<td>
+	                    				<div class="row">
+	                    					<div class="col-md-6">	
+	                    						<input type="text" name="fromDate" class="form-control mydate1"  readonly>
+	                    					</div>
+	                    				</div>
+	                    			</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>To Date  <span class="asterisk"> * </span>  </td>
+	                    			<td>
+	                    				<div class="row">
+	                    					<div class="col-md-6">	
+	                    						<input type="text" name="toDate" class="form-control mydate2"  readonly>
+	                    					</div>
+	                    				</div>		
+	                    			</td>
+	                    		</tr>
+	                    		<tr>*@
+	                    			<td>Duration</td>
+	                    			<td>
+	                    				<div class="form-group">	
+		                    				<select class="form-control dayselect" name="duration" >
+		                    				@for(duration <- models.leave.DurationEnum.values()){
+		                    					<option value="@duration">@duration.getDuration()</option>
+		                    					}
+		                    					
+		                    				</select>
+	                    				</div>
+	                    				<div class="form-group">	
+		                    				<select class="form-control typeofdayselect" name="partialEnum" >
+		                    				@for(partialDays <- models.leave.PartialDaysEnum.values()){
+		                    					<option value="@partialDays">@partialDays.getPartialDays()</option>
+		                    					}
+		                    				</select>
+	                    				</div>
+	                    			</td>
+	                    		</tr>
+	                    		
+	                    		<tr>
+	                    			<td>Reason  <span class="asterisk"> * </span> </td>
+	                    			<td>
+	                    				<div class="row">
+	                    					<div class="col-md-12">	
+	                    						<textarea type="text" name="reason" class="form-control" ></textarea>
+	                    					</div>
+	                    				</div>
+	                    			</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                   <div class="row">
+                        <div class="col-md-2 col-md-offset-4">
+                            <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                        </div>
+                        <div class="col-md-1">
+                            <button type='reset' class="btn btn-warning btn-raised" >Reset</button>
+                        </div>
+                    </div>
+                </form>
+                
+                
+                <script>
+                $(function(){
+                    $('.typeofdayselect').hide();
+                    $('.dayselect').change(function(){
+                	  var halfday  = $(this).val();
+                	 // alert(halfday);
+                	   if(halfday == "HALF_DAY"){
+                		   if($(".mydate1").val() == $(".mydate2").val()){
+                			   $('.typeofdayselect').hide();
+                		   }else{
+                			   $('.typeofdayselect').show();
+                		   }
+                	  }else{
+                		  $('.typeofdayselect').hide();
+                	  } 
+                    }); 
+                });
+                
+                
+                
+                 $(document).ready(function(){
+                var eventDates = {};
+                var d = new Date();
+            	var n = d.getFullYear(); 
+            	var start = '01-01-'+n;
+            	var end = '31-12-'+n;
+                $.get("@routes.AdminLeaveController.getHolidaysList()",function(data){
+                	 $.each(data,function(index,value){
+                		 eventDates[ new Date( value)] = new Date( value );
+             	    }); 
+            	 $('.mydate1,.mydate2').datepicker({
+                    format: 'dd-mm-yyyy',
+                    startDate: start,
+                    endDate: end,
+                    beforeShowDay: function(date) {
+                    	console.log(date);
+                    	var highlight = eventDates[date];
+                        console.log(highlight);
+                        if (highlight) {
+                        	return {classes: 'highlight',tooltip: 'Holiday'};
+                        } else if(date.getDay() == 0 || date.getDay() == 6 ){
+                        	 return {classes: 'back-days'};
+                        }else{
+                        	return {classes: ''};
+                        }
+                     },
+                    autoclose: true,
+                    todayHighlight: true
+                });
+              }); 
+                });
+                $('.mydate1').on('changeDate',function (e) {
+	               var fromDate = $(this).val();
+	               $('.mydate2').datepicker('setStartDate', fromDate);
+	               $('.mydate2').val('');
+	               $('#applyLeavesForm').bootstrapValidator('revalidateField', 'fromDate');
+	        	   $('#applyLeavesForm').bootstrapValidator('revalidateField', 'toDate');
+                });
+                $('.mydate2').on('changeDate',function (e) {
+	        	   $('#applyLeavesForm').bootstrapValidator('revalidateField', 'toDate');
+                });
+                
+                
+                
+                    
+			$('#applyLeavesForm').bootstrapValidator({
+			    framework: 'bootstrap',
+			    // This option will not ignore invisible fields which belong to inactive panels
+			   excluded: ':disabled',
+			    fields: {
+			       fromDate: {
+			            validators: {
+			                notEmpty: {
+			                    message: 'Please Choose From Date'
+			                }
+			            }
+			        },
+			        toDate: {
+			            validators: {
+			                notEmpty: {
+			                    message: 'Please Choose To Date'
+			                }
+			            }
+			        },
+			         reason: {
+			            validators: {
+			                notEmpty: {
+			                    message: 'Please Fill The Reason'
+			                }
+			            }
+			        }
+			    }
+			});
+                 
+                </script>

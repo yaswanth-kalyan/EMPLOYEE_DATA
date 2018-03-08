@@ -1,0 +1,328 @@
+@(attendance:Attendance,appUserFill:List[Attendance])
+           
+
+					 <form  action = "@routes.AdminController.editAttendanceAction()" method="post">
+                       <div id="attendance">
+                           <table class="table table-bordered table-hov mytable" id="dtable2">
+                            <thead>
+                                <tr>
+                                   
+                                    <th class="width15p">User</th>
+                                    <th class="width20p">Attendance status</th>
+                                    <th class="width15p">In time</th>
+                                    <th class="width15p">Out time</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 <tr class="myrow" id="myrow">
+                                
+                                    <td>
+                                        <select class="form-control mydropdown" name="id" id="appUser" >
+                                         	
+                                            <option value="@attendance.id">@attendance.getAppUser.getFullName</option>
+                                            
+                                        </select>
+                                    </td>
+                                    
+                           
+                                    <td>
+                                   
+                                    @if(attendance.getStatus!=null&&attendance.getStatus.equals(AttendenceStatus.Present)){
+                                    	<div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status' checked  value="present" class="attendencestatus"  required="required">
+	                                            Present
+	                                        </label>
+                                        </div>
+                                        }else{
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status'  value="present" class="attendencestatus"  required="required">
+	                                            Present
+	                                        </label>
+                                        </div>
+                                        
+                                        
+                                        }
+                                        @if(attendance.getStatus!=null&&attendance.getStatus.equals(AttendenceStatus.Absent)){
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status'  checked value="absent" class="attendencestatus" >
+	                                            Absent
+	                                        </label>
+                                        </div>
+                                        }else{
+                                        
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status' value="absent" class="attendencestatus" >
+	                                            Absent
+	                                        </label>
+                                        </div>
+                                        
+                                        }
+                                         @if(attendance.getStatus!=null&&attendance.getStatus.equals(AttendenceStatus.WFH)){
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status'  checked value="WFH" class="attendencestatus" >
+	                                            WFH
+	                                        </label>
+                                        </div>
+                                        }else{
+                                        
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status' value="WFH" class="attendencestatus" >
+	                                            WFH
+	                                        </label>
+                                        </div>
+                                        
+                                        }
+                                        @if(attendance.getStatus!=null&&attendance.getStatus.equals(AttendenceStatus.CL)){
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status'  checked value="CL" class="attendencestatus" >
+	                                            CL
+	                                        </label>
+                                        </div>
+                                        }else{
+                                        
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status' value="CL" class="attendencestatus" >
+	                                            CL
+	                                        </label>
+                                        </div>
+                                        
+                                        }
+                                        
+                                    </td>
+                                    <td>
+								         <div class="input-group form-group bootstrap-timepicker timepicker">
+								            <input id="timepicker" type="text" name="inTime" class="form-control timepickerInput1  input-small"  @if(attendance.getInTime!=null){value="@attendance.getInTime.format("hh:mm a")"}else{value="10:00 AM"} required="required">
+								            <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+								        </div>
+                                    </td>
+                                    <td> 
+								        <div class="input-group  form-group  bootstrap-timepicker timepicker">
+								            <input id="timepicker" type="text" name="outTime" class="form-control timepickerInput1  input-small" @if(attendance.getOutTime!=null){value="@attendance.getOutTime.format("hh:mm a")"}else{value="8:00 PM"} required="required">
+								            <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+								        </div>
+                                    </td>
+                                   
+                                    </tr>
+                                     
+                                  
+                                         	
+                            </tbody>
+
+                        </table>
+                  </div>
+                   <div class="col-md-12">
+                    	<div class="text-center">
+                    		<button type="submit" class='btn btn-success btn-raised'>Update</button>
+               
+                    	</div>
+                    </div>
+                     </form>
+                    
+                     <div class="col-md-12">
+	                    <table class="table table-bordered" id="dtable1">
+							<thead>
+		                              <tr>
+		                                  <th>S.No</th>
+		                                  <th>User Name</th>
+		                                  <th>Status</th>
+		                                  <th>In Time</th>
+		                                  <th>Out Time</th>
+		                                  <th>Hours</th>
+		                                  <th>Edit</th>
+		                              </tr>
+		                          </thead>
+		                          <tbody>
+		                              @for((appUserfill,index) <- appUserFill.zipWithIndex ) {
+		                               <tr>
+		                                  <td>@{index+1}</td>
+		                                  <td>@appUserfill.appUser.getFullName</td>
+		                                  
+		                                  <td>@appUserfill.status</td>
+		                                  <td>@if(appUserfill.inTime!=null){
+		                                  @appUserfill.inTime.format("hh:mm a")}</td>
+		                                  <td>@if(appUserfill.outTime!=null){
+		                                  @appUserfill.outTime.format("hh:mm a")}</td>
+		                                  <td>@if(appUserfill.spendTime!=null){
+		                                  @appUserfill.spendTime}</td>
+		                                 <td >
+
+                                       	<button type="button" class="fa fa-pencil-square-o edit" value="@appUserfill.getId"></button>
+
+                                       </td>
+		                                  </tr>
+		                                  }
+		                          </tbody>
+	                     </table>
+                    </div>
+                 
+                 
+                 
+                 
+          <script>
+
+
+$('.mydate').on('changeDate', function (e) {
+	   var value = $(".mydate").val(); 
+	    $.get('/attendence/'+ value, function(data) {
+	         $("#attendance").html(data);
+	     });
+	});
+	
+    $('#date1').val($('#date').val());
+    $(document).ready(function() {
+ 	 $('table .timepickerInput1').timepicker();
+ 	   $('.myrowhide').hide();
+   	$("#dtable1").DataTable()
+   	$(document).on("click",".mydatetime",function(){
+   		
+   	});
+    $('.mydate').datepicker({
+        format: 'dd-mm-yyyy',
+        endDate: ' new Date()',
+        autoclose: true
+     });
+    $('.deleteUserButton').click(function(e) {
+        var name = $(this).attr('userName');
+        var url = $(this).attr('url');
+        $('#lblMsgConfirmYesNo').html("Are You sure wnt to delete User with name : " + name);
+        $('#modalConfirmYesNo').modal('show');
+    });
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+
+    $( ".myrow:first" ).find('.timepickerInput1').timepicker().val('');
+    $('.timepickerInput').timepicker({defaultTime: 'value'});
+  /* $("#addRow").click(function(){  
+	   var count = 1;
+	   count ++;
+	   var addrenew = $('.myrowhide').clone();
+	   addrenew.appendTo('.mytable').removeClass('myrowhide').addClass('myrow').show().find('td').eq(1).attr("name", "optradio["+count+"]"); 
+	
+	});
+*/
+
+ /*  $('#addRow').click(function() {
+      var newIndex = $('.myrow').length;
+      
+      $( ".myrow:first" ).clone(true).removeClass('existent').insertAfter( ".myrow:last" ).find('input[type="radio"]').prop('name', 'status['+newIndex+']');
+      newIndex++;
+   });    $('.mytable').click(function() {
+          // remove entry
+          if($(this).parents('.mytable').first().hasClass('existent')) {
+              alert('You can not remove the first attribute entry.');
+          } else {
+              $(this).parents('.mytable').first().remove();
+          }
+      });
+
+	
+	$(document).on('click',".close-row", function(){
+		$(this).closest('tr').remove()
+	});*/
+});
+
+    $(document).on('change','.attendencestatus', function(e){
+        if ($(this).val()=='present') {
+              $(".hidedatetime").removeClass("hidden")
+     	}if ($(this).val()=='absent') {
+	    		$(".hidedatetime").addClass("hidden")
+	        }
+    });
+   		
+    $(document).on('click','.deleteUserButton',function(e) {
+        var name = $(this).attr('userName');
+        var url = $(this).attr('url');
+        $('#lblMsgConfirmYesNo').html("Are You sure wnt to delete User with name : " + name);
+        $('#modalConfirmYesNo').modal('show');
+    });
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+   /* $(document).on('click','#addRow',function() {
+        var newIndex = $('.myrow').length;
+        var clone = $( ".myrow:first" ).clone();
+        var mydrpval = $(".mydropdown").val();
+        clone.removeClass('existent').insertAfter( ".myrow:last" ).find('input[type="radio"]').prop('name', 'status['+newIndex+']');
+        //clone.removeClass('existent').insertAfter( ".myrow:last" ).find('select').prop('name', 'ids[]');
+        newIndex++;
+      clone.find('select option').removeAttr('disabled',false);
+       clone.find('select option').prop('disabled',false);
+      $('#dtable2 select option:selected').each(function(){
+            	
+				clone.find('select option[value="'+$(this).val()+'"]').attr('disabled','true');
+				clone.find('select option[value="'+$(this).val()+'"]').prop('disabled','true');
+				
+        })
+        clone.find('.timepickerInput').timepicker().val();
+        clone.find('td').eq(4).html('<button type="button" class="btn btn-raised btn-danger btn-xs removeRow">X</button>')
+        
+        var $originalSelects = $( ".myrow:first" ).find('select');
+         clone.find('select').each(function(index, item) {
+             //set new select to value of old select
+             $(item).val( $originalSelects.eq(index).val() );
+             $(".myrow:first select" ).val("")
+             $(".myrow:first input" ).val("")
+        });
+        
+        
+     }); 
+*/
+    $(document).on('click','.mytable',function() {
+        // remove entrypr
+        if($(this).parents('.mytable').first().hasClass('existent')) {
+            alert('You can not remove the first attribute entry.');
+        } else {
+            $(this).parents('.mytable').first().remove();
+        }
+    });
+
+	
+    $(document).on('change','.attendencestatus', function(e){
+        if ($(this).val()=='present') {
+              $(this).closest('tr').find('.timepickerInput1').removeAttr('disabled');
+     	}if ($(this).val()=='absent') {
+     		$(this).closest('tr').find('.timepickerInput1').attr('disabled','true');
+  	        }
+     	if ($(this).val()=='WFH') {
+     		$(this).closest('tr').find('.timepickerInput1').attr('disabled','true');
+  	        }
+     	if ($(this).val()=='CL') {
+     		$(this).closest('tr').find('.timepickerInput1').attr('disabled','true');
+  	        }
+    });
+
+    $(document).on('click','.removeRow',function(){
+		$(this).closest('tr').remove();
+	   })
+	   
+	$(document).ready(function (){
+		var status = $('input[name=status]:checked').val();
+		//console.log(status);
+		if (status === 'present') {
+            $('.attendencestatus').closest('tr').find('.timepickerInput1').removeAttr('disabled');
+   	}if (status === 'absent') {
+   		$('.attendencestatus').closest('tr').find('.timepickerInput1').attr('disabled','true');
+	        }
+   	if (status === 'WFH') {
+   		$('.attendencestatus').closest('tr').find('.timepickerInput1').attr('disabled','true');
+	        }
+   	if (status ===  'CL') {
+   		$('.attendencestatus').closest('tr').find('.timepickerInput1').attr('disabled','true');
+	        }
+	})
+  	
+  	
+  	 
+    </script>
+        
+                

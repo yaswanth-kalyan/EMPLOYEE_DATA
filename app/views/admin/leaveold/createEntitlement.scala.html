@@ -1,0 +1,206 @@
+@import java.text.SimpleDateFormat;
+@header("configureLeaves",7){ 
+<section>
+    <form class="form-horizontal" id="addEntitlementForm" action="@routes.AdminLeaveController.saveEntitlement()"  method="post">
+        <div class="container">
+            <div class="panel">
+                 @secondNavbarLeaves(4)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Add Entitlement </h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                   <div class="pull-left leave-label"> Employee  <span class="asterisk"> * </span> </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id=""  data-placeholder="Choose Employees"  class="chosen-select val_selct" style="width:250px;"  required="required" multiple  tabindex="4" name="employee[]" >
+                                           <option value="0">All </option>
+                                           @for(emp <- models.AppUser.find.where().eq("status",models.UserProjectStatus.Active).findList()){
+                                        <option value="@emp.id">@emp.getAppUserFullName()</option>
+                                        }
+                                       
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                    <div class="pull-left leave-label">Leave Type  <span class="asterisk"> * </span> </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control" name="leaveTypee" >
+                                    	<option value=""> Select Leave type</option>
+                                    @for(leaveTypes <- models.leave.LeaveType.find.all()){
+                                    	<option value="@leaveTypes.id">@leaveTypes.leaveType</option>
+                                    	}
+                                    	
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                   <div class="pull-left leave-label"> Leave Period  <span class="asterisk"> * </span> </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" name="leavePeriod" class="form-control mydate"  readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                    <div class="pull-left leave-label">No.of Days Entitled  <span class="asterisk"> * </span> </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="tel" class="form-control" name="numDays" >
+                                </div>
+                            </div>
+						<br/> 
+                            <br/>
+                             <div class="row text-center">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                                </div>
+                                <div class="col-md-1">
+                                    <button type='reset' class="btn btn-warning btn-raised" >Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-12 heading-badge">
+		                    <h3 class="">Entiltlment Record History</h3>
+		                </div>
+                    </div>
+                    <br><br><br>
+                	<div class="text-center">
+                		<br><br><br>
+                	</div>
+                	<div class="col-md-10 col-md-offset-1">
+                	<table class="table table-bordered table-striped entitlement-table" >
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Date</th>
+                 				<th>Employee</th>
+                 				<th>Leave Type</th>
+                 				<th>Leave Period</th>
+                 				<th>Days</th>
+                 				<th class="hidden">Options</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 		@for((entitle,index) <- models.leave.Entitlement.find.where().order("id desc").findList().zipWithIndex){
+                 			<tr>
+                 				<td>@(index+1)</td>
+                 				<td>@(new SimpleDateFormat("dd-MM-yyyy").format(entitle.lastUpdate))</td>
+                 				<td>@if(models.AppUser.find.where().eq("status", UserProjectStatus.Active).findList().size().equals(entitle.appUserList.size())){All}else{@for((appUser,index) <- entitle.appUserList.zipWithIndex){@appUser.FullName @if(index != (entitle.appUserList.size-1 )){,}&nbsp;}}</td>
+                 				<td>@entitle.leaveType.leaveType</td>
+                 				<td>@(new SimpleDateFormat("yyyy").format(entitle.leavePeriod))</td>
+                 				<td>@entitle.noOfDays</td>
+                 				<td class="hidden" align="center"><a href="#"><i class="fa fa-edit"></i></a>    <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			}
+                 			
+                 		</tbody>	
+                 	</table>
+                 	</div>
+                 
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+	 /* var d = new Date();
+ 	var n = d.getFullYear(); 
+	 var end = 2017; */
+ 	//alert(end+"...."+n);
+		$(".entitlement-table").dataTable();
+		 $('.mydate').datepicker({
+			 format: ' yyyy',
+			    viewMode: 'years',
+			    minViewMode: 'years',
+			    startDate: new Date(),
+			    autoclose: true
+		  })
+	</script>
+	<script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+
+    $('.mydate').datepicker({
+          format: 'dd-mm-yyyy',
+          endDate: ' new Date()',
+          autoclose: true
+     }).on('changeDate', function(e) {
+               // Revalidate the date field
+               $('#addEntitlementForm').formValidation('revalidateField', 'leavePeriod');
+           });
+    $('#addEntitlementForm').bootstrapValidator({
+        framework: 'bootstrap',
+        // This option will not ignore invisible fields which belong to inactive panels
+        excluded: ':disabled',
+        'employee[]': {
+            validators: {
+                notEmpty: {
+                    message: 'Please Choose Roles'
+                }
+            }
+        },
+        fields: {
+        	leaveTypee : {
+                validators: {
+                    notEmpty: {
+                        message: 'Please Fill Leave Type'
+                    }
+                }
+            },
+            leavePeriod: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please fill Leave Period'
+                    }
+                }
+            },
+            /* leavePeriod : {
+                validators: {
+                    notEmpty: {
+                        message: 'Please Fill Leave Period'
+                    }
+                }
+            }, */
+            numDays : {
+                validators: {
+                	/* regexp: {
+                        regexp: /^[0-9]+$/i,
+                        message: 'The Days allows only positive Numbers '
+                    }, */
+                    notEmpty: {
+                        message: 'Please Fill No.Of Days '
+                    }
+                    
+                }
+            }
+            
+        }
+    });
+                   	 
+            
+    
+        
+    // employee name ==  employee[]
+    //leave type  == leaveTypee
+    //leavePeriod  == leavePeriod
+    // numDays    == numDays
+  </script>
+ }

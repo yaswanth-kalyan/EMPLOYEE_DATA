@@ -1,0 +1,117 @@
+@(pTask :models.pmo.PTask)
+	<form id="task-edit-form"  method="post" action="@controllers.pmo.routes.TaskController.saveTask()">
+						  <div class="form-group">
+						    <label for="formGroupExampleInput">Name</label>
+						    <input type="text" name="name" class="form-control" required="required" value="@pTask.getName()">
+						  </div><br> 
+						   <div class="form-group">
+						    <label for="formGroupExampleInput">Description</label>
+						    <textarea class="form-control" rows="6" name="description">@pTask.getDescription() </textarea>
+						  </div> 
+						   <div class="form-group">
+						    <label for="formGroupExampleInput">Estimates</label>
+						    <input type="text" class="form-control"  name="estimatedTime" value="@pTask.getEstimatedTime()">
+						  </div> <br>
+						   <div class="form-group">
+						    <label for="formGroupExampleInput">Actual</label>
+						    <input type="text" class="form-control"  name="actualTime" value="@pTask.getActualTime()">
+						  </div> <br>
+						   <div class="form-group">
+						    <label class="col-md-4 padding-left0">Start Date</label>
+						    <div class="col-md-7">
+						    	<input type="text" class="form-control startDate" name="startDate" @if(pTask.getActualStartDate() != null) {value="@pTask.getActualStartDate().format("dd-mm-yyyy")"}>
+						    </div>	
+						  </div> 
+						   <div class="form-group">
+						    <label class="col-md-4 padding-left0">End Date</label>
+						    <div class="col-md-7">
+						    	<input type="text" class="form-control endDate" name="endDate" @if(pTask.getActualStartDate() != null) {value="@pTask.getActualEndDate().format("dd-mm-yyyy")"}>
+						    </div>
+						  </div>
+						  <div class="row">
+						  	<div class="col-md-8">
+						  		<div class="text-right">
+						  			<button type="submit"  class="btn btn-primary  btn-xs btn-raised">Update</button>
+						  		</div>
+						  	</div>
+						  @*	<div class="col-md-6">
+						  		<div class="text-left">	
+						  			<button type="button" onclick="deleteTask(@pTask.id)" class="btn btn-warning  btn-xs btn-raised" id="delete-task">Delete</button>
+						  		</div>
+						  	</div>
+						  </div> *@
+						  <input type="hidden" name="taskId" value="@pTask.getId()">
+						  @if(pTask.getUserStory() !=null){
+							  <input type="hidden" name="userStId" value="@pTask.getUserStory().getId()">
+						  	}
+					</form>	
+					
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $(".startDate").datepicker({
+        todayBtn:  1,
+        format: 'dd-mm-yyyy',
+        autoclose: true,
+    }).on('changeDate', function (selected) {
+        var minDate = new Date(selected.date.valueOf());
+        $('.endDate').datepicker('setStartDate', minDate);
+    });
+
+    $(".endDate").datepicker({
+    	format: 'dd-mm-yyyy',
+         autoclose: true,
+        }).on('changeDate', function (selected) {
+            var maxDate = new Date(selected.date.valueOf());
+            $('.startDate').datepicker('setEndDate', maxDate);
+        });
+
+});
+$("#task-edit-form").bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	name: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill this field'
+                } 
+            }
+        },
+        estimatedTime: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill this field'
+                },
+				stringLength : {
+					min : 0,
+					max : 24,
+					message : 'The EstimatedTime must be more than 0 and less than 24 characters long'
+				},
+				regexp : {
+					regexp : /^\d*(\.\d{1,2})?$/,
+					message : 'The EstimatedTime can only Numbers and Two decimals'
+				} 
+            }
+        },
+        actualTime: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill this field'
+                },
+				stringLength : {
+					min : 0,
+					max : 24,
+					message : 'The ActualTime must be more than 0 and less than 24 characters long'
+				},
+				regexp : {
+					regexp : /^\d*(\.\d{1,2})?$/,
+					message : 'The ActualTime can only Numbers and Two decimals'
+				} 
+            }
+        } 
+    }
+});
+
+</script>

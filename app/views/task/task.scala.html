@@ -1,0 +1,860 @@
+@(appUsers:List[AppUser],taskLists:List[TaskList],allTask1:TaskList,task : Task,count:Integer)
+@import bean.AddTaskBean 
+@import java.util.Collections
+<style>
+.searchtaskmiddle{
+	background:#fff !important;
+	color:#000 !important;
+	border:2px solid #000;
+	padding-left:10px !important;
+} 
+.taskdelbtn{
+	padding:0px !Important;
+	margin:3px !important;
+}
+.taskstar-brdr{
+	color:#F89E33;
+}
+.taskstar-bg{
+	color:#F89E33;
+}
+
+.mychkbox{
+    display: none;
+    width: 100%;
+    padding: 5px 0px;
+    background-color: #fff; 
+    margin:1px 0px;
+  }
+ .list-chanel{
+    width: 100%;
+    padding: 5px 10px;
+    margin: 2px 0px;
+    border: 1px dotted #ddd;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    
+  }
+  .list-chanel:hover{
+  	background:#ddd !important;
+  	cursor: pointer;
+  }
+ .list-chanel1:hover{
+  	background:#ddd !important;
+  	cursor: pointer;
+  }
+  
+  .list-chanel1{
+    width: 100%;
+    padding: 5px 10px;
+    margin: 2px 0px;
+    border: 1px dotted #ddd;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    
+  }
+  .list-chanel1:hover{
+  	background:#ddd;
+  	cursor: pointer;
+  }
+  
+  .top:hover , .bottom:hover{
+  	background:#ddd !important;
+  	cursor: pointer;
+  }
+  .taskleft-trash{
+  		display: none;
+   }
+  .list-chanel:hover .panel-edit{
+    display: inline-block;
+  } 
+  .list-chanel:hover .taskleft-trash{
+    display: inline-block;
+  } 
+  .panel-edit{
+    display: none;
+  }
+  .chkboxwrap{
+    margin: 5px 0px;
+    padding: 6px 4px;
+    display: block;
+    border: 1px solid #D2D2D2;
+    border-top:5px solid #fff;
+  }
+  .activemiddlediv{
+    background: #cecece; 
+  }
+  .task-title{
+  	padding:5px 14px;
+  	margin:3px 0px;  
+  	font-weight:500
+  }
+  .task-title-userdetails{
+  	padding:5px 14px;
+  	margin:3px 0px; 
+  	
+  }
+  .restore-pos{
+  	position:fixed;
+  	bottom:10px;
+  	width:95%;
+  }
+  .tasktable{
+  	background:#fff;
+  }
+  .task-right-cmn{
+  	padding:10px;
+  	margin-top:2px;
+  	background: #fbfbfb;
+  }
+  .comment-p::first{
+  	margin-top:320px;
+  }
+  .comment-p{
+  	padding:10px;
+  	margin:2px 0px;
+  	background: #E6E2E3;
+  	display:block
+
+  }
+  
+  .commentshow{
+		min-height:30px;
+	    height:auto;
+	 	padding:5px 3px 10px 3px;
+	  	background:#f5f5f5; 
+	  	margin-top:2px;
+	  	border-bottom:1px solid #ddd;
+  }
+  .commentshow .taskchat{
+		float:left;
+		width:4%;
+		margin-left:3px; 
+		font-size:12px;
+     }
+  .commentshow  .tasktime{
+	    color:#000;
+		font-size:12px;
+		width:82%;
+     } 		
+  #commenttxtbx{
+  	margin-top:25px;
+  	border-top:3px solid #ddd;
+  }
+  .update-task-clsmdl{
+  	position:relative;
+  	top: -20px; 
+  }
+ .commentshow .chat-msg {
+    width: 94%;
+    clear: both;
+    /* padding: 5px 3px 15px 3px; */
+    margin-left: 6%;
+}
+  .nowellshadow{
+  	box-shadow: none !important;
+	margin-bottom: 3px !important;
+    padding-bottom: 0px !Important;
+  }
+  .taskcretedby{
+  	font-size:10px;
+  }
+  .showhidelink{
+	color:#fff;
+	font-weight:bold;
+   }
+  .entertasksrh .srh{
+		border:1px solid #ddd;
+		padding-left:5px;
+		border-bottom:0px !important;
+	}
+	#taskName{
+		color:#fff;
+	}	
+   .top ,.bottom span{
+ 	  	color:#000;
+   }
+   #title , #description{
+   	color:#000 !Important
+   }
+   .taskopencls{
+   	width:1%;
+   }
+   .taskopencls i , .taskMarkUnMark i{
+   		padding-top:3px
+   }
+   .floatleft{
+   		float:left;
+   }
+   .taskMarkUnMark{
+	   	width:2%
+   }
+   .taskmiddle{
+   		width:97% !important;
+   }
+</style>
+@header("Task",9){
+	@if(task!=null){
+		<input type="hidden" value="@task.getId" id="id10">
+		}
+	<div class="container-fluid" style="padding:0px !important;"> 
+        <div class="col-md-12 panel">
+            <div class="row">
+              	<div class="col-md-2" style="height:93vh;background:#fff">
+              		<div class="modal-display">
+              			<button type="button" class="btn btn-primary btn-sm btn-raised createTask">Create new Task List</button> 
+              			
+              			<div class='list-chanel1' id="star" >Starred<span class="pull-right label label-danger" id="countSize" ></span></div>
+              			
+              			@if(TaskList.find.where().eq("taskListName", AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId()+"inbox").findUnique()!=null){
+              			<div class='list-chanel' id="inbox" onclick = "taskIdForAction('@TaskList.find.where().eq("taskListName", AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId()+"inbox").findUnique().getId','@TaskList.find.where().eq("taskListName", AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId()+"inbox").findUnique().getCreatedBy.getFullName','@TaskList.find.where().eq("taskListName", AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId()+"inbox").findUnique().getCreationDate.format("dd-MM-yyyy hh:mm a")')" >Inbox</div>
+              			}else{
+              			<div class='list-chanel' id="inbox">Inbox</div>
+              			}
+              			<div class='list-chanel1' id="allTasks"  >All</div>
+              			<div class='list-chanel1' id="assignMe"  >Assigned to Me</div>
+	                    @for(taskList<-taskLists){
+	                    	<!-- <a href='/taskListEdit/@taskList.getId'> -->
+	                     <input type="hidden" id="actiontaskId" name="taskListId" value=""/>
+	                    		<div class='list-chanel' id="listedit@taskList.getId"  onclick = "taskIdForAction(@taskList.getId,'@taskList.getCreatedBy.getFullName','@taskList.getCreationDate.format("dd-MM-yyyy hh:mm a")')" >@taskList.getTaskListName<i class='fa fa-pencil-square-o pull-right panel-edit' data-toggle="modal"  data-target="#myModal@taskList.getId" ></i>
+	                    		@if(taskList.getCreatedBy.equals(AppUser.find.byId(Long.parseLong(session.get("AppUserId"))))){
+	                    			<i class="fa fa-trash deleteUserButton taskleft-trash pull-right" userName="@taskList.getTaskListName" url="/deleteTaskList/@taskList.getId"></i>
+	                    		}
+	                    		</div> 
+	                    <div id="myModal@taskList.getId" class="modal fade" role="dialog">
+						  <!-- modal dailog for edit tasks start.... -->
+						  <div class="modal-dialog"> 
+						    <!-- Modal content-->
+						    <div class="modal-content">
+						      <div class="modal-body">
+						        <form class="form-horizontal"  action="@routes.TaskController.editTaskList()" method="post">
+		                            <div class="row">
+		                              <a class="pull-right update-task-clsmdl" data-dismiss="modal"><i class="fa fa-times"></i></a>	
+		                            <input type="hidden" class="tasklist" id="taskListId" name="taskListId" value="@taskList.getId"/>
+										<div class="col-md-4">
+			                                <div class="pull-left leave-label">  <label  class="control-label">List Name <span class="asterisk"> * </span></label></div>
+										</div>
+										<div class="col-md-8">
+											<div class="form-group is-empty">
+												<input type="text" class="form-control modal-name margin-top15" name="title" required="required" data-bv-field="title" value="@taskList.getTaskListName">
+										     	<small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Please fill title</small><small class="help-block" data-bv-validator="remote" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Task Title Name Already Existed</small><span class="material-input"></span></div>
+										</div>
+									</div>                            
+									<div class="row">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Description</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="form-group is-empty">
+											    @if(taskList.getDescription!=null){
+												<textarea class="form-control" name="description"  value="@taskList.getDescription" rows="5">@taskList.getDescription</textarea>
+												}else{
+												<textarea class="form-control" name="description"   rows="5"></textarea>
+												}
+												
+												
+											<span class="material-input"></span></div>
+										</div>
+									</div>
+                            
+                          			<div class="row">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Add Users</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group is-empty">
+													<div class="col-md-12">
+														<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+															
+															 @if(!appUsers.isEmpty){
+	                         	 							@for(appUser <- appUsers){
+	                         	 								@if(taskList.getAppUsers!=null){
+	                         	 								@if(taskList.getAppUsers.contains(appUser) ){
+										   							<option value="@appUser.getId" selected>@appUser.getFullName</option>
+										   						} else{
+																	<option value="@appUser.getId">@appUser.getFullName</option>
+															    }
+	                         	 								
+	                         	 								}}
+	                            						 }
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> 
+		                          <div class="modal-footer">
+		                          	<div class="text-center">
+		                           		<input type="submit"  value="Update" class="btn btn-primary btn-raised btn-sm">
+		                           	</div>
+		                          </div>
+	                    	    </form> 
+	                        </div>
+						  </div>
+						</div>
+						</div>
+						}  
+						<!-- modal dailog for edit tasks ends.... -->  
+	                      
+						  <!-- modal dailog for creat tasks start-->
+						  	<div class="modal fade" id="myModal" role="dialog">
+			                      <form class="form-horizontal" id="addTaskList" action="@routes.TaskController.addTaskList()" method="post">
+			                      <div class="modal-dialog">
+			                        <!-- Modal content-->
+			                        <div class="modal-content">
+			                          <div class="modal-body">
+			                            <div class="row">
+			                            <a class="pull-right update-task-clsmdl" data-dismiss="modal"><i class="fa fa-times"></i></a>
+											<div class="col-md-4">
+				                                <div class="pull-left leave-label">  <label  class="control-label">List Name <span class="asterisk"> * </span></label></div>
+											</div>
+											<div class="col-md-8">
+												<div class="form-group is-empty">
+													<input type="text" class="form-control modal-name margin-top15" name="title" required="required" data-bv-field="title">
+											     	<small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Please fill title</small><small class="help-block" data-bv-validator="remote" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Task Title Name Already Existed</small><span class="material-input"></span></div>
+											</div>
+										</div>                            
+										<div class="row">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Description</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="form-group is-empty">
+												<textarea class="form-control" name="description" rows="5"></textarea>
+											<span class="material-input"></span></div>
+										</div>
+									</div>
+			                            
+			                          	<div class="row">
+													<div class="col-md-4">
+														<div class="pull-left">
+															<label class="control-label"> Add Users</label>
+														</div>
+													</div>
+													<div class="col-md-8">
+														<div class="row">
+															<div class="form-group is-empty">
+																<div class="col-md-12">
+																	<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+																		@for(appUser<-appUsers){
+																			<option value="@appUser.getId">@appUser.getFullName</option>
+																			}
+																		 
+																	</select>
+																</div>
+															</div>
+														</div>
+												</div>
+											</div>
+			                        </div>
+			                          <div class="modal-footer">
+				                           <div class="text-center">
+				                           		<input type="submit"  value="Save" class="btn btn-primary btn-raised btn-sm">
+				                           	</div>
+			                          </div>
+			                        </div>
+			                        </form>
+                      </div>
+                      
+						  <!-- modal dailog for create tasks ends -->
+                    </div>
+	                
+						<!-- Modal -->
+						
+              	      </div>
+              	  </div>    
+              	<div class="col-md-10 middle" style="height:93vh;background: linear-gradient(135deg, rgb(66, 103, 145) 0%, rgb(48, 35, 60) 100%) !important;">
+              		<br>
+              		    <div class="row">
+              		    	<div class="col-md-4 col-md-offset-4">
+            		     	 	<input type="text" id="taskNameSearch" class="form-control searchtaskmiddle" placeholder="Search Task.." name="taskNameSearch">
+            		     	 </div>	
+            		     </div>
+	            		     <div class="col-md-12">
+			              		<div class="well showtitlewell hidden" style="padding:5px 0px;padding-bottom:40px;">
+			              			<div class="col-md-8">	
+			              				<div class="task-title bold"></div>
+			              			</div>
+			              			<div class="col-md-4 task-title-userdetails pull-right">
+			              				<div class="pull-right">
+			              					<div class="taskcretedby">Created by : <span id="createdBy" class="bold"></span></div>
+			              				</div>	 
+			              			</div>	
+			              		</div>
+			              	</div>		
+              		<div class="col-md-12">	
+	              		<div class="col-md-12 hidden entertasksrh nowellshadow">
+	              			<input type="text" id="taskName" class="form-control srh hidden" placeholder="Add New Task.." name="taskName">
+	              		</div>	
+	              	</div>	
+              		<div id="taskList">
+              		</div>
+				</div>
+				<div class="col-md-2 right hidden" style="height:93vh;background:#fff;">
+					<div id="taskEdit">
+					
+					</div>
+				</div>
+				
+            </div>
+        </div>
+    </div> 
+    <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+			
+			
+	
+} 
+@footer(""){
+<script>
+
+$(document).on('click', '#assignMe', function(e) {
+    $('.list-chanel').css({
+        "backgroundColor": 'white'
+    });
+    $('#star').css({
+        "backgroundColor": 'white'
+    });
+    $('#allTasks').css({
+        "backgroundColor": 'white'
+    });
+    $('#inbox').css({
+        "backgroundColor": 'white'
+    });
+    $(this).css({
+        "backgroundColor": '#ddd'
+    });
+    $(".showtitlewell").addClass("hidden")
+    $(".srh").addClass("hidden");
+    $(".entertasksrh").addClass("hidden")
+    $.get('/assignMe', function(data) {
+        $("#taskList").html(data);
+    });
+});
+$(document).on('click', '#inbox', function(e) {
+    $('.list-chanel').css({
+        "backgroundColor": 'white'
+    });
+    $('#star').css({
+        "backgroundColor": 'white'
+    })
+    $('#allTasks').css({
+        "backgroundColor": 'white'
+    });
+    $('#assignMe').css({
+        "backgroundColor": 'white'
+    });
+    $(this).css({
+        "backgroundColor": '#ddd'
+    });
+    $.get('/taskInbox', function(data) {
+        $("#taskList").html(data);
+    });
+});
+$(document).on('click', '#allTasks', function(e) {
+    $('.list-chanel').css({
+        "backgroundColor": 'white'
+    });
+    $('#star').css({
+        "backgroundColor": 'white'
+    })
+    $('#inbox').css({
+        "backgroundColor": 'white'
+    });
+    $('#assignMe').css({
+        "backgroundColor": 'white'
+    });
+    $(this).css({
+        "backgroundColor": '#ddd'
+    });
+    $(".showtitlewell").addClass("hidden")
+    $(".srh").addClass("hidden");
+    $(".entertasksrh").addClass("hidden")
+    $.get('/allTasks', function(data) {
+        $("#taskList").html(data);
+    });
+
+});
+
+$(document).ready(function() {
+    @if(!session.get("taskName").equals("empty")) {
+        $.post('/searchTask', {
+            title: '@session.get("taskName")'
+        }, function(data) {
+            $("#taskList").html(data);
+
+        });
+    }
+
+    @if(allTask1 != null) {
+        taskIdForAction('@allTask1.getId', '@allTask1.getCreatedBy.getFullName', '@allTask1.getCreationDate.format("dd-MM-yyyy hh:mm a")')
+        $(".showtitlewell").removeClass("hidden")
+        @if(allTask1.getTaskListName==AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId+"inbox"){
+        $(".task-title").html('Inbox')
+        }else{
+          $(".task-title").html('@allTask1.getTaskListName')
+        }
+        $("#createdBy").html(creatorName1 + " on " + creationTime1);
+        $(".srh").removeClass("hidden");
+        $(".entertasksrh").removeClass("hidden")
+    }
+    @if(task != null) {
+        var task = @task.getId;
+        taskIdForEdit(task);
+    }
+    @if(session.get("fetchStarTask").equals("true")) {
+        $.get('/fetchStarTask', function(data) {
+            $("#taskList").html(data);
+        });
+
+    }
+    @if(session.get("allTask").equals("true")) {
+        $.get('/allTasks', function(data) {
+            $("#taskList").html(data);
+        });
+
+    }
+    @if(session.get("assignMe").equals("true")) {
+        $.get('/assignMe', function(data) {
+            $("#taskList").html(data);
+        });
+
+    }
+
+});
+
+$('.deleteUserButton').click(function(e) {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url');
+    $('#lblMsgConfirmYesNo').html("Are You sure wnt to delete TaskList with name : " + name);
+    $('#modalConfirmYesNo').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+});
+$('.createTask').click(function() {
+    $('#myModal').modal('show');
+});
+$('select.chosen').chosen();
+var taskId;
+var creatorName1;
+var creationTime1;
+
+function taskIdForAction(actionTaskId, creatorName, creationTime) {
+    taskId = actionTaskId;
+    creatorName1 = creatorName;
+    creationTime1 = creationTime;
+    $('.list-chanel').css({
+        "backgroundColor": 'white'
+    });
+    $('#allTasks').css({
+        "backgroundColor": 'white'
+    })
+    $('#inbox').css({
+        "backgroundColor": 'white'
+    });
+    $('#assignMe').css({
+        "backgroundColor": 'white'
+    });
+    $('#star').css({
+        "backgroundColor": 'white'
+    });
+    $('#listedit' + taskId).css({
+        "backgroundColor": '#ddd'
+    });
+    $("#notification").hide();
+    //$("#createdBy").html(creationBy+"on"+creationDate);
+    $.get('/fetchTaskList/' + taskId, function(data) {
+        $("#taskList").html(data);
+
+    });
+}
+
+$(".list-chanel").click(function() {
+    var task_title = $(this).text();
+    var taskval = $(this).val();
+    $(".showtitlewell").removeClass("hidden")
+    $(".task-title").html(task_title)
+    $("#createdBy").html(creatorName1 + " on " + creationTime1);
+    $(".srh").removeClass("hidden");
+    $(".entertasksrh").removeClass("hidden")
+});
+$(document).keyup('.srh',function(e) {
+    var newMessage = $("#taskName").val();
+    
+    var code = (e.keyCode ? e.keyCode : e.which);
+	    if (code == 13) { //Enter keycode
+		    if(newMessage=="")
+			    {
+			        if(message=="")
+			    	alert("please enter TaskName.");
+			    }else{
+	        $.post('/addTaskAction', {
+	            title: newMessage,
+	            taskId: taskId
+	        }, function(data) {
+	            $("#taskList").html(data);
+	        });
+	        $(".srh").val("");
+			    }
+	    }
+    
+    $(".chat-wrapper").click(function() {
+        $(this).addClass("activemiddlediv")
+    })
+    $(".chat-wrapper").dblclick(function() {
+        var right_contnet = $(this).text();
+        console.log(right_contnet)
+        $(this).removeClass("activemiddlediv")
+
+    })
+    $(document).on('click', '.chkboxwrap', function() {
+        console.log("dsa")
+
+    })
+    var unchkres;
+    $(".unchk").click(function() {
+        unchkres = $(this).parent().html();
+        $(this).parent().hide();
+        $(".chkboxwrap").css({
+            "padding": "0px",
+            "border": "0px"
+        });
+        $(".show-hide-task").removeClass("hidden")
+    });
+    $(document).on('click', '.show-hide-task', function() {
+        $(".unchk").removeClass("fa-square-o");
+        $(".unchk").addClass("fa-check-square-o");
+        $(".list-chanel").css("text-decoration", "line-through")
+        var afterchk = $('.unchk').parent().html();
+        $(".aftchk").append(afterchk)
+    })
+
+});
+
+var taskId1;
+var taskId2;
+
+function taskIdForEdit(actionTaskId) {
+    $("#taskEdit").html("Please wait loading....");
+    $(".right").removeClass("hidden");
+    $(".middle").removeClass("col-md-10").addClass("col-md-8");
+    $.get('/editTask/' + actionTaskId, function(data) {
+        $("#taskEdit").html(data);
+    });
+}
+$(".nameSrch").keyup(function() {
+    var newSrch = $(this).val();
+    console.log(newSrch)
+    if (newSrch) {
+        $('.search').hide();
+        $('.search:containsIN("' + newSrch + '")').show();
+        $('.search:containsIN("' + newSrch + '")');
+    } else {
+        $('.search').show();
+        $('.search:containsIN("' + newSrch + '")').css("background", "none");
+    }
+});
+
+$(document).on('click', '#edit-test', function() {
+    alert("etittest");
+    //$(".text-disable").css("background",'red');
+});
+
+$(document).on('click focus', '.list-chanel', function() {
+    $(".middle").removeClass("col-md-8");
+    $(".middle").addClass("col-md-10");
+    $(".right").addClass("hidden");
+
+});
+$(document).on('click', '.restore', function() {
+    $(".middle").removeClass("col-md-8");
+    $(".middle").addClass("col-md-10");
+    $(".right").addClass("hidden");
+});
+
+function taskIdForEdit1(actionTaskId) {
+    taskId2 = actionTaskId;
+
+}
+$(document).on('click', ".top .chkunchk", function() {
+    $("#notification").hide();
+    $.get('/editTaskStatus/close/' + taskId2, function(data) {
+        $("#taskList").html(data);
+        taskId2 = null;
+
+    });
+    $(this).parent().hide()
+    $(".showhidelink").removeClass("hidden")
+    var res = $(this).parent().html()
+    $(".bottom").removeClass("hidden")
+    $(".bottom").css("display", "block")
+});
+
+$(document).on('click', '.bottom .chkunchk', function() {
+    $("#notification").hide();
+    $.get('/editTaskStatus/open/' + taskId2, function(data) {
+        $("#taskList").html(data);
+        taskId2 = null;
+
+    });
+    $(this).parent().hide()
+    var res = $(this).parent().html()
+    $(".top").show()
+});
+$(document).on('click', ".showhidelink", function() {
+
+    $('.showhidewrap').toggle('slow')
+})
+
+$("#taskNameSearch").keyup(function() {
+     $(".showtitlewell").addClass("hidden")
+    $(".srh").addClass("hidden");
+    $(".entertasksrh").addClass("hidden")
+    var newMessage = $("#taskNameSearch").val();
+    if(newMessage==""){
+     $("#taskList").html("");
+    }else{
+    $.post('/searchTask', {
+        title: newMessage
+    }, function(data) {
+        $("#taskList").html(data);
+    });
+    }
+
+});
+
+$(document).on('click', '#taskupdate', function() {
+    task = $("#taskId").val();
+    taskTitle = $("#title").val();
+    description = $("#description").val();
+    assignTo = $("#sel1").val();
+    $.post('/editTaskAction', {
+        taskId: task,
+        title: taskTitle,
+        description: description,
+        assignToId: assignTo
+    }, function(data) {
+        $(".middle").removeClass("col-md-10");
+        $(".middle").addClass("col-md-8");
+        $("#taskEdit").html(data);
+        $(".right").removeClass("hidden")
+    });
+
+});
+
+function taskIdForEdit2(id) {
+    var taskId2 = id;
+    $("#notification").hide();
+    $.get('/markTask/' + taskId2, function(data) {
+        $("#taskList").html(data);
+        taskId2 = null;
+
+    });
+
+}
+
+function textAreaAdjust(o) {
+    o.style.height = "1px";
+    o.style.height = (25 + o.scrollHeight) + "px";
+}
+var height = 0;
+
+$('.taskRight-btmscroll .comment-wrap').each(function(i, value) {
+    alert()
+    height += parseInt($('.comment-wrap').height());
+});
+
+height += '';
+$('.taskRight-btmscroll').animate({
+    scrollTop: height
+}, 100);
+
+
+$(document).on('click', '.deleteTaskButton', function() {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url1');
+    //var taskId = $(this).attr('data-id');
+    bootbox.confirm("Are you sure? You want to delete task " + name, function(result) {
+        if (result) {
+            window.location.href = url;
+        }
+    });
+});
+
+$(document).on('click', '#star', function() {
+    $('.list-chanel').css({
+        "backgroundColor": 'white'
+    });
+    $('#allTasks').css({
+        "backgroundColor": 'white'
+    })
+    $('#inbox').css({
+        "backgroundColor": 'white'
+    });
+    $('#assignMe').css({
+        "backgroundColor": 'white'
+    });
+    $(this).css({
+        "backgroundColor": '#ddd'
+    });
+    $(".showtitlewell").addClass("hidden")
+    $(".srh").addClass("hidden");
+    $(".entertasksrh").addClass("hidden")
+    $.get('/fetchStarTask', function(data) {
+        $("#taskList").html(data);
+
+    });
+
+})
+$("#addTaskList").bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	title: {
+            validators: {
+               	remote: {
+                	message: 'TaskList Title Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistTaskTitle',
+                    data: function(validator) {
+                        return {
+                        	title: validator.getFieldElements('title').val()
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+
+</script> 
+
+}

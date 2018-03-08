@@ -1,0 +1,125 @@
+@header("configureLeaves",7){
+
+<section>
+    <form class="form-horizontal" id="#" action="" enctype="multipart/form-data" method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="#" class="btn ">Leave Calendar</a> |
+                    <a href="#" class="btn">Leave Tracker</a> |
+                    <a href="/configureLeaves" class="btn text-orange">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Working Days</h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Monday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control" >
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    	<option>Not Working</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Tuesday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control" >
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    	<option>Not Working</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Wednesday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control">
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    	<option>Not Working</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Thursday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control">
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    	<option>Not Working</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Friday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control">
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    	<option>Not Working</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Saturday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control">
+                                    	<option> Not Working day</option>
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">  Sunday</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control">
+                                    	<option>Not Working</option>
+                                    	<option> Full day</option>
+                                    	<option> Half day</option>
+                                    </select>
+                                </div>
+                            </div>
+						<br/> 
+                            <br/>
+                             <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="reset" class="btn btn-warning btn-raised" >Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+		$(".leaves-table").dataTable();
+	</script>
+ }

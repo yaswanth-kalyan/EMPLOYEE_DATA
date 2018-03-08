@@ -1,0 +1,40 @@
+@(listContacts : List[models.lead.CompanyContacts], id : Long)								
+									
+									
+									
+									
+									<br>
+									<select class="form-control lead-table nameDrop ConID selections" autocomplete="off" name="cid[]">
+				                             	@if(!listContacts.isEmpty){
+				                             		<option value="0">Select One</option>
+				                             		<option value="0"> Add Contact</option>
+			                   				 	@for(contact <- listContacts){
+			                   				 		@if(contact.id == id){
+				                             		<option value="@contact.id" selected="selected"> @contact.contactName</option>
+				                             		}else{
+				                             		<option value="@contact.id"> @contact.contactName</option>
+				                             		}
+				                             	}
+				                             }else{
+				                             	<option value="0">No Data Available</option>
+				                             	<option value="0"> Add Contact</option>
+				                             }
+				                             </select> 
+
+
+<script>
+$('.selections').chosen({
+	 width: "100%"
+});
+
+
+$(document).on('chosen:showing_dropdown','.selections',function(){
+	$('body').mCustomScrollbar('destroy');
+});
+$(document).on('chosen:hiding_dropdown','.selections',function(){
+	$('body').mCustomScrollbar();
+});
+
+</script>
+				                             
+				                             

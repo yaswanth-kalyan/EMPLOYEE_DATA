@@ -1,0 +1,27 @@
+@* showLeaveStatusByType Template File *@
+@(entitlements : List[models.leave.Entitlement], leaveType : String)
+                	<div class="">
+	                     <table class="table table-bordered table-striped entitlement-table" id="ldtable">
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Added On</th>
+                 				<th>Leave Period</th>
+                 				<th>No Of Days</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			@for((entitlement,index) <- entitlements.zipWithIndex){
+	                 			<tr>
+	                 				<td class="text-center">@{index+1}</td>
+	                 				<td>@entitlement.createdOn.format("dd-MM-yyyy - HH:mm")</td>
+	                 				<td class="text-center">@entitlement.leavePeriod.format("yyyy")</td>
+	                 				<td class="text-center">@entitlement.noOfDays</td>
+	                 			</tr>
+                 			}
+                 		</tbody>	
+                 	</table>
+	                </div>
+<script type="text/javascript">
+$("#ldtable").dataTable();
+</script>

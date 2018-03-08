@@ -1,0 +1,696 @@
+@(filled:String,projects : List[Projects])
+@header("Fill Status",3){
+<section>
+<form action="@routes.EngineerController.dailyStatus1()" method="post" id="fillStatus" class=" fillStatus123">
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row">
+					<a href="/engineer/fill-status" class="btn text-orange">Today's</a> | <a href="/engineer/status-history" class="btn">History</a>
+				</div>
+				<div class="row ">
+					<div class="col-md-12 heading-badge">
+						<h3>Fill Today's Status Report</h3>
+					</div>
+				</div>
+					@if(filled.equals("true")){
+				<div class="col-md-10 col-md-offset-1">
+					<center>
+						<button type="button" class="btn btn-raised btn-default">
+							<h5  id="demo"></h5>
+						</button>
+					</center>
+					<div class="stepwizard">
+	    <div class="stepwizard-row setup-panel">
+	        <div class="stepwizard-step">
+	            <a href="#step-1" type="button" class="btn btn-primary btn-circle info-color cc">1</a>
+	            <p>Yesterday</p>
+	        </div>
+	        <div class="stepwizard-step">
+	            <a href="#step-2" type="button" class="btn btn-default btn-circle cc" disabled="disabled">2</a>
+	            <p>Today</p>
+	        </div>
+	        <div class="stepwizard-step">
+	            <a href="#step-3" type="button" class="btn btn-default btn-circle cc" disabled="disabled">3</a>
+	            <p>Impediments</p>
+	        </div>
+	 	<div class="stepwizard-step">
+	            <a href="#step-4" type="button" class="btn btn-default btn-circle cc" disabled="disabled">4</a>
+	            <p>Rating</p>
+	        </div>
+	 	<div class="stepwizard-step">
+	            <a href="#step-5" type="button" class="btn btn-default btn-circle cc" disabled="disabled">5</a>
+	            <p>Timesheet</p>
+	        </div>
+	    </div>
+	</div>
+
+    <div class="row setup-content" id="step-1">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+                <div class="panel panel-warning yesterdaytxt" id="wizard1">
+						<div class="panel-heading">
+							<h3 class="panel-title">What did you do yesterday ?</h3>
+						</div>
+						<div class="panel-body yesterdayPanel">
+							<div class="content">	
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description<font color="red">*</font></label>
+									<textarea class="form-control tt ff" name="today[]" rows="3"
+									id="textArea" required=""></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="today[]" rows="3"
+									id="textArea" ></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="today[]" rows="3"
+									id="textArea" ></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							</div>
+							<div class="col-md-12">
+								<div class="text-center">
+									<button type="button" class="btn btn-warning btn-raised pull-right btn-sm addARow" data-name="today[]">
+										+
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					 <button class="btn btn-primary btn-raised nextBtn btn-lg pull-right" type="button" >Next</button>
+            </div>
+        </div>
+    </div>
+    <div class="row setup-content" id="step-2">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+                <div class="panel panel-warning" id="wizard2">
+						<div class="panel-heading">
+							<h3 class="panel-title">What will you do today?</h3>
+						</div>
+						<div class="panel-body todaytxt">
+						<div class="content">	
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description<font color="red">*</font></label>
+									<textarea class="form-control mm" name="tomorrow[]" rows="3"
+									id="textArea" required=""></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="tomorrow[]" rows="3"
+									id="textArea" ></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="tomorrow[]" rows="3"
+									id="textArea" ></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-12">
+								<div class="text-center">
+									<button type="button" class="btn btn-warning btn-raised pull-right btn-sm addARow" data-name="tomorrow[]">
+										+
+									</button>
+								</div>
+							</div>
+							</div>
+					</div>
+					<button class="btn btn-primary btn-raised nextBtn btn-lg pull-right" type="button" >Next</button>
+            </div>
+        </div>
+    </div>
+   <div class="row setup-content" id="step-3">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+                <div class="panel panel-warning" id="wizard3">
+						<div class="panel-heading">
+							<h3 class="panel-title">Are there any impediments in your way?</h3>
+						</div>
+						<div class="panel-body impedimentstxt">
+							<div class="content">	
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description<font color="red">*</font></label>
+									<textarea class="form-control pp" name="problem[]" rows="3"
+									id="textArea" required="" value="N/A">N/A</textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="problem[]" rows="3"
+									id="textArea"></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group is-empty">
+									<label for="inputEmail" class="control-label">Description</label>
+									<textarea class="form-control" name="problem[]" rows="3"
+									id="textArea"></textarea>
+									<span class="material-input"></span>
+								</div>
+							</div>
+							</div>
+							<div class="col-md-12">
+								<div class="text-center">
+									<button type="button" class="btn btn-warning btn-raised pull-right btn-sm addARow" data-name="problem[]">
+										+
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button class="btn btn-primary btn-raised nextBtn btn-lg pull-right" type="button" >Next</button>
+            </div>
+        </div>
+    </div>
+<div class="row setup-content" id="step-4">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+                <div class="panel panel-warning" id="wizard4">
+						<div class="panel-heading">
+							<h3 class="panel-title">How would you rate your workday yesterday?</h3>
+						</div>
+						<div class="panel-body">
+							<div class="col-md-12">
+								<br>
+								<div class="form-group is-empty ra" >
+									<div class="col-md-6 padding0">
+										<div class="col-md-2 col-md-offset-2">
+											<input type="radio" value="1" name="rate" required/>
+											<br>
+											<label class="control-label">1
+											</label>
+											<label class="control-label">Extremely Bad</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="2" name="rate" required />
+											<br>
+											<label class="control-label">2</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="3" name="rate" required />
+											<br>
+											<label class="control-label">3</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="4" name="rate" required/>
+											<br>
+											<label class="control-label">4</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="5" name="rate" required/>
+											<br>
+											<label class="control-label">5</label>
+										</div>
+									</div>
+									<div class="col-md-6 padding0">
+										<div class="col-md-2">
+											<input type="radio" value="6" name="rate" required/>
+											<br>
+											<label class="control-label">6</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="7" name="rate" required/>
+											<br>
+											<label class="control-label">7</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="8" name="rate" required/>
+											<br>
+											<label class="control-label">8</lfda fdas fdabel>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="9" name="rate" required/>
+											<br>
+											<label class="control-label">9</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="10" name="rate" required/>
+											<br>
+											<label class="control-label">10
+												<br>
+											</label>
+											<label class="control-label">Extremely Good</label>
+										</div>
+									</div>
+									<div class="col-md-12 text-center">
+									<center>
+									<p data-fv-result="INVALID" data-fv-for="rate" id="radiovalid" data-fv-validator="notEmpty" class="help-block" style="display: none;">please fill this field</p>
+									</center>
+									</div>
+								</div>
+								<span class="material-input"></span>
+							</div>
+
+							
+						@*	<div class="col-md-12">
+								<div class="text-center">
+									<button type="submit" id="sbmtBtn" class="btn btn-success btn-raised">
+										Submit
+									</button>
+								</div>
+							</div> *@
+					    </div>
+					</div>
+					<button class="btn btn-primary nextBtn btn-raised btn-lg pull-right" type="button" >Next</button>
+            </div>
+        </div>
+    </div>
+    <div class="row setup-content" id="step-5">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+               <div class="panel panel-warning" id="wizard4">
+						<div class="panel-heading">
+							<h3 class="panel-title">Time Sheet for Yesterday </h3>
+						</div>
+									<div class="panel-body">
+									@if(!projects.isEmpty){
+										@if(EngineerController.getIsDoneTS.equals(false)){
+										<table class="table timespentTable">
+											<thead>
+												<tr>
+													<th>Project</th>
+													<th class="width30p">No.of Hours Spent</th>
+												</tr>
+											</thead>
+											<tbody>
+												@for(project <- projects) {
+													@if(project.getStatus.equals(models.UserProjectStatus.Active)){
+													<tr><div class="stepwizard">
+													<td>@project.getProjectName<font color="red">*</font>
+													<input type="hidden" name="projectId[]" value="@project.getId" class="form-control" />
+													</td>
+													<td>
+													<div class="form-group is-empty">
+														<!-- <input type="number" name="hours[]" min="0" class="form-control" required="required"/> -->
+														<input type="text" name="hours[]" min="0" max="24" pattern="^\d*(\.\d{1,2})?$" class="form-control" required="required"/>
+													</div>
+													<br>
+													</td>
+													</tr>
+													}
+												}
+											</tbody>
+										</table>
+									<div class="col-md-12">
+										<div class="form-group is-empty">
+										<label>Any Remarks</label>
+										<textarea class="form-control" id="remarksInput" name="remark" ></textarea>
+										</div>
+										<br>
+									</div>
+									</div>
+											} else{
+												<h3 class="text-center">You have filled TimeSheet Today</h3>
+												@*<div class="hidden">
+												<table class="table timespentTable">
+													<thead>
+														<tr>
+															<th>Project</th>
+															<th class="width30p">No.of Hours Spent</th>
+														</tr>
+													</thead>
+													<tbody>
+														@for(project <- projects) {
+															@if(project.getStatus.equals(models.UserProjectStatus.Active)){
+															<tr><div class="stepwizard">
+															<td>@project.getProjectName<font color="red">*</font>
+															<input type="hidden" name="projectId[]" value="@project.getId" class="form-control" />
+															</td>closeD
+															<td>
+															<div class="form-group is-empty">
+																<input type="number" name="hours[]" min="0" class="form-control" required="required"/>
+															</div>
+															<br>
+															</td>
+															</tr>
+															}
+														}
+													</tbody>
+												</table>
+											<div class="col-md-12">
+												<div class="form-group is-empty">
+												<label>Any Remarks</label>
+												<textarea class="form-control" id="remarksInput" name="remark" ></textarea>
+												</div>
+												<br>
+											</div>
+											</div> *@
+											}
+										} else {
+									<h3 class="text-center">No Projects</h3>
+									}
+								<div class="col-md-12">
+								<div class="text-center">
+									
+								</div>
+							</div>
+					</div>
+					<button class="btn btn-primary nextBtn btn-lg btn-raised pull-right submit123" id="sbmtBtn" type="submit" >Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+				</div>
+				} else{ @if(filled.equals("false")){
+					<h3 class="text-center">You have already filled status for Today</h3>
+					}else{
+						<h3 class="text-center">Status report for today has been submitted successfully, Thanks for your time !</h3>
+					}
+				}
+			</div>
+		</div>
+  </div>
+  </div>
+  </form>
+</section>
+<div id="confirmMOdal" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h4 id="lblTitleConfirmYesNo" class="modal-title">Fill Today's Status Report - Preview</h4>
+	            </div>
+	            <div class="modal-body">
+	                <h5 class="text-orange">Yesterday's Work </h5>
+	                <p id="yesterdaytxt" class="wb"></p>
+	                <h5 class="text-orange">Today's Plan</h5>
+	                <p id="todaytxt" class="wb"></p>
+	                <h5 class="text-orange">Impediments </h5>
+	                <p id="impediments" class="wb"></p>
+	                <h5 class="text-orange">Yesterday's Rating </h5>
+	                <p id="rating"></p>
+	                 <h5 class="text-orange">Yesterday's Time Sheet </h5>
+	                <p id="timeSpent"></p>
+	                 <h5 class="text-orange">Remarks </h5>
+	                <p id="remarks" class="wb"></p>
+	            </div>
+	            <div class="modal-footer">
+	                <button id="btnConfirmYes" type="button" class="btn btn-raised btn-success">Submit</button>
+	                <button id="" type="button" class="btn btn-danger btn-raised" data-dismiss="modal">Cancel</button>
+	            </div>
+	        </div>
+	    </div>
+</div>
+}
+@footer(""){
+<style>
+.wb{
+word-break: break-all;
+}
+</style>	
+
+<script>
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd
+} 
+if(mm<10){
+    mm='0'+mm
+} 
+var today = dd+'-'+mm+'-'+yyyy;
+
+$('.fillStatus123').on('submit',function(){
+    $('.submit123').attr('disabled');
+});
+
+$('#demo').html(today);
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		//$("#dtable1").DataTable()
+		
+		/*
+		$('#wizard2').hide();
+				$('#wizard3').hide();
+				$('#wizard4').hide();*/
+
+
+		
+		
+	});
+	
+	$('.addARow').on('click',function(){
+		var newRow = $('<div class="col-md-12" id="appendThis">'
+					+ '<div class="row">'
+					+ '<div class="form-group is-empty">'
+					+ '<div class="col-md-11">'
+					+ '<label for="inputEmail" class="control-label">Description</label>'
+					+ '<textarea class="form-control" name="tomorrow[]" rows="3" id="textArea" ></textarea>'
+					+ '<span class="material-input"></span>'
+					+ '</div>'
+					+ '<div class="col-md-1 closeDiv"><br><br><br><br><button type="button" class="btn btn-danger btn-raised btn-xs deleteRow">X</button></div>'
+					+ '</div>'
+					+ '</div>'
+					+ '</div>');
+		newRow.find('textarea').val('');
+		newRow.find('textarea').attr('name',$(this).attr('data-name'));
+		newRow.find('textarea').text('');
+		$(this).closest('.panel-body').find('.content').append(newRow);
+	});
+	$("#pp-wizard-next").click(function(){
+		 $("")
+	})
+	var flag; 
+    $('#btnConfirmYes').on('click',function(){
+    	$('#confirmMOdal').modal('hide');
+		$("#btnConfirmYes").attr("disabled", true);	
+    	flag = true;
+    	$('#fillStatus').submit();
+     });
+    $('#btnConfirmNo').on('click',function(){
+    	flag = false;
+    	$('#confirmMOdal').modal('hide');
+     });
+//	$('#wizard2,#wizard3,#wizard4').hide()
+	$('#confirmMOdal').on('shown.bs.modal', function(e) {
+    	$('#sbmtBtn').removeAttr('disabled');
+    	$('#sbmtBtn').removeClass('disabled');
+	});
+	$(document).on('click','.deleteRow',function(){
+		$(this).closest('#appendThis').remove();
+	});
+<!-- formValidation -->
+</script>
+<script>
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd
+} 
+if(mm<10){
+    mm='0'+mm
+} 
+var today = dd+'-'+mm+'-'+yyyy;
+
+
+$("#demo").html(today);
+
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+	});
+	
+	/*$('.addARow').on('click',function(){
+		var newRow = $('#appendThis').clone();
+		newRow.find('textarea').val('');
+		newRow.find('textarea').attr('name',$(this).attr('data-name'));
+		newRow.find('textarea').text('');
+		$(this).closest('.panel-body').find('.content').append(newRow);
+	})*/
+	$("#pp-wizard-next").click(function(){
+		 $("")
+	})
+	var flag; 
+	$('#fillStatus').formValidation({
+        framework: 'bootstrap',
+       // icon: {
+           // valid: 'fa fa-check',
+           // invalid: 'fa fa-times',
+           // validating: 'fa fa-refresh'
+        //},
+        fields: {
+            'today[]': {
+                   selector: '.tt',
+                   validators: {
+                    notEmpty: {
+                        message: 'please fill this field'
+                    }
+                }
+            },
+            'tomorrow[]': {
+                selector: '.mm',
+                validators: {
+                 notEmpty: {
+                     message: 'please fill this field'
+                 }
+             }
+           },
+          'problem[]': {
+             selector: '.pp',
+             validators: {
+              notEmpty: {
+                  message: 'please fill this field'
+              }
+          }
+      }
+        }
+    }).on('success.form.fv', function(e) {
+			if(!flag){
+       		 	e.preventDefault();
+			}
+       		 var data = $('#fillStatus').serializeArray();
+       		 var yesterday = '';
+       		 var today = '';
+       		var space = ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+       		 var impedments = '';
+       		 var timeSpenttext='';
+       		 var rating = $('input[name="rate"]:checked').val();
+       		 
+       		 $('.yesterdaytxt textarea').each(function(i){
+				if($(this).val()){
+					yesterday += space + (i+1) + ". " +$(this).val() + "<br>";
+				}	
+             });
+       		$('.todaytxt textarea').each(function(i){
+				if($(this).val()){
+					today += space + (i+1) + ". " +$(this).val() + "<br>";
+				}	
+             });
+       		$('.impedimentstxt textarea').each(function(i){
+				if($(this).val()){
+					impedments += "<p>"+space + (i+1) + ". " +$(this).val() + "</p>";
+				}	
+             });
+       		$('.timespentTable tbody tr').each(function(i){
+					timeSpenttext += (i+1) + ". " +$(this).find('td').eq(0).text() +"-" + $(this).find('input').eq(1).val() + "<br>";
+             });
+       		$('#yesterdaytxt').html(yesterday);
+       		$('#todaytxt').html(today);
+       		$('#impediments').html(impedments);
+       		$('#rating').html(space + rating);
+       		$('#timeSpent').html(space + timeSpenttext);
+       		$('#remarks').html(space + $('#remarksInput').val());
+        	$('#confirmMOdal').modal('show');
+    });
+    
+    $('#btnConfirmNo').on('click',function(){
+    	flag = false;
+    	$('#confirmMOdal').modal('hide');
+     });
+//	$('#wizard2,#wizard3,#wizard4').hide()
+	$('#confirmMOdal').on('shown.bs.modal', function(e) {
+    	$('#sbmtBtn').removeAttr('disabled');
+    	$('#sbmtBtn').removeClass('disabled');
+	});
+
+
+</script>
+
+
+
+<script type="text/javascript">
+	$(document).ready(function () {
+    var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+    allWells.hide();
+    navListItems.click(function (e) {
+        e.preventDefault();
+        var $target = $($(this).attr('href')),
+                $item = $(this);
+
+        if (!$item.hasClass('disabled')) {
+            navListItems.removeClass('btn-primary').addClass('btn-default');
+            $item.addClass('btn-primary');
+            allWells.hide();
+            $target.show();
+            $target.find('input:eq(0)').focus();
+        }
+    });
+
+    allNextBtn.click(function(){
+        var curStep = $(this).closest(".setup-content"),
+            curStepBtn = curStep.attr("id"),
+            nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+            curInputs = curStep.find("textarea"),
+            curRadios = curStep.find("input"),
+            isValid = true;
+        $(".form-group").removeClass("has-error");
+        for(var i=0; i<curInputs.length; i++){
+            if (!curInputs[i].validity.valid){
+                isValid = false;
+                $(curInputs[i]).closest(".form-group").addClass("has-error is-empty is-focused");
+                $(curInputs[i]).closest(".form-group").find('.help-block').show();
+            }
+        }
+        for(var i=0; i<curRadios.length; i++){
+            if (!curRadios[i].validity.valid){
+                isValid = false;
+                $(curRadios[i]).closest(".form-group").addClass("has-error is-empty is-focused");
+                $('#radiovalid').show();
+            }
+        }
+        
+
+        if (isValid){
+            nextStepWizard.removeAttr('disabled').trigger('click');
+            navListItems.removeClass('info-color');
+        	nextStepWizard.addClass('info-color');
+        	
+        }
+    });
+
+    $('div.setup-panel div a.btn-primary').trigger('click');
+});
+	$(document).on('click','input[name="rate"]',function(){
+		$('#radiovalid').hide();
+	});
+
+	$(".cc").click(function() {
+        $(".cc").removeClass("info-color");
+        $(".cc").removeClass("info-color");     
+        $(".cc").removeClass("info-color");    
+        $(".cc").removeClass("info-color");    
+        $(this).addClass('info-color');   
+	});
+</script>
+} 

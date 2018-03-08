@@ -1,0 +1,116 @@
+@header("configureLeaves",7){ 
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container" style="background:#f2f2f2;padding-bottom:30px;">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/leaveCalender" class="btn text-orange">Leave Calendar</a> |
+                    <a href="/leaveTracker" class="btn">Leave Tracker</a> |
+                    <a href="/configureLeaves" class="btn">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Calender </h3>
+                </div>
+                <div class="col-md-2 hi">
+                	<div class="row">
+                		<h4 class="text-primary text-center"> Current month</h4>
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">Amol</div>
+                		<div class="text-center">Amol , vamis </div>
+                		<div class="text-center">Amol , rupesh</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">deepak</div>
+                		<div class="text-center">rama</div>
+                		<div class="text-center">surya</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">dinesh</div>
+                		<div class="text-center">john </div>
+                		<div class="text-center">martin</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">ashok kumar</div>
+                		<div class="text-center">krishna chaitanya</div>
+                		<div class="text-center">sager kumar</div>
+                	</div>
+                	<hr>
+                	
+                </div>
+                <div class="col-md-8 hi">
+					<div id="calendar"></div>
+                </div>
+                <div class="col-md-2 hi">
+                	<div class="row">
+                		<h4 class="text-primary text-center"> Next month</h4>
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">Amol</div>
+                		<div class="text-center">Amol , vamis </div>
+                		<div class="text-center">Amol , rupesh</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">deepak</div>
+                		<div class="text-center">rama</div>
+                		<div class="text-center">surya</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">dinesh</div>
+                		<div class="text-center">john </div>
+                		<div class="text-center">martin</div>
+                	</div>
+                	<hr>
+                	<div class="row">
+                		<h6 class="text-center" > 01-jan,2016</h6>
+                		<div class="text-center">ashok kumar</div>
+                		<div class="text-center">krishna chaitanya</div>
+                		<div class="text-center">sager kumar</div>
+                	</div>
+                	<hr>
+                	
+                </div>
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+
+<style>
+#calender tr , td, th{
+	border: 1px solid #757575;
+    text-align: center;
+}
+</style>
+<script src="http://arshaw.com/js/fullcalendar-1.6.3/fullcalendar/gcal.js"></script>
+<script src="http://arshaw.com/js/fullcalendar-1.6.3/fullcalendar/fullcalendar.min.js"></script>
+	<script>
+		$(".entitlement-table").dataTable();
+		 $('.mydate').datepicker({
+		       format: 'dd-mm-yyyy',
+		       endDate: ' new Date()',
+		       autoclose: true
+		  })
+		  $(document).ready(function () {
+			    $('#calendar').fullCalendar({
+			        header: {
+			            left: 'prev',
+			            center: 'title',
+			            right: 'next'
+			        }
+			    });
+			});
+	</script>
+ }
+ 
+ 

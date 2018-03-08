@@ -1,0 +1,264 @@
+@(task : Task,appUsers:List[AppUser],taskStatusList : List[TaskStatus])
+@header("Task",8){
+<section>
+    <form class="form-horizontal" id="#" action="/task/storetaskComment"  method="post">
+    <input type="hidden" name="taskId" value="@task.id">
+        <div class="container">
+            <div class="col-md-12 panel">
+               @if(session.get("AppUserRole") == "Admin"){
+               <div class="row">
+                    <a href="/allTasks" class="btn text-orange">All-Tasks</a> |
+                    <a href="/taskTracker" class="btn">Configure Status</a>  
+                </div>
+                }else{
+                <div class="row">
+                    <a href="/myTasks" class="btn text-orange">My-Tasks</a> |
+                    <a href="/taskTracker" class="btn">Configure Status</a>  
+                </div>
+                }
+                <div class="row heading-badge">
+                    <div class="col-md-12">
+                    	
+                    	<div class="col-md-12">
+                    	<table>
+                    <tr>	<th>Title &nbsp; &nbsp;</th><td>@task.getTitle</td></tr>
+                    <tr>	<th>Description &nbsp; &nbsp;</th><td class="wb">@if(task.getDescription!=null){@task.getDescription}</td></tr>
+                    <tr>	<th>Assign To &nbsp; &nbsp;</th><td>	
+							       			 		@if(task.getAssignTo!=null){@task.getAssignTo.getFullName }</td></tr>
+							       			 		 <tr>	<th>Other Users:</th><td>
+							       			 		@if(task.getAssignFrom!=null&& !task.getAssignFrom.isEmpty()){
+							       			 			
+							       			 		@for(users<-task.getAssignFrom){
+							       			 			
+							       			 			@users.getFullName,
+							       			 			
+							       			 			}
+							       			 			}
+							       			 		</td></tr>
+                    <tr>	<th>Created on &nbsp; &nbsp;</th><td>
+                    @task.getCreationDate.format("dd-MM-yyyy") by
+                    @task.createdBy.getFullName
+                    </td></tr>
+                    	</table>
+	                    </div>	
+                    </div>
+                     
+                </div>
+				<div class="col-md-10 col-md-offset-1">
+				@if(!task.getComments().isEmpty){
+					@for(comment <- task.getComments()){
+              		<div class="row">
+					     <div class="col-md-1">
+					          <img src=@{routes.AdminController.getimage(comment.getAppUser().getId())}  class="img-thumbnail"> 
+					     </div>
+					     <div class="col-md-11">
+					         <div class="lead-chat">
+						        <div class="bubble me">
+						        <div class="col-md-12">
+						        		<div class="row">
+						        		<div class="col-md-10" id="editMsg@comment.id">
+						        			<h5 class="leadmodule-h5"><b class="leadmodule-bold">  @models.AppUser.getAppUserName(comment.getAppUser().getId()) </b> commented on @comment.getCommentDate.format("MMM dd, yyyy HH:mm:ss") 
+						        			 </h5>
+						        			 @if(comment.taskStatus!=null){
+						        			 <h5 class="leadmodule-h5"><b class="leadmodule-bold">update status to   @comment.taskStatus.getStatus </b> 
+						        			 </h5>
+						        			 }
+						        		</div>
+						        		<div class="col-md-2">
+						        	<!-- @*	@if(Long.parseLong(session.get("AppUserId")) == comment.appUserId) { *@-->
+						        	<!-- @* @if(session.get("AppUserRole") == "Admin") {*@
+						        			<div class="row">
+							        		 	@*<div class="col-md-6 padding-0">
+							        				<a href="#">	<i class="fa fa-edit edit-test  pull-right "></i></a>
+							        			</div>*@
+							        			<div class="col-md-6  padding-0">
+							        				<a href="javascript:void(0)" class="text-center deleteUserButton" 
+							        				data-href="/lead/deleteComment/@comment.id/@session.get("leadId")"><i class="fa fa-trash"></i></a>
+							        			</div>
+							        		</div>	
+							        	@*}*@ -->
+						        		</div>
+						        		</div>
+						        		<div class="row">	
+						        		  
+						                <div class="new-text hidden" id="newText@comment.id"> 
+						                    <textarea id="text@comment.id" class="form-control txta"></textarea> 
+						                    <button type="button" class="btn btn-primary btn-sm upload-btn" id="upld@comment.id">upload</button> 
+						                </div>
+							        		<div class="form-group"> 
+							       			 	<textarea  class="form-control comment-disable"  disabled="disabled" >@comment.comment</textarea>
+							       			 </div>
+							       			 <button class="btn btn-primary btn-sm hidden upload-btn">upload</button> 
+						       			 </div>
+						       			
+						       		 </div>  
+						        </div>
+					     	</div> 
+					  	</div> 
+					</div>	
+					}
+				}
+					<div class="row">
+					     <div class="col-md-1">
+					          <img src=@{routes.AdminController.getimage(Long.parseLong(session.get("AppUserId")))}  class="img-thumbnail"> 
+					     </div>
+					     <div class="col-md-11">
+					         <div class="lead-chat">
+						        <div class="bubble me">
+						        	<div class="col-md-12 padding-0">
+						        		<div class="col-md-10">
+						        			<h5><b class="leadmodule-bold"> write ur comment</b></h5>
+						        		</div>
+						        		<div class="col-md-2">
+						        		</div>	 
+						       			 <textarea  class="form-control"  name="comment" required="required"></textarea>
+						       			 <div class="col-md-12 padding-0">
+						       			 	<div class="col-md-8 padding-0">
+						       			 		<div class="col-md-4 ">
+						       			 			<h6>Assign To</h6>
+						       			 		</div>
+						       			 		<div class="col-md-4">
+						       			 			<select class="form-control" name="assignToId" id="assignTo">
+						       			 				@if(!appUsers.isEmpty){
+	                         	 							<option value="">Select User</option>
+	                         	 							@for(appUser <- appUsers){
+	                         	 								
+	                         	 								@if(task.getAssignTo!=null&&task.getAssignTo.equals(appUser)){
+	                         	 								<option value="@appUser.getId" selected="selected">@appUser.getFullName</option>
+	                         	 								}else{
+	                         	 								<option value="@appUser.getId">@appUser.getFullName</option>
+	                         	 								}
+	                         	 								
+	                         	 								}
+	                            						 }
+						       			 			</select>
+						       			 		</div>
+						       			 		
+						       			 		
+						       			 		</div>
+						       			 		
+						       			 		<div class="col-md-8 padding-0">
+						       			 		<div class="col-md-4 ">
+						       			 			<h6>Add Users</h6>
+						       			 		</div>
+						       			 		<div class="col-md-4">
+						       			 			<select class="chosen form-control mychosen" name="assignFromIds[]" multiple="multiple">
+						       			 				@if(!appUsers.isEmpty){
+	                         	 							@for(appUser <- appUsers){
+	                         	 								@if(task.getAssignFrom!=null){
+	                         	 								@if(task.getAssignFrom.contains(appUser) ){
+										   							<option value="@appUser.getId" selected>@appUser.getFullName</option>
+										   						} else{
+																	<option value="@appUser.getId">@appUser.getFullName</option>
+															    }
+	                         	 								
+	                         	 								}}
+	                            						 }
+						       			 			</select>
+						       			 		</div>
+						       			 		
+						       			 		
+						       			 		</div>
+						       			 		<div class="col-md-8 padding-0">
+						       			 		<div class="col-md-4 ">
+						       			 			<h6>Update Status</h6>
+						       			 		</div>
+						       			 		<div class="col-md-4">
+						       			 			<select class="form-control" name="statusId" id="status">
+						       			 			<option value="">select status</option>
+						       			 			@if(!taskStatusList.isEmpty){
+	                         	 					@for(taskStatus<-taskStatusList){
+	                         	 						
+	                         	 								
+	                         	 								@if(task.getStatus!=null&&task.getStatus.equals(taskStatus)){
+	                         	 								<option value="@taskStatus.getId" selected="selected">@taskStatus.getStatus</option>
+	                         	 								}else{
+	                         	 								<option value="@taskStatus.getId">@taskStatus.getStatus</option>
+	                         	 								}
+	                         	 								
+	                         	 								
+	                         	 						}	
+	                         	 						}	
+						       			 			</select>
+						       			 		</div>
+						       			 		
+						       			 		
+						       			 		</div>
+						       			 		
+						       			 	<div class="col-md-4">
+						       			 		<div class="row">
+						       			 			<div class="col-md-6">
+						       			 				<button class="btn btn-info btn-raised btn-sm">Comment</button>
+							       			 		</div>
+							       			 	</div>	
+						       			 	</div>
+						       			 	<div class="col-md-4 col-md-offset-8">
+						       			 		<span class="upload-file-path"></span>
+						       			 	</div>
+						       			 </div>
+						       		 </div>  
+						        </div>
+					     	</div> 
+					  	</div> 
+					</div>	
+           	    </div>
+          	</div>
+   		</div>
+ 	</form>
+ 	<!-- <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h4 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h4>
+			            </div>
+			            <div class="modal-body">
+			                <p id="lblMsgConfirmYesNo"></p>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-primary">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div> -->
+</section>
+
+} @footer(""){
+<style>
+.wb{
+	word-break: break-all;
+  }
+</style>
+<script>
+$('select.chosen').chosen();
+$('#assignTo').chosen();
+//$('#status').chosen();
+$('.deleteUserButton').click(function(e){
+	//var name = $(this).attr('userName');
+	var url = $(this).attr('data-href');
+	$('#lblMsgConfirmYesNo').html("Are you sure, you want to delete this comment ?");
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+		window.location.href = url;
+	});
+});
+
+
+$(document).on('click', '.edit-test', function() {
+	$(".comment-disable").removeAttr("disabled");
+	$(".upload-btn").removeClass("hidden")
+});
+
+$('.leadupfile').change(function () {
+    var value = $(this).val();
+    $(".upload-file-path").html(value);
+
+});
+</script>
+ }
+ 
+ 
+ 

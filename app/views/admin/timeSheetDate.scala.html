@@ -1,0 +1,76 @@
+  @header("Time sheet Date",4){
+  	<section>
+    <div class="container">
+        <div class="panel">
+		         <div class="col-md-12">
+		                <a href="/time-sheets" class="btn ">Time Sheet by User</a> |
+		                 <a href="/time-sheets-date" class="btn text-orange">Time Sheet by Date</a>
+		         </div>
+                 <div class="col-md-12 heading-badge">
+                    <h3>Time Sheet By Date</h3>
+		        </div>
+           		 <div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<div class="form-group is-empty">
+                                <div class="row">
+                                <label for="inputEmail" class="control-label col-md-4"> Select Date</label>
+                                    <div class="col-md-6">
+                                        <div id="sandbox-container">
+                                            <input class="form-control mydate" name="startedDate" placeholder="DD-MM-YYYY" type="text" value="@models.Timesheet.getTodayDate()" id="datewisePicker" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="material-input"></span>
+                            </div>
+					</div>
+					<div class="col-md-12">
+					<BR><BR>
+					<div id="reportData" class="col-md-12">
+						<table class="table" id="dtable1">
+							  <thead>
+								<tr>
+									<th>AppUserName</th>
+									<th>Projects</th>
+									<th>Total Hours</th>
+									<th>Remarks</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					</div>
+        </div>
+    </div>    
+    </div>
+   </section>
+
+} @footer(""){
+
+<script>
+    $(document).ready(function() {
+        $('.mydate').datepicker({
+            format: 'dd-mm-yyyy',
+            endDate: ' new Date()',
+            autoclose: true
+        });
+    });
+    $("#dtable1").DataTable({
+    	 "aLengthMenu": [10, 25, 50,100,150,200,250,300 ],
+		 "iDisplayLength": 100	
+    })
+    $('#datewisePicker').on('changeDate', function (e) {
+        var projectVal = $('#datewisePicker').val();
+        if (projectVal != '0') {
+            $.get('/timeSheetsDateWise/' + projectVal, function(data) {
+                console.log(data)
+                $("#reportData").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+        
+    });
+</script>
+
+}

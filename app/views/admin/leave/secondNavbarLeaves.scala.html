@@ -1,0 +1,23 @@
+ @(tabOrange : Integer)
+ <div class="col-md-12">
+  	<a href="/leave-calendar" class="btn @if(tabOrange == 1){text-orange}">Leave Calendar</a> |
+	 @if(Application.getLoggedInUserRole().equals("Admin") || Application.getLoggedInUserRole().equals("HR")){ 
+         <a href="@routes.AdminLeaveController.getApplyLeave()" class="btn @if(tabOrange == 3){text-orange}">Apply Leave </a> |
+         <a href="@routes.AdminLeaveController.getLeaveStatus()" class="btn  @if(tabOrange == 5){text-orange}">Leave Status</a> |
+         <a href="@routes.AdminLeaveController.getAdminLeaveTracker()" class="btn @if(tabOrange == 2){text-orange}">Leave Tracker</a> |
+         <a href="@routes.AdminLeaveController.getAppUserEntitlementPage()" class="btn @if(tabOrange == 6){text-orange}">Check Entitlement</a> |
+         <a href="@routes.AdminLeaveController.getConfigureLeaves()" class="btn @if(tabOrange == 4){text-orange}">Configure Leaves</a>@*@configureLeavesList()*@
+         
+   
+     }
+      @if(Application.getLoggedInUserRole().equals("Manager")){
+        <a href="@routes.AdminLeaveController.getApplyLeave()" class="btn @if(tabOrange == 3){text-orange}">Apply Leave </a> |
+       <a href="@routes.AdminLeaveController.getLeaveStatus()" class="btn  @if(tabOrange == 5){text-orange}">Leave Status</a> |
+          <a href="@routes.AdminLeaveController.getTeamLeaveTracker()" class="btn  @if(tabOrange == 6){text-orange}">Team Leave Tracker</a> 
+      }
+      @if(Application.getLoggedInUserRole().equals("Engineer") || Application.getLoggedInUserRole().equals("Marketing")){
+       <a href="@routes.AdminLeaveController.getApplyLeave()" class="btn @if(tabOrange == 3){text-orange}">Apply Leave </a> |
+       <a href="@routes.AdminLeaveController.getLeaveStatus()" class="btn  @if(tabOrange == 5){text-orange}">Leave Status</a> 
+         
+      }
+  </div>

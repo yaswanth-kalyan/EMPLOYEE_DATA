@@ -1,0 +1,78 @@
+@header("configureLeaves",7){
+
+<section>
+      <form class="form-horizontal" id="addUserForm" action="@routes.Application.registration()" enctype="multipart/form-data" method="post">
+        <div class="container">
+        <div class="panel">
+            <div class="col-md-12">
+                <a href="/leaveCalender" class="btn ">Leave Calendar</a> |
+                 <a href="#" class="btn">Leave Tracker</a> |
+                 <a href="/configureLeaves" class="btn text-orange">Configure Leaves</a>
+            </div>
+	        <div class="col-md-12 heading-badge">
+	            <h3>Configure Leaves</h3>
+	        </div>
+	         <div class="row paddingbot-30">
+	        	<div class="col-md-12">
+	  				<div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/addNewLeaveApply">
+                             <div class="rating-div text-center">
+                                 <div class="col-md-5 stats-item bg-green" >
+                                     <i  class="fa fa-search bigicon"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkgreen">
+                                     <div class="header-item"><h4>Leave Types</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/workingDay">
+                             <div class="rating-div text-center">
+                                 <div class="col-md-5 stats-item bg-orange" >
+                                     <i  class="fa  fa-calendar-check-o bigicon"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkorange">
+                                     <div class="header-item"><h4>Working Days</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/addHoliday">
+                             <div class="rating-div text-center">
+                                 <div class="col-md-5 stats-item bg-blue" >
+                                     <i  class="fa fa-calendar-times-o bigicon"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkblue">
+                                     <div class="header-item"><h4>Holidays</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/addEntitlement">
+                             <div class="rating-div text-center">
+                                 <div class="col-md-5 stats-item bg-pink" >
+                                     <i  class="fa fa-plus bigicon"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkpink">
+                                     <div class="header-item"><h4>Add Entitlement</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	            </div>
+            </div>
+        <br><br>
+        </div>
+    </div>    
+   
+    </form>   
+</section>
+
+}
+             
+@footer(""){
+
+}

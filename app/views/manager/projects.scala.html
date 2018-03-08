@@ -1,0 +1,91 @@
+@(finalProjects : Map[Role, List[Projects]])
+@import java.lang.Long; var index=0l;
+@header("My Projects",1){
+<section>
+  <div class="container">
+    <div class="panel">
+       	<div class="panel-body">
+	        <div class="row">
+			        <a href="/manager/projects" class="btn  text-orange">My projects</a> |
+			         <a href="/manager/manage-team-members" class="btn ">Manage Team Members</a>
+			</div>    
+        	<div class="row">
+        		<div class="col-md-12 heading-badge">
+                  	<h3>All Project </h3>
+              	</div>
+             </div> 
+		        <div class="row">
+		            <div class="col-md-12">
+		                <div class="">
+		                    <div class="bs-component">
+		                          <div class="col-md-12">
+		                              <table class="table table-bordered" id="dtable1">
+			                           <thead>
+			                               <tr>
+			                               		<th>S.No</th>
+			                                   <th>Project Name</th>
+			                                   <th>Client</th>
+			                                   <th>Primary Contact Person</th>
+			                                   <th>Contact No</th>
+			                                   <th>Email ID</th>
+			                                   <th>Status</th>
+			                                   <th>Role</th>
+			                               </tr>
+			                           </thead>
+		                                <tbody>
+		                                 @for(role <- finalProjects.keySet) {
+	                                	 @if(!finalProjects.get(role).isEmpty()){
+		                                 	@for((project)<- finalProjects.get(role)) { 
+		                                 	@(index+=1)
+												<tr>
+													<td>@{index}</td>
+													<td>@project.projectName</td>
+													<td>@project.client</td>
+													<td>@for(ClientContect <- project.getClientContect() ) {
+															@ClientContect.name<br>
+														}
+													</td>
+													<td>@for(ClientContect <- project.getClientContect() ) {
+															@ClientContect.MoibileNo<br>
+														}
+													</td>
+													<td>@for(ClientContect <- project.getClientContect() ) {
+															@ClientContect.email<br>
+														}
+													</td>
+													<td>@project.status</td>
+													<td>@if(role.getRole.equals(Roles.Engineer.toString())){
+															Team Member
+														}else{
+															@role.getRole
+														}</td>
+												</tr>
+												}
+											}
+										}
+		                                </tbody>
+		                              </table>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+   		 </div>  
+    </div>
+   </div>  
+</section>
+	
+
+}
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable();
+	});
+</script>
+}

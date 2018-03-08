@@ -1,0 +1,24 @@
+@(listCompanys : List[models.lead.Company],id : Long)
+							
+							
+							<select class="form-control selections ComID" id="ComID" name="companyId" autocomplete="off">
+		                         	 @if(!listCompanys.isEmpty) {
+		                         	 	<option value="">Select One</option>
+		                         	 	<option value="0"> Add Company</option>
+		                         	 	@for(company <- listCompanys) {
+			                         	 	@if(company.id == id){
+			                         	 	<option value="@company.id" selected="selected"> @company.companyName</option>
+			                         	 	}else{
+			                         	 	<option value="@company.id"> @company.companyName</option>
+			                         	 	}
+		                         	 	}
+		                         	 }else{
+		                         	 	<option value="">No Data Available</option>
+		                         	 	<option value="0"> Add Company</option>
+		                         	 }
+		                             </select>
+<script>
+$('.selections').chosen({
+	 width: "100%"
+});
+</script>

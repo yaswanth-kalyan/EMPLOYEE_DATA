@@ -1,0 +1,107 @@
+@(projects : List[Projects])
+@header("Fill TeamSheet",3){
+<section>
+	<div class="container">
+ 	<form action="@routes.EngineerController.timeSheet()" id="fillTimesheet" method="post">	
+	<div class="container"> 
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row">
+					<a href="/manager/fill-timesheet" class="btn text-orange">Today's</a> | 
+					<a href="/manager/timesheet-history" class="btn">History</a> | 
+					<a href="/manager/team-timesheet-history" class="btn">Team Time Sheet Report </a> | 
+					<a href="/manager/team-timesheets-date" class="btn">Team Time Sheet Report by Date</a>
+				</div>
+				<div class="row heading-badge">
+					<div class="col-md-12">
+						<h3>Fill TeamSheet </h3>
+					</div>	
+				</div>
+		 @if(!projects.isEmpty){
+				@if(EngineerController.getIsDoneTS.equals(false)){
+				<div class="col-md-12">
+					<center>
+						<button type="button" class="btn btn-raised btn-link">
+							<h5  id="demo"></h5>
+						</button>
+					</center>
+				</div>
+				<div class="col-md-8 col-md-offset-2">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Project</th>
+								<th class="width30p">No.of Hours Spent</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+							@for(project <- projects) {
+								<tr>
+								<td>@project.getProjectName<font color="red">*</font>
+								<input type="hidden" name="projectId[]" value="@project.getId" class="form-control" />
+								</td>
+								<td>
+									<!-- <input type="number" name="hours[]" min="0" class="form-control" required="required"/> -->
+									<input type="text" name="hours[]" min="0" max="24" pattern="^\d*(\.\d{1,2})?$" class="form-control" required="required"/>
+								</td>
+								</tr>
+								}
+							
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="col-md-8 col-md-offset-2">
+					<div class="form-group is-empty">
+					<label>Any Remarks</label>
+					<textarea class="form-control" name="remark" rows="5" ></textarea>
+					</div>
+					<center><button type="submit" class="btn btn-raised btn-success">Submit</button></center>
+				</div>
+				} else{
+					<h3 class="text-center">You have filled TimeSheet Today</h3><br><br><br> 
+				}
+			} else {
+				<h3 class="text-center">No Projects</h3><br><br><br>
+			}
+			</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	</form>
+	
+</section>
+
+}
+@footer(""){
+<script>
+
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd
+} 
+if(mm<10){
+    mm='0'+mm
+} 
+var today = dd+'-'+mm+'-'+yyyy;
+
+
+$('#demo').html(today);
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable()
+	});
+	
+	$('#fillTimesheet').formValidation();
+</script>
+} 

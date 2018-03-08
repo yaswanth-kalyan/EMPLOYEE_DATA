@@ -1,0 +1,96 @@
+@(list1:List[bean.DailyStatusDateWise])
+					@if(!list1.isEmpty && list1.size > 0){
+						@defining(list1.get(0).getUsersDailyReport.getDate.format("dd/MM/yyyy")){ date=>
+							<div align="center">
+							@*	<form action="@routes.AdminController.downloadExcelSheet()" method="get"> 
+							<input  type="submit" class="form-control " value="Excel Sheet Download">
+							<a href="/downloadExcelSheet"><i class="fa fa-download fa-1x"></i>Excel Sheet Download</a>
+							<a herf="/downloadExcelSheet" class="btn btn-raised btn-warning btn-sm"><i class="fa fa-download" style="font-size:16px"></i> Excel Sheet Download </a>
+							<a href="/downloadExcelSheet"><i class="fa fa-download fa-1x"></i>Excel Sheet Download</a>*@
+							<a href='@utils.ConstructReportUrl.urlCommonPart()ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2Fbb8_adminreport_bydate&date=@date&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>
+							@*<a href='http://158.85.160.189:8080/jasperserver/flow.html?_flowId=viewReportFlow&standAlone=true&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2Fbb8_adminreport_bydate&date=@date&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>*@
+							<a href="/downloadExcelSheet"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-download" style="font-size:16px"></i>Excel Sheet Download </button></a>
+						</div>
+						}
+						<table class="table" id="datatablenew">
+							  <thead>
+								<tr>
+									<th>AppUserName</th>
+								@*	<th>Date</th>*@
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								 	<th>Delete</th> 
+								</tr>
+							</thead>
+							<tbody>
+									@for((usersTimeSheet,index) <- list1.zipWithIndex) {
+									<tr>
+										<!--  <td>@{index+1}</td>-->
+										<td>@usersTimeSheet.getAppUser.getFullName</td>
+										@*<td>@usersTimeSheet.getUsersDailyReport.getDate.format("dd-MM-yyyy")</td>*@
+										<td>@for((todays,index)<-usersTimeSheet.getUsersDailyReport.getToday.zipWithIndex){
+											@{index+1}. @todays.getToday <br>
+											}</td>
+										<td>@for((tomorrow ,index)<-usersTimeSheet.getUsersDailyReport.getTomorrow.zipWithIndex){
+											@{index+1}. @tomorrow.getTomorrow <br>
+											}</td>
+										<td>@for((problem ,index)<-usersTimeSheet.getUsersDailyReport.getProblem.zipWithIndex){
+											@{index+1}. @problem.getProblem <br>
+											}</td>
+										<td>@usersTimeSheet.getUsersDailyReport.getRate</td>
+										<td>
+									 @if(models.DailyReport.checkDate(usersTimeSheet.getUsersDailyReport.getDate)){
+										<!-- <a href="/deleteDailyReport/@usersTimeSheet.getUsersDailyReport.getId/@usersTimeSheet.getUsersDailyReport.getDate"> <i class="fa fa-trash"></a></i> -->
+										<a href="javascript:void(0)" class="text-center deleteUserButton" userName="@usersTimeSheet.getAppUser.getFullName" data-href="/deleteDailyReport/@usersTimeSheet.getUsersDailyReport.getId"><i class="fa fa-trash"></i></a>
+										}  
+										</td>
+										
+									</tr>
+									}
+								</tbody>
+						</table>
+						
+						
+					}else{
+					<h5 class="text-center"><p class="bold">There is no reports for this Date</p></h5>
+					}
+					
+			<div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			
+<script>
+	//alert('ajax page')
+    $('#datatablenew').DataTable({
+    	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+        "iDisplayLength": 100	
+        });
+    
+    $('.deleteUserButton').click(function(e){
+	var name = $(this).attr('userName');
+	var url = $(this).attr('data-href');
+	$('#lblMsgConfirmYesNo').html("Are You sure wnt to delete Today Daily Repory : "+name);
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+		window.location.href = url;
+	});
+});
+</script>

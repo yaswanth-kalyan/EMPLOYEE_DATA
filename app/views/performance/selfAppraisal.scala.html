@@ -1,0 +1,213 @@
+@(selfAppraisalQuestionList : List[models.performance.PeQuestion])
+@import java.lang.Long; var last=0l;
+@header(" Self Appraisal ",12){
+<section>
+<style>
+.form-group.has-error label.control-label, .form-group.has-error .help-block {
+    color: #f44336 !important;
+}
+.form-horizontal .control-label {
+    text-align: center;
+}
+.form-group label.control-label {
+    margin: 0px 0 0 0 !important;
+}
+</style>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                	<a href="/performance/selfAppraisal" class="btn text-orange">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-5" >
+            			<h3 class="">Self Appraisal </h3>
+             		</div>
+             		<div class="col-md-4 text-left" >
+            			<button type="button" class="btn btn-raised btn-default margin-0">
+							<span>@PEController.getMonth.format("MM-yyyy")</span >
+						</button>
+             		</div>
+             		<div class="col-md-3 text-right">
+             			<a href="/performance/selfAppraisalHistory">
+							<button type="button" class="btn btn-primary btn-raised margin-0">History</button>
+						</a>
+		     		</div>
+                </div>
+               <div class="row">
+                 <div class="col-md-12">
+                        <div class="text-center">
+                        @if(PEController.getCondition){
+	                        @if(!models.performance.PeSelfAppraisal.checkSubmit(Long.parseLong(session.get("AppUserId")))){
+	                        	@if(models.performance.PeQuestion.getSelfTotalWeightage()){
+			                        <form class="form-horizontal" id="selfAppraisalForm" action="/performance/addselfAppraisal"  method="post">
+			                        	@for((selfAppraisalQuestion,index) <- selfAppraisalQuestionList.zipWithIndex){
+			                        		@(last = {index+1}) 
+				                                <div class="col-md-12">
+				                                <div class="col-md-10 col-md-offset-1">
+				                                    <div class="text-left ">
+				                                    <p>Q@{index+1}. 
+				                                    	<span> 
+				                                    		@for(observedValue <- PEController.convertReference(selfAppraisalQuestion.question)){
+																@observedValue
+																<br>
+															}	
+	                                    				@*@selfAppraisalQuestion.question *@
+	                                    				</span>
+				                                   	</p>
+				                                    </div>
+				                                    <input type="hidden" name="questionId[@index]" value="@selfAppraisalQuestion.id">
+				                                </div>
+				                                <div class="col-md-1 text-center">
+				                                	<button type="button" class="btn btn-warning btn-sm btn-raised taskdelbtn deleteSource marginAll0px qNote" value="@selfAppraisalQuestion.note">Note</button>
+				                                </div>
+				                                </div>
+				                                <div class="col-md-11 col-md-offset-1">
+				                                	<div class="form-group">
+														<div class="col-md-1  padding0 ">
+															<input type="radio" value="1" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">1
+															<br>Extremely Bad
+															</label>
+														</div>
+														<div class="col-md-1 ">
+															<input type="radio" value="2" name="rate[@index]" required />
+															<br>
+															<label class="control-label">2</label>
+														</div>
+														<div class="col-md-1 ">
+															<input type="radio" value="3" name="rate[@index]" required />
+															<br>
+															<label class="control-label">3</label>
+														</div>
+														<div class="col-md-1 ">
+															<input type="radio" value="4" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">4</label>
+														</div>
+														<div class="col-md-1 ">
+															<input type="radio" value="5" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">5</label>
+														</div>
+														<div class="col-md-1 ">
+															<input type="radio" value="6" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">6</label>
+														</div>
+														<div class="col-md-1">
+															<input type="radio" value="7" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">7</label>
+														</div>
+														<div class="col-md-1">
+															<input type="radio" value="8" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">8</lfda fdas fdabel>
+														</div>
+														<div class="col-md-1">
+															<input type="radio" value="9" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">9</label>
+														</div>
+														<div class="col-md-1 padding0">
+															<input type="radio" value="10" name="rate[@index]" required/>
+															<br>
+															<label class="control-label">10
+															<br>Extremely Good
+															</label>
+														</div>
+													</div>	
+				                               </div>
+				                              <div class="col-md-10 col-md-offset-1">
+				                              	<textarea class="form-control" minlength="100"  name="answer[@index]" rows="5" id="textArea" placeholder="Enter Text Min 100 Characters" required="required"></textarea>
+				                              </div>
+			                          	}
+			                          		<div class="col-md-12">
+				                              <div class="col-md-10 col-md-offset-1">
+				                              	<div class="text-left ">
+				                                    <p>Q@{last+1}. <span> Issues/concerns </span></p>
+				                                 </div>
+				                              </div>
+				                              <div class="col-md-1">
+				                                	<button type="button" class="btn btn-warning btn-sm btn-raised taskdelbtn deleteSource marginAll0px qNote" value="Enter Your Issues/concerns">Note</button>
+				                                </div>
+				                            </div>
+				                              <div class="col-md-10 col-md-offset-1">
+				                              	<textarea class="form-control"  name="issue" rows="5" id="textArea" placeholder="Enter Issues/concerns"></textarea>
+				                              </div>
+			                          	<div class="row">
+			                                <div class="col-md-12 " >
+			                                    <input type="submit" value="Submit" class="btn btn-primary btn-raised">
+			                                </div>
+			                            </div>
+			                            </form>
+		                            }else{
+		                            	<h3 class="text-center">Appraisal Form unavailable. Please contact HR !</h3>
+		                            }
+	                            }else{
+	                            	<h3 class="text-center">Self Appraisal for This Month has been submitted successfully, Thanks for your time !</h3>
+	                            }
+                            }else{
+                            	<h3 class="text-center">Appraisal Form will be available from 27th till 3rd of next month  !</h3>
+                            }
+                        </div>
+                    </div>
+                </div><br><br><br>
+            </div>
+        </div>
+
+	<div id="QNote" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">Note</h3>
+	            </div>
+	            <div class="modal-body">
+	                <textarea id="resNote" rows="5" style="width:100%;min-height:300px;" disabled="disabled"></textarea>
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo3" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo3">Yes</button>*@
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+	            </div>
+	        </div>
+	    </div>
+	</div> 
+</section>
+
+} @footer(""){
+<script>
+$(document).on('click', '.qNote', function() {
+	var Note=$(this).attr('value');
+	$("#resNote").text(Note)
+	$('#QNote').modal('show');
+	
+});
+$("#allTaskStatusTable").DataTable(); 
+$('#selfAppraisalForm').bootstrapValidator({
+	fields	: {
+		'rate[]' : {
+			message : "category cannot be empty",
+				validators : {
+				notEmpty : {
+							message : "Please select the category."
+						}
+					}
+			}
+		}
+});
+</script>
+ }
+ 
+ 
+ 

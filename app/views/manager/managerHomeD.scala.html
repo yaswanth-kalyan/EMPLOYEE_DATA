@@ -1,0 +1,172 @@
+@header("Home",0){
+<section class="container">
+<form action="@routes.EngineerController.dailyStatus1()" method="post" id="PayPalWizardForm" class="form-horizontal">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row heading-badge">
+						<h3>Manager DashBoard</h3>
+	        	</div>
+	        	<div class="panel-body col-md-12">
+					<div class="col-md-6">
+						<div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+					</div>
+					<div class="col-md-6">
+						<div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+					</div>
+				</div>
+				<div class="panel-body col-md-12">
+					<div class="col-md-6">
+						<div id="chartContainer3" style="height: 300px; width: 100%;"></div>
+					</div>
+					<div class="col-md-6">
+						<h3 class="text-center" style="font-weight: 600;font-family: arial, sans-serif;">Leaves</h3>
+						<div class="text-center  todayleaves">
+			       		   	<table class="table table-bordered" id="dtable1">
+			       		   		<thead>
+			       		   			<tr>
+			       		   				<th class="text-center">Leave Type</th>
+			       		   				<th class="text-center">No .oF Leaves</th>
+			       		   			</tr>
+			       		   		</thead>
+                           		<tbody>
+                           	 		@for(Name <- controllers.staticController.getTotalLeaves().keySet){
+                           	 			<tr>
+                           	 				<td>
+                           	 					@if(Name.equals("TO_BE_APPLIED")){
+                           	 						<a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@staticController.getToBeAppliedDates"   data-trigger="hover">@Name</a>
+                           	 					}else{
+                           	 						<a href="/leave/status" class="text-green-new">@Name</a>
+                           	 					}
+                           	 				</td>
+                           	 				<td>
+                           	 					<a href="#" class="text-orange-new">@controllers.staticController.getTotalLeaves().get(Name)</a>
+                           	 				</td>
+                           	 			</tr>
+                           	 		
+                           	 		}
+			       				</tbody>
+			       		 	</table>
+			          	</div>
+					</div>
+				</div> 
+		</div>
+	</div>
+  </form>
+</section>
+
+}
+@footer(""){
+<script type="text/javascript" src="/assets/js/canvasjs.min.js"></script>
+<script type="text/javascript">
+  window.onload = function () {
+var array1 = [];
+$.get('/get-pieChart4',function(data){
+	 $.each(data,function(index,value){
+		 array1.push({  x: (new Date(index)), y: value});
+		 });
+    var chart = new CanvasJS.Chart("chartContainer1",
+    {
+      theme: "theme2",
+      title:{
+        text: "This Week - Daily Status - Rating",
+        fontWeight: "bold"
+      },
+      animationEnabled: true,
+      axisX: {
+        valueFormatString: "DD-MM-YY",
+        interval:1,
+        intervalType: "day",
+        title: "Dates"
+        
+      },
+      axisY:{
+        includeZero: false,
+        title: "Rating"
+        
+      },
+      data: [
+      {        
+        type: "line",
+        //lineThickness: 3,        
+        dataPoints: array1
+      }
+      
+      
+      ]
+    });
+
+chart.render();
+});
+var array2 = [];
+$.get('/get-pieChart5',function(data){
+	 $.each(data,function(index,value){
+		 array2.push({  y: value, legendText: index,label: index});
+		 });
+var chart = new CanvasJS.Chart("chartContainer2",
+		{
+			title:{
+				text: "This Week - Hours -Time Sheet",
+				fontWeight: "bold"
+			},
+			exportFileName: "Pie Chart",
+	                animationEnabled: true,
+			legend:{
+				verticalAlign: "bottom",
+				horizontalAlign: "center"
+			},
+			data: [
+			{       
+				type: "pie",
+				showInLegend: true,
+				toolTipContent: "{legendText}: <strong>#percent%</strong>",
+				indexLabel: "{y} hrs",
+				dataPoints:array2
+		}
+		]
+		});
+		chart.render();
+});
+var array3 = [];
+$.get('/get-pieChart6',function(data){
+	 $.each(data,function(index,value){
+		 array3.push({  x: (new Date(index)), y: value});
+		 });
+	var chart = new CanvasJS.Chart("chartContainer3",
+		    {
+		      theme: "theme2",
+		      title:{
+		        text: "This Week - Attendance - Hours",
+		        fontWeight: "bold"
+		      },
+		      animationEnabled: true,
+		      axisX: {
+		        valueFormatString: "DD-MM-YY",
+		        interval:1,
+		        intervalType: "day",
+		        title: "Dates"
+		        
+		      },
+		      axisY:{
+		        includeZero: false,
+		        title: "No of Hours"
+		        
+		      },
+		      data: [
+		      {        
+		        type: "line",
+		        //lineThickness: 3,        
+		        dataPoints: array3
+		      }
+		      
+		      
+		      ]
+		    });
+
+		chart.render();
+});
+}
+</script>
+<script>
+	  $('[data-toggle="popover"]').popover();   
+	</script>
+} 

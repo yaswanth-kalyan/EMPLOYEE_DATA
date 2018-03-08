@@ -1,0 +1,140 @@
+@(appUsers : List[AppUser])
+@header("Daily status By User",3){
+	<div class="container"> 
+        <div class="panel">
+		        <div class="col-md-12">
+		        		@if(AdminController.checkIsMoreRoles()){
+							<a href="/admin/fill-status" class="btn">Today's</a> | 
+						}
+		                <a href="/daily-status" class="btn text-orange">Status Report By User</a> |
+		                 <a href="/daily-status-date" class="btn">Status Report By Date</a>
+		            </div>
+                 <div class="col-md-12 heading-badge">
+                    <h3>Daily status By User</h3>
+		        </div>
+           		 <div class="row">
+				<div class="col-md-8 col-md-offset-2">
+					<fieldset>
+						<div class="col-md-6 col-md-offset-3">
+							<div class="form-group">
+								<label for="userList" class="col-md-2 control-label">User</label>
+								<div class="col-md-10">
+									<select id="userList" class="form-control" autocomplete="off">
+										@if(!appUsers.isEmpty) {
+											<option value='0'>Select</option>
+										 @for(appUser <-appUsers ) {
+											<option value="@appUser.getId()">@appUser.getFullName</option>
+										 } } else {
+										 	<option value="0">No Users</option>
+										 }
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-md-offset-3" >
+						</fieldset>
+						<br /> <br />
+						<h5 class="text-center bold">Current Projects</h5>
+						<br />
+						<div id="currentProjects">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Sno</th>
+									<th>Project</th>
+									<th>Role</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+					</table>
+					</div>
+				 </div>
+				<div class="col-md-12">
+				<br><br>
+                    <div class="row">
+                    <h5 class="text-center bold">Weekly Report</h5>
+                      <div class="col-md-3 col-md-offset-5" >
+                            <div id="sandbox-container" align="center">
+                                <input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY" autocomplete="off" readonly>
+                            </div>
+                      </div>
+                      <div class="col-md-12">
+                    <br>
+				 <div class="col-md-12" id="dailyReportweek">
+                   <table class="table" id="rm">
+                                <thead>
+                                  <tr>
+                                    <th>Date</th>
+                                    <th>Yesterday's work</th>
+                                    <th>Plan for Today</th>
+                                    <th>Problem faced</th>
+                                    <th>Rating</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="rm1">
+                                  
+                                </tbody>
+                              </table>
+                    </div>
+                   </div>
+            </div>
+           </div>
+        </div>
+    </div>    
+ </div>   
+}
+@footer(""){
+<script>
+$('#userList').chosen();
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true,
+       weekStart: 1
+  });
+ $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    $("#dailyReportweek").show();
+	    $.get('/getWeekDR/' + firstDate + '/' + lastDate + '/' + $('#userList').val(), function(data) {
+	         console.log(data)
+	         $("#dailyReportweek").html(data);
+	     });
+	});
+	
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+
+	$(document).on('change', '#userList', function() {
+		//$("#dailyReportweek").closest("#rm").remove();
+		$("#dailyReportweek").hide();
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+    
+	
+</script>
+}

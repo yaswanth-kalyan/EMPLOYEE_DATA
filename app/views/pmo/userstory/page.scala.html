@@ -1,0 +1,26 @@
+@(epic:models.pmo.Epic, currentStory:models.pmo.UserStory)
+@header("UserStory",2) {
+<div class="container">
+<div class="panel" style="height:100%;">
+
+  <div class="row">
+    <div class="col-md-8">
+      @if(epic!=null) {
+      <div id="form-panel">
+        @form(epic.id)
+      </div>
+      <div id="details-panel">
+        @list(epic.userStories)
+      </div>
+    }
+    </div>
+    <div class="col-md-4">
+      <div id="right-panel">
+        @details(currentStory)
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+}

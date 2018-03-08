@@ -1,0 +1,245 @@
+@(appUsers:List[AppUser],projects:List[Projects],chatGroups:List[models.chat.ChatGroup])
+@header("All task",8){
+<section>
+	<form class="form-horizontal" id="addTaskForm" action="" method="post">
+		<div class="container">
+			<div class="col-md-12 panel">
+				<div class="row">
+					<a href="/allTasks" class="btn text-orange">All-Tasks</a> | <a
+						href="/taskTracker" class="btn">Configure Status</a>
+				</div>
+				<div class="row heading-badge">
+					<div class="col-md-12">
+						<h3 class="">Add Task</h3>
+					</div>
+
+				</div>
+				<div class="row alltask">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-2 col-md-offset-3">
+                                <div class="pull-left leave-label">  <label>Task Title <span class="asterisk"> * </span></label></div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group is-empty">
+									<input type="text" class="form-control" name="title"
+										required="required">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-2 col-md-offset-3">
+								<div class="pull-left">
+									<label class="control-label"> Description</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group is-empty">
+									<textarea class="form-control" name="description" rows="5"></textarea>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-offset-3">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Assign To</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-md-12">
+														<select class="form-control assigndrp commondrp" name="assignToId" id="assignTo" autocomplete="off">
+															<option value="">Select User</option>
+															@for(appUser<-appUsers){
+																<option value="@appUser.getId">@appUser.getFullName</option>
+																}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>			 	   
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Add Users</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-md-12">
+														<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+															@for(appUser<-appUsers){
+																<option value="@appUser.getId">@appUser.getFullName</option>
+																}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Project</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-md-12">
+														<select class="form-control" name="projectId" id="projectId" autocomplete="off">
+															<option value="">Select Project</option>
+															@for(project<-projects){
+																<option value="@project.getId">@project.getProjectName</option>
+																}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 padding-0">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Chat Group</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-md-12">
+														<select class="form-control" name="chatGroupId" id="chatGroup">
+															<option value="">Select ChatGroup</option>
+																@for(chatGroup<-chatGroups){
+																<option value="@chatGroup.id">@chatGroup.name</option>
+																}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4 col-md-offset-3">
+									<input type="submit" class="btn btn-success btn-raised"
+										value="create Task" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</form>
+</section>
+
+} @footer(""){
+<script>
+/*
+var drp1val ='';
+$(".assigndrp").on('change', function(){
+	 drp1val = $(this).val();
+	 $(".mychosen option").each(function(){ 
+	  	 if(drp1val == $(this).val()){
+		  	
+		 	 // $(".mychosen option").hide($(this).val());
+		 	 $("#addUser option[value=" + $(this).val() + "]").remove();	
+			 } 
+			 else 
+			 {
+				 $("#addUser option").add( $(this).val());	
+			 }
+			 
+       });
+});
+       */
+
+	$('select.chosen').chosen();
+	$('#assignTo').chosen();
+	$('#projectId').chosen();	
+	$('#chatGroup').chosen();
+	$("#addTaskForm").bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	title: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill title'
+                },
+               	remote: {
+                	message: 'Task Title Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistTaskTitle',
+                    data: function(validator) {
+                        return {
+                        	title: validator.getFieldElements('title').val()
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+
+
+
+	/*function resetOptions(){
+    $(".commondrp").each(function(){
+        $(this).children("option").show();
+    });
+}
+
+$('.commondrp').change(function() {
+    resetOptions();
+    $(".commondrp").each(function(){
+        var selectedVal = $(this).val();
+        var attrID = $(this).prop("id");
+        $(".commondrp").each(function(){
+            if($(this).prop("id") != attrID){
+                if(selectedVal != ""){
+                    $(this).children("option[value="+selectedVal+"]").hide();
+                }
+            }
+        });
+    });
+});
+
+
+	 var drp1val ='';
+$(".assigndrp").change(function(){
+	 drp1val = $(this).val();
+	 $(".mychosen option").each(function(){ 
+	  	 if(drp1val == $(this).val()){
+		 	  $(this).css('color','red')		
+		 	  alert("afger slect attru")
+				var x = $(this).val();
+					$(this).removeAttr('disabled');
+	    			//$(this).prop('disabled',false);
+	//			});
+			  // $(this).attr('disabled'); 
+			 } else {
+			 	  $(this).css('color','black')
+			 }
+			 
+       })
+*/
+
+
+//$('.nameDrop option[value="'+x+'"]').attr('disabled'); 
+</script>
+} 
+
+
+
+

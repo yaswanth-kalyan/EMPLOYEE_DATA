@@ -1,0 +1,70 @@
+@(PeSelfAppraisalList : List[models.performance.PeSelfAppraisal])
+@header(" Self Appraisal ",12){
+<section>
+<style>
+.wb{
+word-break: break-all;
+}
+</style>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/performance/selfAppraisal" class="btn text-orange">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+            		<h3 class="">History </h3>
+                </div>
+               <div class="row">
+               		<div class="text-center">
+                 		<div class="col-md-12">
+                        	<div class="col-md-5 text-right">
+                               <label for="inputEmail" class="control-label">Select Month </label>
+                            </div>   
+                            <div class="col-md-2">
+                                  <div id="sandbox-container">
+                                      <input type="text" id="selfAppraisalMonth" class="form-control text-center mydate" placeholder="MM-YYYY" required readonly>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="saMonthData"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+} @footer(""){
+<script>
+$('.mydate').datepicker({
+    format: 'mm-yyyy',
+    viewMode: 'months', 
+    minViewMode: 'months',
+    endDate: ' new Date()',
+    autoclose: true
+});
+
+$('#selfAppraisalMonth').on('changeDate', function (e) {
+    var date = $('#selfAppraisalMonth').val();
+    if (date != '0') {
+        $.get('/performance/monthSAppraisalHistory/' + date, function(data) {
+            console.log(data)
+            $("#saMonthData").html(data);
+        });
+    } else {
+        alert("Select Month");
+    }
+    
+});
+</script>
+ }
+ 
+ 
+ 

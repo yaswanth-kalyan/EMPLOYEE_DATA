@@ -1,0 +1,217 @@
+@header("Home",0){
+<section>
+<form action="#" method="post" id="PayPalWizardForm" class="form-horizontal">
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="row heading-badge">
+	            <h3>Manager Home</h3>
+	        </div>
+	        <br><br><br>
+	        <div class="panel-body col-md-12">
+	        		<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/manager/projects" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Projects</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/manager/fill-status" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-hourglass-start fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Daily Status</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/manager/fill-timesheet" class="panel panel-primary">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-text-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Time Sheet</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/attendance-history" class="panel panel-danger">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-building-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Attendence</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/leave-calendar" class="panel panel-primary">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-list fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Leaves</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/taskRender" class="panel panel-success">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-user-secret fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Task</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/reportsLandingPage" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-area-chart fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Reports</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/chat/connect" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-comment fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Chat</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div> 
+				</div>
+				<div class="panel-body col-md-12">
+					<div class="col-md-6">
+							 <div align="center">
+        						<h3 style="font-weight: 600;font-family: arial, sans-serif;">On Leave Today (Team Members)</h3>
+						       		   <div class="text-center  todayleaves">
+						       		   	<table class="table table-bordered" id="dtable1">
+			                           	 	<tbody>
+			                           	 	@if(!controllers.staticController.getManagerLeaves().isEmpty()){
+								       		   @for((appliedLeaves,index) <- controllers.staticController.getManagerLeaves().zipWithIndex){
+								       		  		<tr>
+								       		  			@if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.APPROVED)){
+								       		  			<td align="center"><a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  			}else {
+								       		  				@if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.PENDING_APPROVAL)){
+								       		  				<td align="center"><a href="#" class="text-orange-new" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  				}else{
+								       		  				<td align="center"><a href="#" class="leaves_color_absent" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  				}
+								       		  			}
+								       		  		</tr>
+								       		 	} 
+								       		 }else{
+													<div class="text-center  todayleaves">No Leaves</div>						       		 
+								       		 }
+						       			</tbody>
+						       		 </table>
+						          </div>
+						    </div>
+						</div>
+					<div class="col-md-6">
+						<h3 class="text-center" style="font-weight: 600;font-family: arial, sans-serif;">Leaves</h3>
+						<div class="text-center  todayleaves">
+			       		   	<table class="table table-bordered" id="dtable1">
+			       		   		<thead>
+			       		   			<tr>
+			       		   				<th class="text-center">Leave Type</th>
+			       		   				<th class="text-center">No .oF Leaves</th>
+			       		   			</tr>
+			       		   		</thead>
+                           		<tbody>
+                           	 		@for(Name <- controllers.staticController.getTotalLeaves().keySet){
+                           	 			<tr>
+                           	 				<td>
+                           	 					@if(Name.equals("TO_BE_APPLIED")){
+                           	 						<a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@staticController.getToBeAppliedDates"   data-trigger="hover">@Name</a>
+                           	 					}else{
+                           	 						<a href="/leave/status" class="text-green-new">@Name</a>
+                           	 					}
+                           	 				</td>
+                           	 				<td>
+                           	 					<a href="#" class="text-orange-new">@controllers.staticController.getTotalLeaves().get(Name)</a>
+                           	 				</td>
+                           	 			</tr>
+                           	 		
+                           	 		}
+			       				</tbody>
+			       		 	</table>
+			          	</div>
+					</div>
+				</div> 
+          </div>
+	</div>
+  </form>
+</section>
+
+}
+@footer(""){
+
+<!-- Twitter Bootstrap Wizard -->
+<script src="/assets/bower_components/twitter-bootstrap-wizard-jquery/jquery.bootstrap.wizard.min.js"></script>
+
+<!-- formValidation -->
+<script src="/assets/includes/js/formvalidation/formValidation.min.js"></script>
+<script src="/assets/includes/js/formvalidation/framework/bootstrap.min.js"></script>
+
+<!-- Bootstrap Material Design -->
+<script src="/assets/bower_components/bootstrap-material-design/dist/js/material.js"></script>
+<script src="/assets/bower_components/bootstrap-material-design/dist/js/ripples.js"></script>
+
+<!-- Custom JavaScript -->
+<script src="/assets/includes/js/pp-wizard-scripts.js"></script>
+<script>
+$(function(){
+ $(".alert").eq(1).hide(0).delay(100).fadeIn(1400);
+ $(".alert").eq(2).hide(0).delay(300).fadeIn(1800);
+ $(".alert").eq(3).hide(0).delay(6000).fadeIn(2200);
+})
+</script>
+} 

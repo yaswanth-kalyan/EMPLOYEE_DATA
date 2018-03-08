@@ -1,0 +1,605 @@
+@(jobs:List[models.recruitment.RecruitmentJob],skills:List[models.recruitment.RecruitmentSkill],jobCategories:List[models
+.recruitment.RecruitmentCategory],jobRoles:List[models.recruitment.RecruitmentRole],openJob:Integer,closeJob:Integer,deferedJob:Integer,job:models.recruitment.RecruitmentJob,crossedDeadLine:Integer,partialClosed:Integer)
+@header(" Openings",11){
+ 
+ <style>
+body{
+	background:#fff !important;
+}
+</style>
+	<section>
+        <div class="container-fluid padding-left0 padding-right0">
+    <div class="panel">
+        <div class="col-md-12">
+        			@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+						<a href="/recruitment/openings" class="btn text-orange">Openings<div class="ripple-container"></div></a> |
+               			<a href="/recruitment/applicants" class="btn ">Applicants</a> |
+				        <a href="/recruitment/recruitmentlandingpage" class="btn ">Configure</a> |
+				        <a href="/recruitment/jobReferralHistory" class="btn">Referrals</a> | 
+				    }
+				    @if(models.recruitment.InterviewerAppUser.checkAppUser(Long.parseLong(session.get("AppUserId")))){
+				        <a href="/recruitment/interviewerFeedback" class="btn">Interviewer Feedback</a> |
+				    }
+				        <a href="/recruitment/jobOpening" class="btn">Refer a friend</a>
+        </div>
+        <div class="col-md-12 heading-badge">
+        <div class="col-md-9">
+                    <h3>Manage Openings </h3>
+                    </div>
+                    @if(job!=null){
+                    <div class="col-md-3 text-right">
+		          				<input type="button" id="addOpening" value="Add New Opening" url="/recruitment/openings" class="btn btn-primary btn-raised marginAll0px">
+		          			</div>
+		          			}
+                </div>
+                
+		          			
+		          		 
+        	<div class="col-md-12">
+	            <div class="col-md-2  openingwellshadow"">
+	            		<div class="row">
+	                 	 	<h4 class="text-center font-weight-400 recruit-side-heading"> Summary</h4>
+	                  	</div>
+	                  <div class="row leftLabel">
+	                  		<div class="col-md-9">
+	                  			<div class="text-left"><b>
+		                  			<i class="fa fa-circle-thin fg-green" aria-hidden="true"></i>
+		                  			</b>Open</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-right">@openJob</div>
+	                  		</div>
+	                  </div>
+	                  <div class="row leftLabel">
+	                  		<div class="col-md-9">
+	                  			<div class="text-left"><b>
+		                  			<i class="fa fa-circle-thin fg-emerald" aria-hidden="true"></i>
+		                  			</b>Closed</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-right">@closeJob</div>
+	                  		</div>
+	                  </div>
+	                 <!--  <div class="row well well-sm">
+	                  		<div class="col-md-9">
+	                  			<div class="text-left">Partial Closed</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-right">1</div>
+	                  		</div>
+	                  </div> -->
+	                  <div class="row leftLabel ">
+	                  		<div class="col-md-9">
+	                  			<div class="text-left"><b>
+		                  			<i class="fa fa-circle-thin fg-blue" aria-hidden="true"></i>
+		                  			</b>Defered</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-right">@deferedJob</div>
+	                  		</div>
+	                  </div>
+	                  <div class="row leftLabel ">
+	                  		<div class="col-md-9">
+	                  			<div class="text-left"><b>
+		                  			<i class="fa fa-circle-thin fg-indigo" aria-hidden="true"></i>
+		                  			</b>Crossed Deadline</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-right">@crossedDeadLine</div>
+	                  		</div>
+	                  </div>
+	            </div>
+	             <div  class="col-md-8">
+                        
+                          <div class="col-md-12 table-responsive">
+                          <h4 class="text-center recrumentbold">All Openings</h4>
+                              <table class="table table-bordered " id="dtable2">
+	                           <thead>
+	                               <tr>
+	                               	   <th hidden="">S ID</th>
+	                                   <th class="text-center">Job_Id</th>
+	                                   <th class="text-center"> Opened On</th>
+	                                   <th class="text-center">Category</th>
+	                                   <th class="text-center">Role</th>
+	                                   <th class="text-center">Experience</th>
+	                                   <th class="text-center">No Of Openings</th>
+	                                   <th class="text-center">To be Closed By</th>
+	                                   <th class="text-center">Location</th>
+	                                   <th class="text-center"> Job Type</th>
+	                                   <th class="text-center">Status</th>
+	                                   <th class="text-center">Created By</th>
+	                                   <th class="text-center">Referrals</th>
+	                               </tr>
+	                           </thead>
+                                <tbody>
+                                @for(job<-jobs){
+										<tr onclick="window.document.location='/editOpenning/@job.id';">
+											<td hidden="">@job.id</td>
+											<td>@job.jobId</td>
+											<td>@job.openDate.format("dd-MM-yyyy")</td>
+											<td>@job.recruitmentCategory.jobCategoryName</td>
+											<td>@job.recruitmentRole.jobRoleName</td>
+											<td class="text-right">@job.jobExperience</td>
+											<td class="text-right">@job.noOfOpenning</td>
+											<td>
+											@if(job.lastDate!=null){
+											@job.lastDate.format("dd-MM-yyyy")
+											}</td>
+											<td>@job.jobLocation</td>
+											<td>@job.jobType</td>
+											<td>@job.jobStatus</td>
+											<td>@job.createdBy.getFullName</td>
+											<td>
+												<a href="/recruitment/jobByReferralHistory/@job.id" class="btn btn-primary btn-sm btn-raised marginAll0px">
+												<i class="fa fa-share-square" aria-hidden="true"></i>
+												</a>
+											</td>
+										</tr>
+									
+									}	
+                                </tbody>
+                              </table>
+                              
+                              
+                        </div>
+	            </div>
+	            @if(job==null){
+	          <form action="/recruitment/addJob" id="addJobOpening" method ="post" enctype="multipart/form-data">
+	            <div class="col-md-2 rightPanel">
+	            	<div class="row">
+		                  <h4 class="text-center font-weight-400 recruit-side-heading"> New Opening</h4>
+		             </div>
+	        	    <div class="col-md-12">
+		                  <div class="row ">
+		                  		
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Category<span class="asterisk"> * </span></label>
+	                                   <select name="jobCategory" class="form-control text-left" required="required">
+	                                 <option value="">Select</option>
+	                                  @for(jobCategory<-jobCategories){
+	                               			<option value="@jobCategory.id">@jobCategory.jobCategoryName</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+		                  		
+	                         <div class="form-group is-empty">
+	                               <label for="inputEmail" class="control-label">Role<span class="asterisk"> * </span></label>
+	                                 <select name="jobRole" class="form-control text-left" id="role" required="required">
+	                               <option value="">Select</option>
+	                                     @for(jobRole<-jobRoles){
+	                             			<option value="@jobRole.id">@jobRole.jobRoleName</option>
+	                             			}
+	                           </select>
+	                          </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Experience<span class="asterisk"> * </span></label>
+	                                  <input type="text" name="jobExperience"  pattern="^\d*(\.\d{1})?$" class="form-control" required="required"/>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">No Of Openings<span class="asterisk"> * </span></label>
+	                                  <input type="number" name="noOfOpenning" min="0" pattern="^[0-9]*$" class="form-control" required="required"/>
+	                                  <!--  <select name="noOfOpenning" class="form-control text-left" required="required">
+	                                 <option value="">Select</option>
+	                               			<option value="12">12</option>
+	                             </select> -->
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Job Location<span class="asterisk"> * </span></label>
+	                                   <select name="jobLocation" class="form-control text-left" >
+	                                 
+	                               			<option value="@models.recruitment.JobLocation.Hyderabad">@models.recruitment.JobLocation.Hyderabad</option>
+	                               			<option value="@models.recruitment.JobLocation.Bangalore">@models.recruitment.JobLocation.Bangalore</option>
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">job Type<span class="asterisk"> * </span></label>
+	                                   <select name="jobType" class="form-control text-left" required="required">
+	                                 <option value="">Select</option>
+	                               			<option value="@models.recruitment.JobType.Full_Time">@models.recruitment.JobType.Full_Time</option>
+	                               			<option value="@models.recruitment.JobType.Part_Time">@models.recruitment.JobType.Part_Time</option>
+	                               			<option value="@models.recruitment.JobType.Contract">@models.recruitment.JobType.Contract</option>
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+		                  		<div class="form-group is-empty">
+	                                  <label for="inputEmail" class="control-label">To be Closed By </label>
+	                                    <div class="row">
+	                                      <div class="col-md-12">
+	                                            <div id="sandbox-container">
+	                                                <input type="text" name="lastDate" class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+	                                            </div>
+	                                      </div>
+	                                    </div>   
+	                              </div> 
+		                  </div>
+
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Mandatory Skills</label>
+	                                   <select name="mandatorySkills[]" class="chosen form-control mychosen commondrp" multiple="multiple" id="mandatorySkills">
+	                                 <option value="0">Select</option>
+	                                 @for(skill<-skills){
+	                               			<option value="@skill.id">@skill.skillName</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Desired Skills</label>
+	                                       <select name="desiredSkills[]" class="chosen form-control mychosen commondrp" multiple="multiple" id="desiredSkills" >
+	                                 <option value="0">Select</option>
+	                                 @for(skill<-skills){
+	                               			<option value="@skill.id">@skill.skillName</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Status<span class="asterisk"> * </span></label>
+	                                   <select name="jobStatus" class="form-control text-left" >
+	                               			<option value="@models.recruitment.JobStatus.Open" default>@models.recruitment.JobStatus.Open</option>
+	                               			<option value="@models.recruitment.JobStatus.Closed" >@models.recruitment.JobStatus.Closed</option>
+	                               			<option value="@models.recruitment.JobStatus.Defered" >@models.recruitment.JobStatus.Defered</option>
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+			                  <div class="form-group">
+		                           <label for="inputEmail" class="control-label">Remarks </label>
+		                         <textarea class="form-control" name="remarks" rows="5" ></textarea>
+		                     </div>
+		            	</div>
+		            	<div class="row">
+		            	      <div id="img_text" ></div>     
+		            	     <div class="file-input-wrapper text-center">
+					              <button class="btn-file-input">Upload JD</button>
+					              <input type="file" name="jobDescription" id="jobDescription" value="" />      
+					         </div>
+					                	
+		          		</div>  
+		          		<div class="row">
+		          			<div class="text-center">
+		          				<input type="submit" value="Create Opening" class="btn btn-primary btn-raised btn-sm"/>
+		          			</div>
+		          		</div>  
+        			</div>
+        	</div>
+        	</form>
+        	}else{
+        	           
+        	    <form action="/recruitment/editOpenningAction" id="updateJObOpening" method ="post" enctype="multipart/form-data">
+	             <div class="col-md-2 rightPanel">
+	        	        <div class="row">
+		                  <h4 class="text-center font-weight-400 recruit-side-heading"> Update Opening</h4>
+		                  </div>
+	        	    <div class="col-md-12">
+		                  <div class="well well-sm text-center"> Job ID - <span class="fontweight-500">@job.jobId</span></div>
+		                  <div class="row">
+		                  		<input type="hidden" value="@job.id" name="id">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Category<span class="asterisk"> * </span></label>
+	                                   <select name="jobCategory" class="form-control text-left" required="required">
+	                                 <option value="">Select</option>
+	                                  @for(jobCategory<-jobCategories){
+	                                  	@if(job.recruitmentCategory==jobCategory){
+	                               			<option value="@jobCategory.id" selected="selected">@jobCategory.jobCategoryName</option>
+	                               			}else{
+	                               			<option value="@jobCategory.id">@jobCategory.jobCategoryName</option>
+	                               			}
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+		                  		
+	                         <div class="form-group is-empty">
+	                               <label for="inputEmail" class="control-label">Role<span class="asterisk"> * </span></label>
+	                                 <select name="jobRole" class="form-control text-left" id="role" required="required">
+	                               <option value="">Select</option>
+	                                     @for(jobRole<-jobRoles){
+	                                     	@if(job.recruitmentRole==jobRole){
+	                             			<option value="@jobRole.id" selected="selected">@jobRole.jobRoleName</option>
+	                             			}else{
+	                             			<option value="@jobRole.id">@jobRole.jobRoleName</option>
+	                             			}
+	                             			}
+	                           </select>
+	                          </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Experience<span class="asterisk"> * </span></label>
+	                                  <input type="text" value="@job.jobExperience" name="jobExperience"  pattern="^\d*(\.\d{1})?$" class="form-control" required="required"/>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">No Of Openings<span class="asterisk"> * </span></label>
+	                                  <input type="text" value="@job.noOfOpenning" name="noOfOpenning" pattern="^[0-9]*$" class="form-control" required="required"/>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Job Location<span class="asterisk"> * </span></label>
+	                                   <select name="jobLocation" class="form-control text-left" >
+	                                
+	                                        @if(job.jobLocation==models.recruitment.JobLocation.Hyderabad){
+	                               			<option value="@models.recruitment.JobLocation.Hyderabad" selected="selected">@models.recruitment.JobLocation.Hyderabad</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobLocation.Hyderabad">@models.recruitment.JobLocation.Hyderabad</option>
+	                               			}
+	                               			@if(job.jobLocation==models.recruitment.JobLocation.Bangalore){
+	                               			<option value="@models.recruitment.JobLocation.Bangalore" selected="selected">@models.recruitment.JobLocation.Bangalore</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobLocation.Bangalore">@models.recruitment.JobLocation.Bangalore</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">job Type<span class="asterisk"> * </span></label>
+	                                   <select name="jobType" class="form-control text-left" required="required">
+	                                 <option value="">Select</option>
+	                                        @if(job.jobType==models.recruitment.JobType.Full_Time){
+	                               			<option value="@models.recruitment.JobType.Full_Time" selected="selected">@models.recruitment.JobType.Full_Time</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobType.Full_Time">@models.recruitment.JobType.Full_Time</option>
+	                               			}
+	                               			@if(job.jobType==models.recruitment.JobType.Part_Time){
+	                               			<option value="@models.recruitment.JobType.Part_Time" selected="selected">@models.recruitment.JobType.Part_Time</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobType.Part_Time">@models.recruitment.JobType.Part_Time</option>
+	                               			}
+	                               			@if(job.jobType==models.recruitment.JobType.Contract){
+	                               			<option value="@models.recruitment.JobType.Contract" selected="selected">@models.recruitment.JobType.Contract</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobType.Contract">@models.recruitment.JobType.Contract</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+		                  		<div class="form-group is-empty">
+	                                  <label for="inputEmail" class="control-label">To be Closed By </label>
+	                                    <div class="row">
+	                                      <div class="col-md-12">
+	                                            <div id="sandbox-container">
+	                                             @if(job.lastDate!=null){
+	                                                <input type="text" name="lastDate" value="@job.lastDate.format("dd-MM-yyyy")" class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+	                                            }else{
+	                                            <input type="text" name="lastDate"  class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+	                                            }
+	                                            </div>
+	                                            
+	                                      </div>
+	                                    </div>   
+	                              </div> 
+		                  </div>
+
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Mandatory Skills</label>
+	                                   <select name="mandatorySkills[]" class="chosen form-control mychosen commondrp" multiple="multiple" id="mandatorySkills"  >
+	                                 <option value="0">Select</option>
+	                                 @for(skill<-skills){
+	                                 
+	                                 	 	@if(job.mandatorySkills.contains(skill)){
+	                               			<option value="@skill.id" selected="selected">@skill.skillName</option>
+	                               			}else{
+	                               			<option value="@skill.id">@skill.skillName</option>
+	                               			}
+	                               			
+	                               			
+	                               			
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Desired Skills</label>
+	                                       <select name="desiredSkills[]" class="chosen form-control mychosen commondrp" multiple="multiple" id="desiredSkills" >
+	                                 <option value="0">Select</option>
+	                                 @for(skill<-skills){
+	                                 	  @if(job.desiredSkills.contains(skill)){
+	                               			<option value="@skill.id" selected="selected">@skill.skillName</option>
+	                               			}else{
+	                               			<option value="@skill.id">@skill.skillName</option>
+	                               			}
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Status<span class="asterisk"> * </span></label>
+	                                   <select name="jobStatus" class="form-control text-left" >
+	                                        @if(job.jobStatus==models.recruitment.JobStatus.Open){
+	                               			<option value="@models.recruitment.JobStatus.Open" selected="selected">@models.recruitment.JobStatus.Open</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobStatus.Open">@models.recruitment.JobStatus.Open</option>
+	                               			}
+	                               			@if(job.jobStatus==models.recruitment.JobStatus.Closed){
+	                               			<option value="@models.recruitment.JobStatus.Closed" selected="selected">@models.recruitment.JobStatus.Closed</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobStatus.Closed" >@models.recruitment.JobStatus.Closed</option>
+	                               			}
+	                               			@if(job.jobStatus==models.recruitment.JobStatus.Defered){
+	                               			<option value="@models.recruitment.JobStatus.Defered" selected="selected" >@models.recruitment.JobStatus.Defered</option>
+	                               			}else{
+	                               			<option value="@models.recruitment.JobStatus.Defered" >@models.recruitment.JobStatus.Defered</option>
+	                               			}
+	                             </select>
+	                            </div> 
+		                  </div>
+		                  <div class="row">
+			                  <div class="form-group">
+		                           <label for="inputEmail" class="control-label">Remarks </label>
+		                         <textarea class="form-control" value="@job.remark" name="remarks" rows="5" >@job.remark</textarea>
+		                     </div>
+		            	</div>
+		            	@if(job.fileName!=null){
+		            	<div class="row" id="fileDescription">
+		            	     <div class="col-md-8 padding-left0"> 
+		            	      	<div id="img_text_update">@job.fileName</div>
+		            	      </div>
+		            	      <div class="col-md-2">	
+		            	      	<div class="col-md-2">	
+		            	      <button type="button"><a href="/downloadJobDescription/@job.id"><i class="fa fa-download" aria-hidden="true"></i></a></button>
+		            	      </div>
+		            	      </div>
+		            	       <div class="col-md-2">	
+		            	      	@if(models.recruitment.RecruitmentJob.getFileType(job.id)) {
+		            	      	<button type="button" id="viewJobDescription"><i class="fa fa-eye" aria-hidden="true"></i></button>
+		            	      	}
+		            	      </div>
+		            	  </div>
+		            	  }
+		            	  <div class="row">  
+		            	    <div id="img_text" ></div>    	   
+		            	     <div class="file-input-wrapper text-center">
+					              <button class="btn-file-input">Upload JD</button>
+					              <input type="file" name="jobDescription" id="jobDescription" value="" />   
+					                 
+					         </div>
+					                    	
+		          		</div>  
+		          		<div class="row">
+		          			<div class="text-center">
+		          				<input type="submit" value="Update Opening" class="btn btn-primary btn-raised btn-sm"/>
+		          			</div>
+		          		</div>  
+        			</div>
+        	</div>
+        	</form>
+        	
+        	}
+        	
+    </div>  
+    </div> 
+    <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">View Job Description</h3>
+			            </div>
+			            <div class="modal-body">
+			            @if(job != null){
+			               <iframe src="/getJobDescription/@job.id" style="width:100%;min-height:600px;" frameborder="0"></iframe>
+			               }
+			            </div>
+			            <div class="modal-footer">
+			               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>*@
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+</section>
+	
+}
+@footer(""){
+<script>
+$('#viewJobDescription').click(function(e){
+	$('#modalConfirmYesNo').modal('show');
+});
+
+$('select.chosen').chosen();
+$(document).on('click', '#addOpening', function() {
+	var url=$(this).attr('url');
+	window.location.href = url
+});
+
+ 
+$(document).ready(function() {
+	$("#dtable2").DataTable({
+		"order": [ 0, 'desc' ],
+		"aLengthMenu": [10, 25, 50,100,150,200,250,300 ],
+  		    "iDisplayLength": 100
+	 })
+	 $('.mydate1').datepicker({
+		 format: 'dd-mm-yyyy',
+	     autoclose: true
+	 })
+	 $("#dtable2 tbody tr").click(function(){
+		 var res = $(this).closest("tr").html()
+		 
+		  $(this).addClass("activeme")
+		$("tr").not(this).removeClass("activeme")
+	 });
+});
+	(function($){       
+        $('input[type="file"]').bind('change',function(){  
+            $("#fileDescription").addClass("hidden");         
+            $("#img_text").html($('input[type="file"]').val());
+        });
+    })(jQuery)
+$('#addJobOpening,#updateJObOpening').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	jobCategory: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Select Category'
+                }
+            }
+        },
+        jobRole: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Select Role'
+                }
+            }
+        },
+        jobExperience: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Fill Experience'
+                }
+            }
+        },
+        noOfOpenning: {
+            validators: {
+                notEmpty: {
+                    message: 'Please Fill No Of Openning'
+                }
+            }
+        },
+        jobLocation: {
+            validators: {
+                notEmpty: {
+                    message: 'Please select Location'
+                }
+            }
+        },
+        jobType: {
+            validators: {
+                notEmpty: {
+                    message: 'Please select Job Type'
+                }
+            }
+        }
+    }
+});
+    
+</script>
+}

@@ -1,0 +1,127 @@
+@(monthEDataList : List[bean.PEMonthEmployeesDataBean])
+@import java.lang.Long; var last=0l;
+
+	 		<div class="row">
+                 <div class="col-md-12">
+                        <div class="text-center">
+                        	<div class="col-md-12">
+                        		<table class="table table-bordered" id="dtable1">
+                        			<thead>
+                        				<tr>
+                        					<th>Emp Id</th>
+                        					<th>Emp Name</th>
+                        					<th>SAAR</th>
+                        					<th class="text-center">WAR</th>
+                        					<th>View Self Appraisal</th>
+                        					<th class="text-center">View PM's Appraisal</th>
+                        				</tr>
+                        			</thead>
+                        			<tbody>
+                        			@for((monthEData,index) <- monthEDataList.zipWithIndex){
+                        				
+                        				<tr>
+                        					<td>@monthEData.appUser.employeeId</td>
+                        					<td>@monthEData.appUser.FullName</td>
+                        					@if(monthEData.peSelfAppraisal != null){
+                        						@if(monthEData.peSelfAppraisal.Saar < 6 ){
+                        							<td class="fg-red text-right">@monthEData.peSelfAppraisal.Saar</td>
+                        						}else{
+                        							<td class=" text-right">@monthEData.peSelfAppraisal.Saar</td>
+                        						}
+                        						@if(monthEData.peSelfAppraisal.War != null && monthEData.peSelfAppraisal.War < 6 ){
+                        							<td class="fg-red text-right">@monthEData.peSelfAppraisal.War</td>
+                        						}else{
+                        							<td class="text-right">@monthEData.peSelfAppraisal.War</td>
+                        						}
+                        						<td>
+	                        						<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px viewSelf"  selfForm-id ="@monthEData.peSelfAppraisal.id" >
+	                        							<i class="fa fa-eye" aria-hidden="true"></i>
+	                        						</button>
+                        						</td>
+                        					}else{
+                        						<td class="text-right"></td>
+                        						<td class="text-right"></td>
+                        						<td class="text-right"></td>
+                        					}
+                        					<td class="text-left">
+                       						@for(pm <- monthEData.pmPeEmployeeAppraisalList){
+                       							@pm.projectManager.getFullName() (PR : 
+                       							@if(pm.getPr() < 6){
+                       								<span class="fg-red">@pm.getPr()</span>)
+                       							}else{
+                       								<span>@pm.getPr()</span>)
+                       							}
+                       							<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px viewEmployee" empForm-id = "@pm.id" >
+                       								<i class="fa fa-eye" aria-hidden="true"></i>
+                       							</button>
+                       							
+                       						}
+                        					</td>
+                        				</tr>
+                        			}
+                        			</tbody>
+                        		</table>
+	                        </div>
+                        </div>
+                    </div>
+                </div>
+     <div id="QNote" class="modal fade">
+	     <div class="modal-dialog modal-lg">
+			<div class="modal-content">
+	           @* <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">Self</h3>
+	            </div>*@
+	            <div class="modal-body modalbody-scroll">
+	               <div class="col-md-12" id="selectedMonthFormData" style="width:100%;min-height:800px;"></div>
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo3" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo3">Yes</button>*@
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+	            </div>
+	        </div>
+	    </div>
+	</div> 
+
+<script>
+$("#dtable1").DataTable({
+	"order": [ 3, 'asc' ],
+	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300,350,400,450,500 ],
+    "iDisplayLength": 100
+});
+$('.viewSelf').click(function(e){
+	var selfFormId = $(this).attr('selfForm-id');
+	//var month = $(this).attr('month');
+	//alert(selfFormId);
+    if (selfFormId != null) {
+    	$.get('/performance/PEMonthSeflHistory/'+selfFormId, function(data) {
+             $('#QNote').modal('show');
+             $("#selectedMonthFormData").html(data);
+        });
+    } else {
+    	 $("#selectedMonthFormData").html('<h3>Select Team Member And Month</h3>');
+    	 $('#QNote').modal('show');
+        //alert("Select Team Member");
+    }
+}); 
+
+$('.viewEmployee').click(function(e){
+	var empFormId = $(this).attr('empForm-id');
+	//alert(empFormId);
+    if (empFormId != null) {
+    	$.get('/performance/PEMonthEmployeeHistory/'+empFormId, function(data) {
+             $('#QNote').modal('show');
+             $("#selectedMonthFormData").html(data);
+        });
+    } else {
+    	 $("#selectedMonthFormData").html('<h3>Select Team Member And Month</h3>');
+    	 $('#QNote').modal('show');
+        //alert("Select Team Member");
+    }
+}); 
+</script>
+ 
+ 
+ 

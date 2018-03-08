@@ -1,0 +1,115 @@
+@(taskStatus : List[TaskStatus])
+@header("task Status",8){ 
+<section>
+     <form class="form-horizontal" id="TaskStatusForm" action="/task/addTaskStatus"  method="post"> 
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <div class="row">
+                    @if(session.get("AppUserRole") == "Admin"){
+                    <a href="/allTasks" class="btn ">All-Tasks</a> |
+                    <a href="/taskTracker" class="btn text-orange">Configure status</a>  
+                    }else{
+                    <a href="/myTasks" class="btn ">My-Tasks</a> |
+                    <a href="/taskTracker" class="btn text-orange">Configure status</a>
+                    }
+                </div>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Add New Status </h3>
+                </div>
+                <div class="row">
+                <div class="col-md-12">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                    <div class="pull-left leave-label">  <label>Status <span class="asterisk"> * </span></label></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="status" class="form-control upload" id="inputEmail" required="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                <div class="pull-left leave-label">  <label>Description</label> </div>
+                                </div>
+                                <div class="col-md-4">
+                                	<textarea class="form-control" name="description" rows="5" id="textArea"></textarea>
+                                </div>
+                            </div>
+                           <div class="row">
+                                <div class="col-md-12" >
+                                    <input type="submit" value="Submit" class="btn btn-primary btn-raised">
+                                </div>
+                            </div>
+                            
+		                 <div class="col-md-12 heading-badge">
+		                    	<h3 class="">Existing Task Status</h3>
+		                </div>
+		                <div class="col-md-8 col-md-offset-2">
+		                @if(!taskStatus.isEmpty){
+			                <table class="table" id="allTaskStatusTable">
+		                    	<thead>
+		                    		<tr>
+		                    			<th>Sno</th>
+		                    			<th>Status</th>
+		                    			<th>Description</th>
+		                    			<th>Option</th>
+		                    		</tr>
+		                    	</thead>
+		                    	<tbody>
+		                    	@for((status,index) <- taskStatus.zipWithIndex){
+		                    		<tr>
+		                    			<td align="left" >@{index+1}</td>
+		                    			<td align="left">@status.status</td>
+		                    			<td align="left">@status.description </td>
+		                    			<td align="center"><a href="/editConfigureTaskStaus/@status.id"><i class="fa fa-edit"></i></a></td>
+		                    		</tr>
+		                    		}
+		                    	</tbody>
+		                    </table>
+		                    }else{
+		                    	<h3 class="text-center">No Data Available</h3>
+		                    }
+		               </div>     
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+$("#allTaskStatusTable").DataTable(); 
+$("#TaskStatusForm").bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	status: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Status'
+                },
+               	remote: {
+                	message: 'Task Status Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistTaskStatus',
+                    data: function(validator) {
+                        return {
+                        	status: validator.getFieldElements('status').val()
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 

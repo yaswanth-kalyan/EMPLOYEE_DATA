@@ -1,0 +1,66 @@
+@(list1:List[bean.AttendanceAverageCalculation],from:String,to:String)
+					@if(!list1.isEmpty){
+						<table class="table" id="dtable1">
+							  <thead>
+								<tr>
+									<th>S.No.</th>
+									<th>Date</th>
+									<th>Average In Time</th>
+									<th>Average Out Time</th>
+									<th>Average Spent Hours</th>
+									<th>Average Essl In Time</th>
+									<th>Average Essl Out Time</th>
+									<th>Average Essl spent Hours</th>
+									<th>Essl Present</th>
+									<th>Register Present</th>
+									<th>Absent</th>
+									<th>WFH</th>
+									<th>Not Filled</th>
+								</tr>
+							</thead>
+							<tbody>
+									@for((attendance,index) <- list1.zipWithIndex) {
+									<tr>
+										<td>@{index+1}</td>
+										<td>@attendance.date.format("dd-MM-yyyy")</td>
+										<td>@if(attendance.inTime!=null){
+											@attendance.inTime.format("hh:mm a")
+											}</td>
+										<td>@if(attendance.outTime!=null){
+											@attendance.outTime.format("hh:mm:a")
+											}</td>
+											<td>@if(attendance.spendTime!=null){
+											@attendance.spendTime
+											}</td>
+											<td>@if(attendance.esslInTime!=null){
+											@attendance.esslInTime.format("hh:mm a")
+											}</td>
+											<td>@if(attendance.esslOutTime!=null){
+											@attendance.esslOutTime.format("hh:mm a")
+											}</td>
+											<td>@if(attendance.esslSpendTime!=null){
+											@attendance.esslSpendTime
+											}</td>
+										<td>@attendance.esslPresent</td>	
+										<td>@attendance.present</td>
+										<td>@attendance.absent</td>
+										<td>@attendance.WFH</td>
+										<td>@attendance.notFilled</td>
+										
+										
+									</tr>
+									}
+								</tbody>
+						</table>
+							 <div align="center">
+							<a href='@utils.ConstructReportUrl.urlCommonPart()ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FCompanyWeeklyAttendanceReport&from=@from&to=@to&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>
+							@*<a href='http://158.85.160.189:8080/jasperserver/flow.html?_flowId=viewReportFlow&standAlone=true&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FCompanyWeeklyAttendanceReport&from=@from&to=@to&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>*@
+							
+						</div>
+						
+					}else{
+					<h5 class="text-center"><p class="bold">There is no reports for this Date</p></h5>
+					}
+<script>
+//$("#dtable1").DataTable()
+</script>

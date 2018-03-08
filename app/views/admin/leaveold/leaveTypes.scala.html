@@ -1,0 +1,111 @@
+@(leave : models.leave.LeaveType)
+@header("configureLeaves",7){
+
+<section>
+    <form class="form-horizontal" id="addUserForm" action="@routes.AdminLeaveController.saveLeaveTypes()" enctype="multipart/form-data" method="post">
+        <div class="container">
+            <div class="panel">
+                 @secondNavbarLeaves(4)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">  Add New Leave Type</h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                         
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                  <div class="pull-left leave-label">   Leave Type</div>
+                                </div>
+                                <div class="col-md-3">
+                                	 <input type="text" name="id" class="form-control hidden" value="@if(leave != null){@leave.id}">
+                                    <input type="text" name="leaveType" class="form-control upload" id="inputEmail"  value="@if(leave != null){@leave.leaveType}" required>
+                                </div>
+                            </div>
+						<br/> 
+                           @* <div class="form-group is-empty hidden">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-3">
+                                        <div class="pull-left leave-label"> Carry Forword Balance </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="radio radio-primary">
+                                            <label>
+                                                <input type="radio" name="carryForward" value="true" @if(leave != null && !leave.carryForward){}else{checked="checked"} required>Yes
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="radio radio-primary">
+                                            <label>
+                                                <input type="radio" name="carryForward" value="false" @if(leave != null && !leave.carryForward){checked="checked"} required>No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                            <br/>
+                             <div class="row text-center">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <button type='submit' value="@if(leave != null){Update}else{Submit}" class="btn btn-primary btn-raised" />@if(leave != null){Update}else{Submit}</button>
+                                	@if(leave == null){
+                                        <button type='reset' class="btn btn-warning btn-raised hidden" >Reset</button>
+                                    }
+                                </div>
+                                
+                            </div>
+                            
+
+                        </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">  Existing  Leave Type  </h3>
+                </div>
+                    </div>
+                <div class="row">
+                 </div>
+                 <div class="col-md-10 col-md-offset-1">
+                 	<table class="table table-bordered table-striped leaves-table table-hov mytable" >
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Leave Type</th>
+                 				<th class="hidden">Carry Forword Balance</th>
+                 				<th>Options</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 		@for((leaveType,index) <- models.leave.LeaveType.find.all().zipWithIndex){
+                 			<tr>
+                 				<td>@(index+1)</td>
+                 				<td>@leaveType.leaveType</td>
+                 				<td class="hidden">@if(leaveType.carryForward){yes}else{no}</td>
+                 				<td align="center"><a href="@routes.AdminLeaveController.editLeaveType(leaveType.id)"><i class="fa fa-edit"></i></a></td>
+                 			</tr>
+                 			}
+                 			<!-- <tr>
+                 				<td>1</td>
+                 				<td>Compensatory Off</td>
+                 				<td>no</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a></td>
+                 			</tr> -->
+                 			<!-- <tr>
+                 				<td>1</td>
+                 				<td>Leave Without Pay</td>
+                 				<td>no</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a></td>
+                 			</tr> -->
+                 		</thead>	
+                 	</table>
+                 </div> 
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+		$(".leaves-table").dataTable();
+	</script>
+ }

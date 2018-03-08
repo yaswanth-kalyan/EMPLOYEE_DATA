@@ -1,0 +1,427 @@
+@header("CIR",0){
+  <section>
+    <div class="container">
+        <div class="panel">
+        	<br /> 
+                <div class="col-md-12 heading-badge">
+                    <div class="col-md-6">
+                     	<h3>Critical Incident Report</h3>
+                     </div>
+                     <div class="col-md-6 text-right">
+	                    <div  id="action" class="btn btn-primary btn-raised margin-0">
+	                     	Add CIR
+	                     </div>
+	                 </div>   
+                </div>
+		  	<div class="row">
+  		<div class="col-md-12" id="addIncidentF" hidden>
+<!--   					<div class="col-md-12 heading-badge"> -->
+<!--                     <div class="col-md-6"> -->
+<!--                      	<h3>Add Critical Incident Report</h3> -->
+<!--                      </div> -->
+<!--                 	</div> -->
+                <div class="col-md-12" style="border-right: 1px solid #D5D5D5;">
+                	<form class="form-horizontal fillStatus123" id="addIncidentForm" action="/addIncident" enctype="multipart/form-data" method="post" >
+	                    <div class="row">
+	                        <div class="col-md-12">
+	                            <fieldset>
+	                             	<div class="col-md-10 col-md-offset-1">
+	                             		<div class="row">
+	                                      <div class="form-group">
+	                                      	<div class="col-md-4 text-right">
+							                	<label for="select111" class=" control-label">Incident Related to <font color="red">*</font></label>
+							                </div>
+							                <div class="col-md-4">
+							                  	<select class="form-control chosen text-center" id="incidentOthers" name="incidentName" >
+							                  		<option value="" selected="selected">Select</option>
+							                  		@for(incident <- models.incident.IncidentType.values()) { 
+				                                    	<option value="@incident">@incident</option>
+						                            }
+<!-- 						                            <option value="Others">Others</option> -->
+							                  	</select>
+							                </div>
+							              </div>
+							             </div>
+							             <div class="row" id="Others123" hidden>
+	                                      <div class="form-group">
+	                                      	<div class="col-md-4 text-right">
+							                	<label for="select111" class=" control-label">Others <font color="red">*</font></label>
+							                </div>
+							                <div class="col-md-4" id="OtherInput">
+							                	<!-- <input class="form-control" type="text" value="Others" name="otherIncidentName" required="required"> -->
+							                </div>
+							              </div>
+							             </div>
+							             <div class="row"> 
+							              <div class="form-group">
+	                                      	<div class="col-md-4 text-right">
+							                	<label for="select111" class=" control-label">Description <font color="red">*</font></label>
+							                </div>
+							                <div class="col-md-4">
+							                    <textarea class="form-control cirDes" rows="5" name="description"></textarea> 
+							                </div>
+							              </div>
+							            </div>
+							             <div class="row"> 
+							              <div class="form-group text-right">
+							                 <div class="col-md-4">
+							                 	<label for="select111" class=" control-label">Uplaod Image</label>
+							                </div>
+							                <div class="col-md-2 text-left">
+							                	<label for="inputFile" class="control-label btn btn-raised">Upload Image</label>
+								                  <input type="file" name="image" id="inputFile" class="uploadimg">
+											</div>
+											<div class="col-md-3 text-left">
+												<img  src="" height="120" width="120" align="middle" class="avatar" id="viewimage">
+											</div>
+							              </div>
+							            </div>
+							            <div class="row">
+							            	<div class="text-center">
+							            		<button type="reset" class="btn btn-danger btn-raised">Clear</button>
+							            		<button type="submit" class="btn btn-primary btn-raised submit123" id="sbmtBtn">Submit</button>
+							            		
+							            	</div>
+							            </div>
+							              
+	                             	 </div> 
+	                            </fieldset>
+	                        </div>    
+	                    </div> 
+                    </form>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="col-md-12 heading-badge">
+                    <div class="col-md-6">
+                     	<h3>All Critical Incident Report List</h3>
+                     </div>
+                	</div>
+                </div>
+                
+                <div class="col-md-10 col-md-offset-1" >
+                    <table class="table" id="incidentTable">
+                    <thead>
+                      <tr>
+                        <th class="text-center">S.No.</th>
+                        <th class="text-center">Name</th>
+                        <th class="text-left">Description</th>
+                        <th class="text-center">Date - Time</th>
+                        <th class="text-center">Reported By</th>
+                        <th class="text-center">Image</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    @for((incident,index) <- models.incident.Incident.getAllIncident.zipWithIndex){
+                    	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+                      <tr>
+                        <td class="text-center">@(index+1)</td>
+                        <td class="text-center">@incident.incidentName</td>
+                        <td class="text-left">
+	                        @for(observedValue <- PEController.convertReference(incident.description)){
+								@observedValue
+								<br>
+							}
+                        </td>
+                        <td class="text-center">@incident.createdOn.format("dd-MM-yyyy - hh:mm a")</td>
+                        <td class="text-center">@incident.appUser.getFullName()</td>
+                        <td class="text-center">
+                        	@if(incident.image != null){
+	                        	<button type="button" class="btn btn-primary btn-sm btn-raised viewIncidentImage" id="" value="@incident.id"><i class="fa fa-eye" aria-hidden="true"></i></button>
+	                        	<button type="button" class="btn btn-success btn-sm btn-raised ">
+            	      				<a href="/downloadIncidentImage/@incident.id"><i class="fa fa-download" aria-hidden="true"></i></a>
+            	      			</button>
+                        	}
+                        </td>
+                      </tr>
+                       }else {
+                       		@if(session.get("AppUserRole") == "Manager" && (Application.getLoggedInUser().getId() == incident.appUser.getReportMangerId() || Application.getLoggedInUser().getId() == incident.appUser.getId())){
+		                     <tr>
+		                        <td class="text-center">@(index+1)</td>
+		                        <td class="text-center">@incident.incidentName</td>
+		                        <td class="text-left">
+		                        @for(observedValue <- PEController.convertReference(incident.description)){
+									@observedValue
+									<br>
+								}
+		                        </td>
+		                        <td class="text-center">@incident.createdOn.format("dd-MM-yyyy - hh:mm a")</td>
+		                        <td class="text-center">@incident.appUser.getFullName()</td>
+		                        <td class="text-center">
+		                        	@if(incident.image != null){
+			                        	<button type="button" class="btn btn-primary btn-sm btn-raised viewIncidentImage" id="" value="@incident.id"><i class="fa fa-eye" aria-hidden="true"></i></button>
+			                        	<button type="button" class="btn btn-success btn-sm btn-raised ">
+		            	      				<a href="/downloadIncidentImage/@incident.id"><i class="fa fa-download" aria-hidden="true"></i></a>
+		            	      			</button>
+		                        	}
+		                        </td>
+		                     </tr>
+                       		} else {
+                       			@if(Application.getLoggedInUser().getId() == incident.appUser.getId()){
+                       			<tr>
+		                        <td class="text-center">@(index+1)</td>
+		                        <td class="text-center">@incident.incidentName</td>
+		                        <td class="text-left">
+			                        @for(observedValue <- PEController.convertReference(incident.description)){
+										@observedValue
+										<br>
+									}
+		                        </td>
+		                        <td class="text-center">@incident.createdOn.format("dd-MM-yyyy - hh:mm a")</td>
+		                        <td class="text-center">@incident.appUser.getFullName()</td>
+		                        <td class="text-center">
+		                        	@if(incident.image != null){
+			                        	<button type="button" class="btn btn-primary btn-sm btn-raised viewIncidentImage" id="" value="@incident.id"><i class="fa fa-eye" aria-hidden="true"></i></button>
+			                        	<button type="button" class="btn btn-success btn-sm btn-raised ">
+		            	      				<a href="/downloadIncidentImage/@incident.id"><i class="fa fa-download" aria-hidden="true"></i></a>
+		            	      			</button>
+		                        	}
+		                        </td>
+		                     </tr>
+		                     }
+                       		}
+                       }
+                    }
+                    </tbody>
+                  </table>
+                  </div>
+  				</div>
+  			</div>
+  		</div>
+  </section>
+   <div id="viewImage" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">View Incident Image</h3>
+	            </div>
+	            <div class="modal-body">
+	            	<div class="col-md-12" id="selectedMonthFormData"></div>
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>*@
+	                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div> 
+	<div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Confirmation Message</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo">Are You sure you went to Submit? </h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+	<div class="modal fade" id="addOtherIncident" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" id="" class="close CancleButton" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" style="margin:0 !important;" align="center">Add New CIR Type</h4>
+	      </div>
+	      <div class="modal-body">
+	       <form class="form-horizontal" id="addNewIncidentForm" action="/addCIRType" method="post">
+	    				<div class="col-md-12">
+	     			 <div class="row cmpnyname">
+	                      <div class="col-md-3 ">
+	                          <div class="pull-left leave-label">  
+	                          	<label  class="control-label">CIR Type</label>
+	                           <span class="asterisk"> * </span></div>
+	                      </div>
+	                      <div class="col-md-5">
+	                      	 <div class="form-group">
+	                       	 <input type="text" class="form-control"  name="IncidentType" required="required"/>
+	                          </div>
+	                      </div>
+	                  </div>
+	                   <br><br>
+	                   <div align="center">
+	      			<button  type="submit" class="btn btn-primary btn-raised ">Submit</button>
+	      			<button  type="button" class="btn btn-danger btn-raised CancleButton" data-dismiss="modal">Cancel</button>
+	      	  </div>
+	                </div>
+	  			 </form>
+	      </div>
+	      <div class="modal-footer">
+	        @*<button type="button" class="btn btn-success" onclick="AddCompany();">Submit</button>
+	        <button type="button" class="btn btn-warning btn-raised" data-dismiss="modal">Cancle</button>*@
+	      </div>
+	    </div>
+	  </div>
+	</div>
+} @footer(""){
+<script>
+	$('.chosen').chosen();
+		$("#incidentTable").dataTable()
+		$('.uploadimg').change(function() {
+			 if (this.files && this.files[0]) {
+	            var reader = new FileReader();
+	            reader.onload = imageIsLoaded;
+	            reader.readAsDataURL(this.files[0]);
+	        }
+		 });
+
+		function imageIsLoaded(e) {
+		    $('#viewimage').attr('src', e.target.result);
+		};
+
+		$('.fillStatus123').on('submit',function(){
+		    $('.submit123').attr('disabled');
+		});
+		
+		$('#addIncidentForm').bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	incidentName: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Select Incident Name'
+		                }
+		            }
+		        },
+		        otherIncidentName: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please enter other Incident Name'
+		                }
+		            }
+		        },
+		        description: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please fill Description'
+		                }
+		            }
+		        }
+		    }
+		}).on('success.form.bv', function(e) {
+			if(!flag){
+	   		 	e.preventDefault();
+			}
+	    	$('#modalConfirmYesNo').modal('show');
+	});
+
+		var flag; 
+	    $('#btnYesConfirmYesNo').on('click',function(){
+	    	$(this).attr("disabled", true);
+	    	$('#modalConfirmYesNo').modal('hide');
+			$("#btnConfirmYes").attr("disabled", true);	
+	    	flag = true;
+	    	$('#addIncidentForm').submit();
+	     });
+	    $('#btnNoConfirmYesNo').on('click',function(){
+	    	flag = false;
+	    	$('#modalConfirmYesNo').modal('hide');
+	     });
+
+	    $('#modalConfirmYesNo').on('shown.bs.modal', function(e) {
+	    	$('#sbmtBtn').removeAttr('disabled');
+	    	$('#sbmtBtn').removeClass('disabled');
+		});
+
+		$('#addNewIncidentForm').bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	IncidentType: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Enter New Incident Type'
+		                },
+		                remote: {
+	                    	message: 'Incident Type Already Existed',
+	                        type: 'POST',
+	                        url: '/isExistIncidentType',
+	                        data: function(validator) {
+	                            return {
+	                            	IncidentType : validator.getFieldElements('IncidentType').val()
+	                            }
+	                        }
+	                	} 
+		            }
+		        }
+		    }
+		});
+		
+		$('.viewIncidentImage').click(function(e){
+			var id = $(this).attr('value');
+			$("#selectedMonthFormData").html('<img src="/getViewImage/'+id+'" style="width:100%;min-height:600px;" ></img>');
+			$('#viewImage').modal('show');
+		});
+
+		$('#CIRFormsubmit').click(function(e){
+			//var id = $(this).attr('value');
+			$('#modalConfirmYesNo').modal('show');
+		});
+		
+		$(document).ready(function(){  
+		    $("#action").click(function(){ 
+		    	$("#addIncidentF").slideToggle("slow");
+		    });  
+		});
+
+// 		$(document).on('change', '#IncidentOthers', function() {onclick="clicked();"
+// 			var name = $(this).val();
+// 			 if (name == 'Others') {
+// 				 $('#addOtherIncident').modal({backdrop:'static',keyboard:false, show:true});
+// 				 //$('#addOtherIncident').modal('show');
+// 				// $("#OtherInput").html('<input class="form-control" type="text" value="Other" name="otherIncidentName" required="required">');
+// 				 //$("#Others123").show();
+// 			 }else{
+// 				 $("#OtherInput").html('<input class="form-control" type="text" >');
+// 				 $("#Others123").hide();
+// 			 }
+// 		});
+
+// 		$(document).on('click','.CancleButton',function(e){
+// 				window.location.reload();
+// 				//$('#addIncidentForm')[0].reset();
+// 				//$('#addIncidentForm').data('formValidation').resetForm();
+// 		});
+	</script>
+<!-- <script type="text/javascript">
+
+
+//addIncidentForm
+ $('#addIncidentForm').submit(function(event) {
+	
+	var incOthers = $('#incidentOthers').val();
+	var cirDes = $('.cirDes').val();
+	if(incOthers.length == 0 || cirDes.length == 0){
+		 event.preventDefault();
+	}else{
+	$('#modalConfirmYesNo').modal({
+		backdrop : 'static',
+		keyboard : false,
+		show : true
+	});
+}
+});  
+
+$('#btnYesConfirmYesNo').click(function(e){
+	$("#modalConfirmYesNo").modal("hide");
+	$('#addIncidentForm').submit(e);
+	//$.post('/addIncident',$('#addIncidentForm').serialize(),function(data) {
+//			window.location.reload();
+//		});
+});
+        </script> -->
+}

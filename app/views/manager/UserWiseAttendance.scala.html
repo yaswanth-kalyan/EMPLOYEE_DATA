@@ -1,0 +1,100 @@
+ @(appUser:List[AppUser])
+ @header("attendance",4){
+  	<section>
+        
+    <div class="container">
+        <div class="panel">
+        	
+		        <div class="col-md-12">
+                <a href="/attendance-history" class="btn  ">My History</a> |
+                <a href="/user-wise-manager-attendance" class="btn text-orange">User-wise-report</a> |
+                <a href="/date-wise-manager-attendance" class="btn">Week-wise-report</a> 
+            </div>
+            <div class="panel-body">
+                 <div class="row">
+	                 <div class="col-md-12 heading-badge">
+	                    <h3>User wise Attendance</h3>
+			        </div>
+			     </div>   
+           		 <div class="row">
+					<div class="col-md-8 col-md-offset-2">
+							<div class="col-md-6 col-md-offset-3">
+								<div class="form-group">
+									<label for="userList" class="col-md-2 control-label">User</label>
+									<div class="col-md-10">
+										<select id="appusername" class="form-control">
+											<option value='0'>Select Engineer</option>
+											@for(dailyReport <-appUser) {
+												<option value=@dailyReport.getId>@dailyReport.getFullName</option>
+											 }
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+				 </div>
+      <div id="todays5"></div>  
+    </section>
+}
+@footer(""){
+<script>
+$(document).on('change', '#appusername', function() {
+	  var projectVal = $(this).val();
+	  if (projectVal == '0') {
+	 	 alert("Select Engineer");
+	  }
+	});
+
+$(document).on('change','#appusername',function(){
+	var timesheet = $('#appusername').val();
+	if(timesheet!='0')
+	{
+	$.get('/userwiseAttendanceWeekRender/'+timesheet,function(data){
+		 $("#todays5").html(data);
+	});
+	}
+});
+
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true,
+       weekStart: 1
+  });
+ $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(0).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(6).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    
+	    $.get('/getWeekDR/' + firstDate + '/' + lastDate + '/' + $('#userList').val(), function(data) {
+	         console.log(data)
+	         $("#dailyReportweek").html(data);
+	     });
+	});
+	
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+
+	$(document).on('change', '#userList', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+    
+	
+</script>
+}

@@ -1,0 +1,38 @@
+@(roadMap:models.pmo.RoadMap,projectId:Long)
+
+<form id="edit-form"  method="post" action="@controllers.pmo.routes.RoadMapController.updateRoadMap()">
+	  <div class="form-group">
+	    <label for="formGroupExampleInput">Name</label>
+	    <input type="text" class="form-control" id="formGroupExampleInput" name="title" value="@roadMap.getTitle()" placeholder="Roadmap Name ">
+	  </div><br>
+	  <div class="form-group">
+	    <label for="formGroupExampleInput2">Descriptions</label>
+	   <div class="form-group">
+	    <textarea class="form-control" rows="6" placeholder="description of the road map" name="description">@roadMap.getDescription()</textarea>
+	</div>
+	<input type="hidden" name="projectId"  value="@projectId">
+	<input type="hidden" name="roadmapId"  value="@roadMap.getId()">
+	 <div class="form-group">
+	     <div class="col-sm-offset-4 col-sm-10">
+	       <button type="submit" class="btn btn-primary btn-raised">update</button>
+	     </div>
+	   </div>
+	                   
+	  </div>
+</form>
+
+<script> 
+	$("#edit-form").bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	title: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                } 
+	            }
+	        } 
+	    }
+	});	</script>

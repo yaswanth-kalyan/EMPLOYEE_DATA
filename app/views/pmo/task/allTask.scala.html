@@ -1,0 +1,37 @@
+@(pTaskList:List[models.pmo.PTask])
+<div class="row">
+  <div class="col-md-12">
+    <div class="">
+      <div class="bs-component">
+        <div class="col-md-12">
+          <table class="table table-bordered" id="dtable2">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>EstimatedTime</th>
+                <th>ActualTime</th>
+                <th>%Done</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            @for((task,index) <- pTaskList.zipWithIndex){
+            <tr>
+            	<td>@{index+1}</td>
+            	<td><a href="#" onclick="editTask(@task.id)">@task.name</a></td>
+            	<td>@task.getEstimatedTime()</td>
+            	<td>@task.getActualTime() </td>
+            	@defining(task.getActualTime()/task.getEstimatedTime()){perDone =>
+            	<td>@{perDone*100} %</td>
+            	}
+            	<td><button type="button" onClick="deleteTask(@task.id)" class="btn btn-warning  btn-xs btn-raised" id="delete-task">Delete</button>
+           	</tr>
+           	}
+            </tbody>
+         	 </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

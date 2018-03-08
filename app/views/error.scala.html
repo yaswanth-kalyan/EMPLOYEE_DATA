@@ -1,0 +1,102 @@
+@(message : String , pNo : Integer)
+@header("Error Page",-1){
+<style>
+
+     	.error-bg {
+   background-color: #00c6bc ;
+}
+
+.error-404 {
+   margin-top: 10%
+}
+
+.error-logo {
+   margin-top: 8%
+}
+
+.error-404 .error-icon-new {
+   font-size: 80px;
+   color: #FFF;
+}
+
+.error-404 .error-header404 {
+   font-size: 80px;
+   color: #FFF;
+   font-weight:bold;
+}
+
+.error-404 h3 {
+   color: #fff;
+   
+   font-size: 22px;
+}
+
+.btn-error {
+   margin-top: 6%;
+   background-color: transparent;
+   border: 2px solid rgb(255, 255, 255);
+   color: rgb(255, 255, 255);
+   padding: 8px 36px;
+   font-weight: 500;
+}
+
+.btn-error:hover {
+   background-color: #fff !important;
+   color: #00c6bc  !important;
+   border: 2px solid #fff !important;
+}.uncnt-bg{
+  margin: 0px auto 0px 24%;
+   height: 256px;
+}.uncnt-btn{
+   padding: 6px 20px;
+   margin-left: -12px;
+}@@media(max-width:1024px){
+  .uncnt-btn{
+   padding: 6px 20px;
+      margin-left: 8%;
+} 
+}.pad-response{
+    padding:10px !important;
+}.eg_para{
+float: inherit !important;
+font-size: 12px !important;
+margin-bottom: 0px;
+font-weight: 400 !important;
+margin-top: 5px;
+}.padg20{
+   padding: 10px;
+}.newgoal-trackertab{
+   padding: 10px;
+   background-color: #fff;
+   margin-top:10px;
+}/***********404 error************/
+     </style>
+     <div class="container">
+         <div class="row error-404">
+         <div class="col-md-5 col-md-offset-1 error-logo text-center">
+                <img src="/assets/images/bb8_logo_thrymr.png" class="logo-image">
+             </div>
+             <div class="col-md-6  text-center">
+                 <div>
+                   <div class="error-icon-new"><i class="fa fa-exclamation-triangle"></i></div>
+                   @if(pNo == 0 ) {
+                     <h1 class="error-header404">404</h1>
+                     } else {
+                     <h1 class="error-header404">@pNo</h1>
+                     }
+                     @if(message.isEmpty()){
+                     <h3>Oops! The Page you requested was not found! </h3>
+                      } else {
+                     	<h3>Oops! @message! </h3> 
+                      }
+                     <a href="/home-page" type="button" class="btn btn-default btn-raised">Go Home</a>
+                    
+                 </div>
+             </div>
+             
+         </div>
+     </div>
+}       
+@footer(""){
+	
+}

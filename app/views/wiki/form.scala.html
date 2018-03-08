@@ -1,0 +1,56 @@
+@(page:models.wiki.Page)
+
+@header("Wiki",13) {
+<div class="container panel">
+<br>
+     <div class="row heading-badge">
+                    <div class="col-md-8">
+                    	<h3 class=""> Wiki Pages</h3>
+                    </div>
+                    <div class="col-md-4 text-right">
+                    	<a href="/wiki/pages">	
+                    		<input type="button" class="btn btn-primary btn-raised margin-0" value="All Wiki's">
+                    	</a>
+                     </div>	
+                    
+                </div>
+<form action="@controllers.wiki.routes.PageController.save" method="post" id="foam-id">
+  <div class="form-group">
+    <input type="text" class="form-control" id="formGroupExampleInput"  name="title" placeholder="Wiki Page Title" value="@page.title">
+
+	<textarea class="form-control" placeholder="Content" name="content" rows="30">@if(page.pageHistoryList.size > 0 ) {@page.getLastHistory().content}</textarea>
+    <input type="hidden" name="id" value="@page.id">
+  </div><br>
+    <button type="submit" class="btn btn-primary btn-raised" id="Wiki">@if(page != null && page.id != null){Update}else{Save}</button>
+    
+</form>
+
+
+</div>
+}
+@footer(""){
+<script type="text/javascript">
+
+$('#foam-id').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+   excluded: ':disabled',
+    fields: {
+    	title: {
+            validators: {
+                notEmpty: {
+                    message: 'Please enter title'
+                }
+            }
+        },
+        content: {
+            validators: {
+                notEmpty: {
+                    message: 'Please enter content'
+                }
+            }
+        },
+    }
+});
+</script>
+}

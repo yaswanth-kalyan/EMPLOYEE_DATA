@@ -1,0 +1,79 @@
+@(finalMap : Map[AppUser, List[Timesheet]] , finalMaprmk : Map[AppUser, TimesheetUserRemark] )
+@import java.lang.Float; var nhrs=0.0f;var tthrs=0.0f;
+					@if(!finalMap.isEmpty && finalMap.size > 0){
+						<table class="table" id="datatablenew">
+							  <thead>
+								<tr>
+									<th>AppUserName</th>
+									<th>Projects</th>
+									<th>Total Hours</th>
+									<th>Remarks</th>
+								</tr>
+							</thead>
+							<tbody>
+									 @for(appUser <- finalMap.keySet) {
+  		 								@(nhrs=0.0f)
+									<tr>
+										<td>@appUser.getFullName</td>
+										<td >
+											@for(timeSheet <- finalMap.get(appUser)){
+												@(nhrs+=timeSheet.hours)
+												@timeSheet.project.getProjectName (@timeSheet.hours)<br>
+											}
+										</td>
+										<td>
+											@(tthrs+=nhrs)
+											@nhrs
+										</td>
+										<td class="wb" >@finalMaprmk.get(appUser).remark</td>
+									</tr> 
+   									}
+								</tbody>
+						</table>
+						
+						
+					}else{
+					<h5 class="text-center"><p class="bold">There is no reports for this Date</p></h5>
+					}
+					
+			<div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+<style>
+.wb{
+word-break: break-all;
+}
+</style>	
+<script>
+	//alert('ajax page')
+    $('#datatablenew').DataTable({
+    	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+        "iDisplayLength": 100	
+        });
+    
+    $('.deleteUserButton').click(function(e){
+	var name = $(this).attr('userName');
+	var url = $(this).attr('data-href');
+	$('#lblMsgConfirmYesNo').html("Are You sure wnt to delete Today Daily Repory : "+name);
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+		window.location.href = url;
+	});
+});
+</script>

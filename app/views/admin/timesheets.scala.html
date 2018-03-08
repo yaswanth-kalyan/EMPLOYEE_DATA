@@ -1,0 +1,212 @@
+@(AppUser : List[AppUser],projects : List[Projects])
+@header("Time sheet",4){
+    <div class="container">
+        <div class="panel">
+      		 <div class="col-md-12">
+		                <a href="/time-sheets" class="btn text-orange">Time Sheet by User</a> |
+		                 <a href="/time-sheets-date" class="btn">Time Sheet by Date</a>
+		         </div>
+                <div class="col-md-12 heading-badge">
+                    <h3>Time sheet</h3>
+                </div>
+		  	<div class="row">
+  		<div class="col-md-6">
+  			<section>
+                <div class="col-md-12" style="border-right: 1px solid #D5D5D5;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset>
+                             <div class="col-md-10 col-md-offset-1">
+                                      <div class="form-group">
+                                      <div class="col-md-4 text-right">
+						                <label for="select111" class=" control-label">User </label>
+						                </div>
+						                <div class="col-md-8">
+						                  <select id="select111" class="form-control" autocomplete="off">
+						                    @if(!AppUser.isEmpty) {
+												<option value='0' id="Users">Select</option>
+										 			@for(AppUser <-AppUser ) {
+															<option value="@AppUser.getId()">@AppUser.getFullName</option>
+													 } 
+											} else {
+										 	<option value="">No Users</option>
+										 	}
+						                  </select>
+						                </div>
+						              </div>
+                              </div>
+
+                            </fieldset>
+                        </div>    
+                    </div> 
+                    <br />
+                    <br />
+                    <h5 class="text-center bold">Weekly Report</h5>
+                      <div class="col-md-6 col-md-offset-4">
+                            <div id="sandbox-container">
+                                <input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY">
+                            </div>
+                      </div>
+                    <br><br><br>
+				<div class="col-md-12" id="timeSheet">
+                    <table class="table">
+                    <thead>
+                      <tr>
+                       <th>Date</th>
+                       <th>Projects</th>
+                       <th>No.Of Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                 </div>
+                </div>
+    </section>
+  		</div>
+  		<div class="col-md-6"  style="padding-left:0px">
+  			<section>
+                <div class="col-md-12" style="padding-left:0px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset>
+                             <div class="col-md-10 col-md-offset-1">
+                                     <div class="form-group">
+						                <label for="select222" class="col-md-4 control-label">Project </label>
+						                <div class="col-md-8">
+						                  <select id="select222" class="form-control" autocomplete="off">
+						                    @if(!projects.isEmpty) {
+											<option value='0'>Select</option>
+										 	@for(project <-projects ) {
+											<option value="@project.getId()">@project.getProjectName</option>
+											 } } else {
+										 	<option value="">No Projects</option>
+										 	}
+						                  </select>
+						                </div>
+						              </div>
+                              </div>
+
+                            </fieldset>
+                        </div>    
+                    </div> 
+                    <br />
+                    <br />
+                    <h5 class="text-center bold">Weekly Report</h5>
+                      <div class="col-md-6 col-md-offset-4">
+                            <div id="sandbox-container">
+                                <input type="text" class="form-control mydate1" placeholder="DD-MM-YYYY - DD-MM-YYYY">
+                            </div>
+                      </div>
+                    <br><br><br>
+					<div class="col-md-12" id="ptimeSheet">
+                    <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Users</th>
+                        <th>No.Of Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  </div>
+                </div>
+        </div>
+    </div>    
+        
+    </section>
+  		</div>
+  	</div>
+}
+@footer(""){
+<script>
+$('#select111,#select222').chosen();
+ $('.mydate,.mydate1').datepicker({
+	 format: 'dd-mm-yyyy',
+     endDate: ' new Date()',
+     autoclose: true,
+     weekStart: 1
+  });
+ 
+ $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	   
+	    $.get('/getWeekTimeSheet/' + firstDate + '/' + lastDate + '/' + $('#select111').val(), function(data) {
+	         console.log(data)
+	         $("#timeSheet").html(data);
+	     }); 
+	    
+	});
+
+
+ 
+ $('.mydate1').on('changeDate', function (e) {
+	    value = $(".mydate1").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate1(dateVar)
+		    },10);
+	    $(".mydate1").val(dateVar);
+	   
+	    $.get('/getWeekPTimeSheet/' + firstDate + '/' + lastDate + '/' + $('#select222').val(), function(data) {
+	         console.log(data)
+	         $("#ptimeSheet").html(data);
+	     }); 
+	    
+	});
+  
+ $(document).on('change', '#select111', function() {
+     var projectVal = $(this).val();
+     if (projectVal == '0') {
+    	 alert("Select User");
+     }
+ });
+ 
+ $(document).on('change', '#select222', function() {
+     var projectVal = $(this).val();
+     if (projectVal == '0') {
+    	 alert("Select Project");
+     }
+ });
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+ }
+	function changeDate1(dateVar){
+		$(".mydate1").val(dateVar);
+ }
+
+
+	$(document).on('chosen:showing_dropdown','#select111,#select222',function(){
+		$('body').mCustomScrollbar('destroy');
+	});
+	$(document).on('chosen:hiding_dropdown','#select111,#select222',function(){
+		$('body').mCustomScrollbar();
+	});
+</script>
+}

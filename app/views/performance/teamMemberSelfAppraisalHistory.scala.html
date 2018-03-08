@@ -1,0 +1,118 @@
+@(appUserList : List[models.AppUser])
+@header(" Employee Appraisal ",12){
+<section>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/performance/selfAppraisal" class="btn ">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn text-orange">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-8 text-left" >
+            			<h3 class="">History - Self Appraisal by Team Member</h3>
+             		</div>
+             		@*<div class="col-md-4 text-center" >
+            			<button type="button" class="btn btn-raised btn-default margin-0">
+							<span>@PEController.getMonth.format("MM-yyyy")</span >
+						</button>
+             		</div>*@
+             		<div class="col-md-4 text-right">
+             			<a href="/performance/employeeAppraisalHistory">
+							<button type="button" class="btn btn-primary btn-raised margin-0">History - Employee Appraisal</button>
+						</a>
+		     		</div>
+                </div>
+               <div class="row">
+               		<div class="text-center">
+                 		@if(!appUserList.isEmpty){
+	               			<div class="col-md-12">
+	                        	<div class="col-md-5 text-right">
+	                               <label for="inputEmail" class="control-label">Select Month </label>
+	                            </div>   
+	                            <div class="col-md-3">
+	                                  <div id="sandbox-container">
+	                                      <input type="text" id="employeeAppraisalMonth" class="form-control text-center mydate" placeholder="MM-YYYY" required readonly>
+	                                  </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-12" id="appendUsers">
+	                 		<div class="col-md-12">
+	                 			
+		                        	<div class="col-md-5 text-right">
+		                               <label for="inputEmail" class="control-label">Select Team Member </label>
+		                            </div>   
+		                            <div class="col-md-3">
+		                                  <div id="sandbox-container">
+		                                  <select name="teamMember"  class="form-control text-left" id="teamMember" required="required">
+			                               		<option value="0">Select</option>
+			                                     @for( appUser <- appUserList) { 
+					                               <option value="@appUser.id">@appUser.getFullName()</option>
+							                     }
+			                           		</select>
+		                                  </div>
+		                            </div>
+		                            
+	                        </div>
+	                        <div class="col-md-12" id="thisMonthForm"></div>
+	                        </div>
+                        }else{
+	                        <h3 class="text-center">No Team Members !</h3>
+	                    }
+                    </div>
+                </div>
+                <br><br><br><br>
+            </div>
+        </div>
+
+</section>
+
+} @footer(""){
+<script>
+var datenew = '@PEController.getMonth()';
+datenew = moment(datenew).format("MM-YYYY");
+
+$('#teamMember').chosen();
+$('.mydate').datepicker({
+    format: 'mm-yyyy',
+    viewMode: 'months', 
+    minViewMode: 'months',
+    endDate: datenew,
+    autoclose: true
+});
+
+$('#employeeAppraisalMonth').on('change', function(e){
+	var month = $(this).val();
+    if (month != null) {
+    	$.get('/performance/monthTeamMemberList/'+ month, function(data) {
+             $("#appendUsers").html(data);
+        });
+    } else {
+    	 $("#appendUsers").html('<h3>Select Team Member And Month</h3>');
+        //alert("Select Team Member");
+    }
+});
+
+
+$(document).on('change', '#teamMember', function(e) {
+	var id = $(this).val();
+	var month = $('#employeeAppraisalMonth').val();
+    if (id != '0' && month != null) {
+    	$.get('/performance/monthteamSAppraisalHistory/' + id + '/'+ month, function(data) {
+             $("#thisMonthForm").html(data);
+        });
+    } else {
+    	 $("#thisMonthForm").html('<h3>Select Team Member And Month</h3>');
+        //alert("Select Team Member");
+    }
+});
+</script>
+}
+ 
+ 
+ 

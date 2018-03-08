@@ -1,0 +1,83 @@
+@import java.lang.Long; var last=0l;
+@header(" PE DashBoard ",12){
+<section>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+               	<a href="/performance/selfAppraisal" class="btn ">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn text-orange">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-9 text-left" >
+            			<h3 class="">PE DashBoard </h3>
+             		</div>
+             		@*<div class="col-md-4 text-left" >
+            			<button type="button" class="btn btn-raised btn-default margin-0">
+							<span>@PEController.getMonth.format("MM-yyyy")</span >
+						</button>
+             		</div>*@
+             		<div class="col-md-3 text-right">
+             			<a href="/performance/PEChart ">
+							<button type="button" class="btn btn-primary btn-raised margin-0">Performance Chart</button>
+						</a>
+		     		</div>
+                </div>
+               <div class="row">
+                 <div class="col-md-12">
+                        <div class="text-center">
+                        	<div class="col-md-12">
+	                        	<div class="col-md-5 text-right">
+	                               <label for="inputEmail" class="control-label">Select Month </label>
+	                            </div>   
+	                            <div class="col-md-2">
+	                                  <div id="sandbox-container">
+	                                      <input type="text" id="employeeAppraisalMonth" class="form-control text-center mydate" placeholder="MM-YYYY" required readonly>
+	                                  </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-12" id="selectedMonthData"></div>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+
+</section>
+
+} @footer(""){
+<script>
+var datenew = '@PEController.getMonth()';
+datenew = moment(datenew).format("MM-YYYY");
+
+$('#teamMember').chosen();
+$('.mydate').datepicker({
+    format: 'mm-yyyy',
+    viewMode: 'months', 
+    minViewMode: 'months',
+    endDate: datenew,
+    autoclose: true
+});
+$("#allTaskStatusTable").DataTable();
+$(document).on('change', '#employeeAppraisalMonth', function(e) {
+	var month = $(this).val();
+    if (month != null) {
+    	$.get('/performance/monthEmployeesHistory/'+ month, function(data) {
+             $("#selectedMonthData").html(data);
+        });
+    } else {
+    	 $("#selectedMonthData").html('<h3>Select Month</h3>');
+        //alert("Select Team Member");
+    }
+}); 
+</script>
+ }
+ 
+ 
+ 

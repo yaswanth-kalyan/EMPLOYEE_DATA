@@ -1,0 +1,356 @@
+@*@(message: String,projects : List[Projects],dailyReports : List[DailyReport],timeSheets : List[TimeSheet],AppUser : List[AppUser],musers : List[AppUser])*@ 
+@(appUser : AppUser)
+@header("Add User",1){  	
+<section>
+       <div class="container"> 
+        <div class="panel">
+      		<form class="form-horizontal" id="addUserForm" action="@routes.Application.registration()" enctype="multipart/form-data" method="post">
+            <div class="col-md-12">
+                <a href="/all-user" class="btn ">All User</a> |
+                <a href="/add-user" class="btn text-orange">+Add User</a>
+            </div>
+	        <div class="col-md-12 heading-badge">
+	            <h3>Add New User</h3>
+	        </div>
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <img src="http://wpuploads.appadvice.com/wp-content/uploads/2014/10/facebookanon.jpg" id="editimageDisplay" class="avatar">
+                <br>
+                <div class="form-group">
+                <div class="col-md-12">
+                	<label for="inputFile" class="control-label btn btn-raised">Upload Image</label>
+				</div>
+				
+                <div class="col-md-10">
+                  <input type="text" readonly="" class="form-control" placeholder="Browse..."  style="display:none">
+                  <input type="file" name="image" id="inputFile" multiple="" class="upload">
+                </div>
+              </div>
+                <!-- <a class="btn btn-link btn-info">Upload Image</a> -->
+            </div>
+            <div class="col-md-8">
+                <div class="">
+                    <div class="bs-component">
+                          <div class="col-md-8 col-md-offset-2">
+                                <fieldset>
+                                 <div class="form-group is-empty">
+                                      <label for="inputEmail" class="control-label">Full Name <span class="asterisk"> * </span> </label>
+                                      <input type="text" name="FullName" class="form-control upload" @if(appUser.FullName != null){value="@appUser.FullName" } id="inputEmail" required>
+                                  <span class="material-input"></span>
+                                  </div>
+                                      <div class="form-group is-empty">
+                                         <div class="row"> 
+                                             <div class="col-md-12">
+                                                <label for="inputEmail" class="control-label">Gender <span class="asterisk"> * </span> </label>
+                                             </div>
+                                            <div class="col-md-3">
+                                              <div class="radio radio-primary">
+                                                <label>
+                                                  <input type="radio"  name="gender" id="optionsRadios1" value="@models.Gender.Male" checked="" required><span class="circle"></span><span class="check"></span>Male
+                                                </label>
+                                              </div>
+                                           </div>
+                                            <div class="col-md-3">
+                                              <div class="radio radio-primary">
+                                                <label>
+                                                  <input type="radio"  name="gender" id="optionsRadios2" value="@models.Gender.Female" required><span class="circle"></span><span class="check"></span>Female
+                                                </label>
+                                              </div>
+                                            </div>
+                                          </div>     
+                                      </div>
+
+                                     <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Organisation  <span class="asterisk"> * </span> </label>
+                                          <input type="text" class="form-control" name="organisation" @if(appUser.organisation != null){value="@appUser.organisation" } id="inputEmail" required>
+                                      <span class="material-input"></span></div>
+                                    	<div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Joining Date  <span class="asterisk"> * </span>  </label>
+                                            <div class="row">
+                                              <div class="col-md-5">
+                                                    <div id="sandbox-container">
+                                                        <input type="text" name="jDate" class="form-control mydate" placeholder="DD-MM-YYYY" required readonly>
+                                                    </div>
+                                              </div>
+                                            </div>   
+                                    <span class="material-input"></span></div>
+                                    <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Date Of Birth </label>
+                                            <div class="row">
+                                              <div class="col-md-5">
+                                                    <div id="sandbox-container">
+                                                        <input type="text" name="dobirth" class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+                                                    </div>
+                                              </div>
+                                            </div>   
+                                    <span class="material-input"></span></div>
+                                     <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Job Title</label>
+                                            <input type="text" class="form-control" name="jobTitle" @if(appUser.jobTitle != null){value="@appUser.jobTitle" } id="inputEmail">
+                                     <span class="material-input"></span></div>    
+                                    <div class="form-group">
+                                          <label for="inputEmail" class="control-label">Asign Roles (you can select multiple roles)  <span class="asterisk"> * </span> </label>
+                                            <div class="row">
+                                                  <div class="col-md-12">
+				                                        <select name="roles[]" multiple="multiple" class=" chosen form-control text-left" required="required">
+					                                        @for(role<- models.Roles.values()) { 
+			                                        			<option value="@role">@role</option>
+					                                         }
+					                                    </select>
+                                                </div>
+                                        </div>
+                                    </div>    
+
+                                    <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Reporting Manager</label>
+                                            <select name="reportMangerId" class="form-control text-left" >
+		                                        <option value="0">Select</option>
+		                                        @for(rm<- models.AppUser.getAppManager()) { 
+                                        			<option value="@rm.id">@rm.FullName</option>
+		                                         }
+		                                    </select>
+                                     <span class="material-input"></span>
+                                     </div> 
+                                    <div class="form-group is-empty">
+
+                                          <label  class="control-label">Contact Number  <span class="asterisk"> * </span> </label>
+                                            <input type="tel" class="form-control" pattern="^[0-9]*$" name="mobileNo" minlength="10" maxlength="15" @if(appUser.mobileNo != 0){value="@appUser.mobileNo" } id="inputEmail" title="please enter a 10 digit number " required>
+
+                                     <span class="material-input"></span></div> 
+                                    <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">E-mail id  <span class="asterisk"> * </span> </label>
+                                            <input type="email" class="form-control" name="email" @if(appUser.email != null){value="@appUser.email" } id="inputEmail" required>
+                                    	 <span class="material-input"></span>
+                                     </div>
+                                  
+                                   <div class="form-group is-empty hidden">
+                                          <label for="inputEmail" class="control-label">Password  <span class="asterisk"> * </span> </label>
+                                            <input type="password" class="form-control" name="password" id="inputEmail" >
+                                     <span class="material-input"></span>
+                                     </div>  
+                                     
+                                     <div class="form-group is-empty hidden">
+                                          <label for="inputEmail" class="control-label">Re-Type Password  <span class="asterisk"> * </span> </label>
+                                            <input type="password" class="form-control" name="password1" id="inputEmail" >
+                                     <span class="material-input"></span>
+                                     </div>  
+                                     <!-- <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Experience</label>
+                                            <select name="experience" class="form-control text-left" >
+		                                         @for(period<- models.ProbationPeriod.values()) { 
+			                                        <option value="@period">@period</option>
+					                              }
+		                                    </select>
+                                     <span class="material-input"></span>
+                                     </div> --> 
+                                     <div class="form-group is-empty ">
+                                          <label for="inputEmail" class="control-label">GitHub ID  </label>
+                                            <input type="text" class="form-control" name="gitId" id="inputEmail" >
+                                     <span class="material-input"></span>
+                                     </div>  
+                                     
+                                     <div class="form-group is-empty ">
+                                          <label for="inputEmail" class="control-label">Employee ID </label>
+                                            <input type="text" class="form-control" name="employeeId" title="please" id="inputEmail" >
+                                     <span class="material-input"></span>
+                                     </div>  
+                                     
+                                     <div class="form-group is-empty ">
+                                          <label for="inputEmail" class="control-label">ESSL ID </label>
+                                            <input type="text" class="form-control" name="esslId">
+                                     <span class="material-input"></span>
+                                     </div> 
+                                     
+
+                                  <div class="form-group">
+                                    <div class="text-center">
+                                      <button type="reset" class="btn btn-warning btn-raised">Clear</button>
+                                      <button type="submit" class="btn btn-primary btn-raised">Submit</button>
+                                    </div>
+                                  </div>
+                                  </fieldset></div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+		    </form>   
+        </div>
+        </div>
+</section>
+}
+@footer(""){
+
+<script>
+	$('.chosen').chosen();
+	$('.mydate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	}).on('changeDate', function(e) {
+		// Revalidate the date field
+		$('#addUserForm').formValidation('revalidateField', 'jDate');
+	});
+	$('.mydate1').datepicker({
+		format : 'dd-mm-yyyy',
+		autoclose : true
+	}).on('changeDate', function(e) {
+		$('#addUserForm').formValidation('revalidateField', 'dobirth');
+	});
+	$('.upload').change(function() {
+		readURL(this, '#editimageDisplay');
+	});
+	function readURL(input, id) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$(id).attr('src', e.target.result);
+			}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	$('#addUserForm')
+			.bootstrapValidator(
+					{
+						framework : 'bootstrap',
+						// This option will not ignore invisible fields which belong to inactive panels
+						excluded : ':disabled',
+						fields : {
+							FullName : {
+								validators : {
+									notEmpty : {
+										message : 'Please Enter Full Name'
+									},
+									remote : {
+										message : 'User Name Already Existed',
+										type : 'POST',
+										url : '/isExistUserName',
+										data : function(validator) {
+											return {
+												FullName : validator
+														.getFieldElements(
+																'FullName')
+														.val()
+											}
+										}
+									}
+								}
+							},
+							gender : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill this field'
+									}
+								}
+							},
+							organisation : {
+								validators : {
+									notEmpty : {
+										message : 'Please Enter Organisation'
+									}
+								}
+							},
+							jDate : {
+								validators : {
+									notEmpty : {
+										message : 'Please Choose Joining Date'
+									}
+								}
+							},
+							/*  jobTitle: {
+							       validators: {
+							           notEmpty: {
+							               message: 'Please Choose an option'
+							           }
+							       }
+							   }, */
+							'roles[]' : {
+								validators : {
+									notEmpty : {
+										message : 'Please Choose Roles'
+									}
+								}
+							},
+							reMgnr : {
+								validators : {
+									notEmpty : {
+										message : 'Please Choose an option'
+									}
+								}
+							},
+							email : {
+								validators : {
+									notEmpty : {
+										message : 'Please Enter Email-ID'
+									},
+									remote : {
+										message : 'Email-ID Already Existed',
+										type : 'POST',
+										url : '/isExistUserEmailId',
+										data : function(validator) {
+											return {
+												email : validator
+														.getFieldElements(
+																'email').val()
+											}
+										}
+									}
+								}
+							},
+							mobileNo : {
+								validators : {
+									notEmpty : {
+										message : 'Please Enter Contact No'
+									},
+									remote : {
+										message : 'Mobile-No Already Existed',
+										type : 'POST',
+										url : '/isExistUserMno',
+										data : function(validator) {
+											return {
+												mobileNo : validator
+														.getFieldElements(
+																'mobileNo')
+														.val()
+											}
+										}
+									}
+								}
+							},
+
+							esslId : {
+								validators : {
+									regexp : {
+										regexp : /^[0-9]+$/i,
+										message : 'The essl Id can consist Non negative Number only'
+									},
+
+									remote : {
+										message : 'Essl Id is already exist',
+										type : 'POST',
+										url : '/isExistUserEsslId',
+										data : function(validator) {
+											return {
+												esslId : validator
+														.getFieldElements(
+																'esslId').val(),
+												id : $('#userId').val()
+											}
+										}
+
+									}
+								}
+							},
+							employeeId : {
+								validators : {
+									regexp : {
+										regexp : /^[a-zA-Z0-9]+$/i,
+										message : 'The full name can consist of alphabetical characters and spaces only'
+									}
+								}
+							}
+
+						}
+					});
+</script>
+}

@@ -1,0 +1,199 @@
+.searchtaskmiddle{
+	background:#fff !important;
+	color:#000 !important;
+	border:2px solid #000;
+	padding-left:10px;
+}
+.taskdelbtn{
+	padding:0px !Important;
+	margin:3px !important;
+}
+.taskstar-brdr{
+	color:#F89E33;
+}
+.taskstar-bg{
+	color:#F89E33;
+}
+
+.mychkbox{
+    display: none;
+    width: 100%;
+    padding: 5px 0px;
+    background-color: #fff; 
+    margin:1px 0px;
+  }
+ .list-chanel{
+    width: 100%;
+    padding: 5px 10px;
+    margin: 2px 0px;
+    border: 1px dotted #ddd;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    
+  }
+  .list-chanel:hover{
+  	background:#ddd;
+  	cursor: pointer;
+  }
+  .top:hover , .bottom:hover{
+  	background:#ddd !important;
+  	cursor: pointer;
+  }
+  .taskleft-trash{
+  		display: none;
+   }
+  .list-chanel:hover .panel-edit{
+    display: inline-block;
+  } 
+  .list-chanel:hover .taskleft-trash{
+    display: inline-block;
+  } 
+  .panel-edit{
+    display: none;
+  }
+  .chkboxwrap{
+    margin: 5px 0px;
+    padding: 6px 4px;
+    display: block;
+    border: 1px solid #D2D2D2;
+    border-top:5px solid #fff;
+  }
+  .activemiddlediv{
+    background: #cecece; 
+  }
+  .task-title{
+  	padding:5px 14px;
+  	margin:3px 0px;  
+  	font-weight:500
+  }
+  .task-title-userdetails{
+  	padding:5px 14px;
+  	margin:3px 0px; 
+  	
+  }
+  .restore-pos{
+  	position:fixed;
+  	bottom:10px;
+  	width:95%;
+  }
+  .tasktable{
+  	background:#fff;
+  }
+  .task-right-cmn{
+  	padding:10px;
+  	margin-top:2px;
+  	background: #fbfbfb;
+  }
+  .comment-p::first{
+  	margin-top:320px;
+  }
+  .comment-p{
+  	padding:10px;
+  	margin:2px 0px;
+  	background: #E6E2E3;
+  	display:block
+
+  }
+  
+  .commentshow{
+		min-height:30px;
+	    height:auto;
+	 	padding:5px 3px 10px 3px;
+	  	background:#f5f5f5; 
+	  	margin-top:2px;
+	  	border-bottom:1px solid #ddd;
+  }
+  .commentshow .taskchat{
+		float:left;
+		width:4%;
+		margin-left:3px; 
+		font-size:12px;
+     }
+  .commentshow  .tasktime{
+	    color:#000;
+		font-size:12px;
+		width:82%;
+     } 		
+  #commenttxtbx{
+  	margin-top:25px;
+  	border-top:3px solid #ddd;
+  }
+  .update-task-clsmdl{
+  	position:relative;
+  	top: -20px; 
+  }
+ .commentshow .chat-msg {
+    width: 94%;
+    clear: both;
+    /* padding: 5px 3px 15px 3px; */
+    margin-left: 6%;
+}
+  .nowellshadow{
+  	box-shadow: none !important;
+	margin-bottom: 3px !important;
+    padding-bottom: 0px !Important;
+  }
+  .taskcretedby{
+  	font-size:10px;
+  }.showhidelink{
+		color:#fff;
+		font-weight:bold;
+	}
+	.entertasksrh .srh{
+		border:1px solid #ddd;
+		padding-left:5px;
+		border-bottom:0px !important;
+	}
+	#taskName{
+		color:#fff;
+	}	
+   
+   
+   
+   /*     edit task*/
+   
+@@media screen and (min-width: 768px) and (max-width: 1366px)
+{	
+	.taskRight-btmscroll{
+		min-height:20vh !important;
+		max-height:20vh !important;
+		overflow-y:auto; 
+	}
+	
+}
+@@media screen and (min-width: 1080px) and (max-width: 1920px){
+	.taskRight-btmscroll{
+		min-height:45vh;
+		 max-height:45vh;
+		overflow-y:auto;
+	}
+}	
+	.taskRight-topscroll{
+		margin-top:10px;
+		min-height:10vh; 
+		overflow-y:auto;
+	
+	}
+	.taskright-btm-main{
+		min-height:10vh; 
+		max-height:45vh;
+		overflow:auto;
+		background:#fff;
+		border:1px solid #ddd;
+	}
+	.comment-txta {
+   		min-height: 35px;
+		max-height:100px;
+		margin-top:2px;
+		border-top:3px solid #ddd;
+		margin-bottom:1px !important;;
+		padding-left:8px;
+	}
+	.taskchat-wrap{
+	}
+	.TaskCommentTime{
+		font-size:9px;
+	}
+	
+	/*edit task close*/

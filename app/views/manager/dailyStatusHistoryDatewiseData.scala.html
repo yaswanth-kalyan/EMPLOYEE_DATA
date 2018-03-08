@@ -1,0 +1,49 @@
+@(list1:List[bean.DailyStatusDateWise],date:String)
+
+  	
+	     
+					@if(!list1.isEmpty){
+						<a href="/exlsheetDailystatusDateWise/@date" class="btn text-orange" class="text-center">Download Excel</a>
+						<table class="table tb">
+							  <thead>
+								<tr>
+								   <th>S.No.</th>
+									<th>Engineer</th>
+									<th>Date</th>
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								</tr>
+							</thead>
+							<tbody>
+									@for((usersTimeSheet,index) <- list1.zipWithIndex) {
+									<tr>
+										<td>@{index+1}</td>
+										<td>@usersTimeSheet.getAppUser.getFullName</td>
+										<td>@usersTimeSheet.getUsersDailyReport.getDate.format("dd-MM-yyyy")</td>
+										<td>@for((todays,index2)<-usersTimeSheet.getUsersDailyReport.getToday.zipWithIndex){
+											@{index2+1}. @todays.getToday<br>
+											}</td>
+										<td>@for((tomorrow,index3)<-usersTimeSheet.getUsersDailyReport.getTomorrow.zipWithIndex){
+											@{index3+1}. @tomorrow.getTomorrow<br>
+											}</td>
+										<td>@for((problem,index4)<-usersTimeSheet.getUsersDailyReport.getProblem.zipWithIndex){
+											@{index4+1}. @problem.getProblem<br>
+											}</td>
+										<td>@usersTimeSheet.getUsersDailyReport.getRate</td>
+									</tr>
+									}
+								</tbody>
+						</table>
+					}else{
+					<h3 class="text-center">No report this week</h3>
+					}
+			
+	<script>
+$('.tb').DataTable({
+	 "iDisplayLength": 100	
+});
+</script> 
+
+

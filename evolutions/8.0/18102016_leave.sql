@@ -1,0 +1,2 @@
+Alter table date_wise_applied_leaves add column applied_leave_type character varying(10) default 'Planned';
+alter table date_wise_applied_leaves add CONSTRAINT ck_date_wise_applied_leaves_applied_leave_type CHECK (applied_leave_type::text = ANY (ARRAY['Planned'::character varying, 'Unplanned'::character varying]::text[]));

@@ -1,0 +1,106 @@
+@(allTask:List[Task])
+@header("All Task",8){
+<section>
+  
+        <div class="container">
+            <div class="col-md-12 panel">
+               <div class="row">
+                    <a href="/allTasks" class="btn text-orange">All-Tasks</a> |
+                    <a href="/taskTracker" class="btn">Configure Status</a>  
+                </div>
+                <div class="row heading-badge">
+                    <div class="col-md-12">
+                    	<h3 class="">Task List </h3>
+                    </div>
+                     
+                </div>
+                <div class="row">
+                	<div class="col-md-8">
+                		<div class="form-group">
+                			<div class="row">
+	                			<div class="col-md-4 col-md-offset-7">
+		                			<div class="text-center">
+		                				<input type="text" class="nameSrch form-control dirmsg-srchbox" placeholder="Search">
+		                			</div>
+		                		</div>	
+	                		</div>	
+                		</div>
+                	</div>
+                	<div class="col-md-3 ">
+                		<a href="/addTask"class="btn btn-primary btn-raised pull-right">New Task</a>	
+                	</div>
+                </div>
+                
+				<div class="search col-md-12" >
+              		<div class="row">
+					      
+					     <div class="col-md-12">
+					      @for(task<-allTask){
+					         <div class="lead-chat">
+						        <div class="bubble">
+						        	<div class="row">
+						       
+						        		<div class="col-md-12">
+											@task.getDescription 
+						        		</div>
+						       			 
+						       			 <div class="row">
+						       			 	<div class="col-md-12">
+							       			 	<div class="col-md-4">
+							       			 		<span><b>Status</b></span> : 
+							       			 		<span>@task.getStatus</span>
+							       			 	</div>
+	
+							       			 	<div class="col-md-4">
+							       			 		<span><b>Assign To</b></span> : 
+							       			 		@for(assignTo<-task.getAssignFrom){
+							       			 		<span>@assignTo.getFullName</span>
+							       			 		}
+							       			 	</div>
+	
+							       			 	<div class="col-md-4">
+							       			 		<div class="pull-right">
+								       			 		<span><b>By</b></span> : 
+								       			 		<span>@task.getAssignTo.getFullName</span>
+								       			 	</div>	
+							       			 	</div>
+							       			 </div>	
+						       			 </div>
+						       			 
+						       		 </div>  
+						        </div>
+					     	</div> 
+					     	 }<br><br>
+					  	</div> 
+					</div>	
+           	    </div>
+           	   
+          	</div>
+   		</div>
+ 	
+</section>
+
+} @footer(""){
+<script>
+$(".nameSrch").keyup(function(){ 
+	var newSrch = $(this).val();	
+	console.log(newSrch)
+	if(newSrch){
+		$('.search').hide();
+		$('.search:containsIN("'+newSrch+'")').show();
+		$('.search:containsIN("'+newSrch+'")');
+	}else{ 
+		$('.search').show();
+		$('.search:containsIN("'+newSrch+'")').css("background","none");
+	}
+});
+ 
+$(document).on('click','#edit-test',function(){ 
+		alert("etittest");
+		//$(".text-disable").css("background",'red');
+	});
+</script>
+ }
+ 
+ 
+ 

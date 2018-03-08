@@ -1,0 +1,156 @@
+@(jobCategories:List[models.recruitment.RecruitmentCategory])
+@header(" Openings",11){
+<section>
+   
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/recruitment/category" class="btn text-orange">Category</a> |
+                    <a href="/recruitment/roles" class="btn">Roles</a> |
+                    <a href="/recruitment/skills" class="btn">Skills</a> |
+                    <a href="/recruitment/source" class="btn">Source</a> |
+                     <a href="/recruitment/interviewType" class="btn">InterviewType</a> |
+                     <a href="/recruitment/mailContent" class="btn">Mails</a> | 
+                    <a href="/recruitment/MailingList" class="btn">Mailing list</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Add New Category </h3>
+                </div>
+                <div class="row">
+                <div class="col-md-12">
+                        <div class="text-center">
+                         <form class="form-horizontal" id="jobCategoryForm" action="/recruitment/addCategory "  method="post">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                    <div class="pull-left leave-label">  <label>Category <span class="asterisk"> * </span></label></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" name="jobCategoryName" class="form-control upload" id="inputEmail" required="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                <div class="pull-left leave-label">  <label>Description</label> </div>
+                                </div>
+                                <div class="col-md-4">
+                                	<textarea class="form-control" name="description" rows="5" id="textArea"></textarea>
+                                </div>
+                            </div>
+                           <div class="row">
+                                <div class="col-md-12" >
+                                    <input type="submit" value="Submit" class="btn btn-primary btn-raised">
+                                </div>
+                            </div>
+                            </form>
+                            
+		                 <div class="col-md-12 heading-badge">
+		                    	<h3 class="">Existing Job Categories</h3>
+		                </div>
+		                        <div class="col-md-8 col-md-offset-2">
+		                @if(!jobCategories.isEmpty){
+			                <table class="table" id="allTaskStatusTable">
+		                    	<thead>
+		                    		<tr>
+		                    			<th>Sno</th>
+		                    			<th>Categories</th>
+		                    			<th>Description</th>
+		                    			<th class="text-center" width=20%>Options</th>
+		                    			
+		                    		</tr>
+		                    	</thead>
+		                    	<tbody>
+		                    	@for((jobCategory,index) <- jobCategories.zipWithIndex){
+		                    		<tr>
+		                    			<td align="left" >@{index+1}</td>
+		                    			<td align="left">@jobCategory.jobCategoryName</td>
+		                    			<td align="left">@jobCategory.description </td>
+		                    			<td>
+		                    				<a href="/categoryEdit/@jobCategory.id" class="btn btn-primary btn-sm btn-raised marginAll0px"><i class="fa fa-edit" ></i></a>
+			                    			 
+			                    			<button class="btn btn-warning btn-sm btn-raised  taskdelbtn deleteJobCategory marginAll0px" url1= "/categoryDelete/@jobCategory.id" data-id="@jobCategory.id" id ="deleteJobCategory" userName="@jobCategory.jobCategoryName" >
+			                    				<i class="fa fa-trash"></i>
+			                    			</button>
+					                   </td>
+		                    			
+		                    		</tr>
+		                    		}
+		                    	</tbody>
+		                    </table>
+		                    }else{
+		                    	<h3 class="text-center">No Data Available</h3>
+		                    }
+		               </div>     
+                           
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+     <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+			
+</section>
+
+} @footer(""){
+<script>
+
+$('.deleteJobCategory').click(function(e) {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url1');
+    $('#lblMsgConfirmYesNo').html("Are you sure, you want to delete Job Category : " + name);
+    $('#modalConfirmYesNo').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+        window.location.href = url;
+    });
+});
+$("#allTaskStatusTable").DataTable(); 
+$('#jobCategoryForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	jobCategoryName: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill CategoryName'
+                },
+               	remote: {
+                	message: 'CategoryName Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistJobCategory',
+                    data: function(validator) {
+                        return {
+                        	jobCategoryName: validator.getFieldElements('jobCategoryName').val()
+                        	
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 
+ 

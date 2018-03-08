@@ -1,0 +1,288 @@
+@(listLeadStatus : List[models.lead.LeadStatus], listLeadComments : List[models.lead.LeadChatComment],lead : models.lead.Lead,listLeadContact : List[models.lead.LeadContactInfo])
+@header("Discussion Thread",6){
+<style>
+.leadtitle{
+	font-size:175%;
+}
+.leadColor{
+ color: #757575 !important;
+}
+</style>
+<section>
+    <form class="form-horizontal" id="#" action="/lead/storeLeadComment" enctype="multipart/form-data" method="post">
+        <div class="container" id="appendData">
+            <div class="col-md-12 panel">
+               <div class="row">
+                    <a href="/all-leads" class="btn text-orange">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") {|
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                </div>
+                <div class="row heading-badge">
+                    <div class="col-md-12">
+                    	@*<h3 class="">Discussion Thread - Lead ID <span id="leadmanagementid">: @session.get("leadId")</span> </h3>*@
+                    	<div class="leadtitle">&nbsp;@if(lead.getCompany != null){@lead.getCompany.getCompanyName - }@lead.getOpportunityTitle <font color="#757575">#@lead.id</font></div>
+                    	<h3 class="wb"><font color="#757575">@lead.getOpportunityDiscription</font> </h3>
+                    	<h3 class="leadColor"><div class="btn btn-success btn-sm btn-raised btn-cusror" >@lead.getLeadStatus.status</div> @if(lead.estimatedAmount != null){@models.lead.Lead.getIndianCurrencyFormat(lead.estimatedAmount) · }@if(lead.leadSource != null) {  @lead.getLeadSource ·  }@if(!listLeadContact.isEmpty){
+                    	@for(contact <- listLeadContact){
+                    		@contact.companyContact.getContactName&nbsp;
+                    		}
+                    	}</h3>
+                    	<h5 class="leadColor">&nbsp;&nbsp;<b>@lead.appUser.getFullName()</b>
+	                    	<font color="#757575"> opened this lead discussion  on @lead.createdOn.format("MMM dd, yyyy") · 
+	                    	@models.lead.LeadChatComment.getTotalComments(lead.getId) comments</font> 
+                    	</h5>
+                    	
+                    	
+                   @*	<div class="col-md-12">
+                    	<table>
+                    <tr>	<th>Company &nbsp; &nbsp;</th><td>@if(lead.getCompany != null){@lead.getCompany.getCompanyName}</td></tr>
+                  <tr>	<th>Opportunity_Title &nbsp; &nbsp;</th><td class="wb">@lead.getOpportunityTitle</td></tr>
+                   <tr>	<th>Description &nbsp; &nbsp;</th><td class="wb">@lead.getOpportunityDiscription</td></tr>
+                    <tr>	<th>Source &nbsp; &nbsp; </th><td>@if(lead.leadSource != null) {  @lead.getLeadSource }</td></tr>
+                   <tr>	<th>Lead_Status &nbsp; &nbsp;</th><td>@lead.getLeadStatus.status</td></tr> 
+                    <tr>	<th>Estimated Amount &nbsp; &nbsp;</th><td>@if(lead.estimatedAmount != null) {@models.lead.Lead.getIndianCurrencyFormat(lead.estimatedAmount)}else{0.0}</td></tr>
+                    <tr>	<th>Contact Person &nbsp; &nbsp;</th><td>
+                    @if(!listLeadContact.isEmpty){
+                    	@for(contact <- listLeadContact){
+                    		@contact.companyContact.getContactName&nbsp;
+                    		}
+                    }
+                    </td></tr>
+                    	</table>
+	                    </div>	*@ 
+                    </div>
+                     
+                </div>
+				<div class="col-md-10 col-md-offset-1">
+				@if(!listLeadComments.isEmpty){
+					@for(comment <- listLeadComments){
+              		<div class="row">
+					     <div class="col-md-1">
+					          <img src=@{routes.AdminController.getimage(comment.appUserId)}  class="img-thumbnail"> 
+					     </div>
+					     <div class="col-md-11">
+					         <div class="lead-chat">
+						        <div class="bubble me">
+						        <div class="col-md-12">
+						        		<div class="row timeline-comment-header">
+						        		<div class="col-md-10" id="editMsg@comment.id">
+						        			<h5 class="leadmodule-h5"><b class="leadmodule-bold">  @models.AppUser.getAppUserName(comment.appUserId) </b> commented on @comment.commentDate.format("MMM dd, yyyy HH:mm:ss") @if(models.lead.LeadStatus.getStatusFlag(comment.id,comment.leadStatus.id, Long.parseLong(session.get("leadId")))){| <b>Updated Status To @comment.leadStatus.status</b>} </h5>
+						        		</div>
+						        		<div class="col-md-2">
+						        			<div class="row">
+						        				@if(Long.parseLong(session.get("AppUserId")) == comment.appUserId && session.get("AppUserRole") == "Admin") {
+							        		 	<div class="col-md-6 padding-0" >
+							        				<a href="#" class="btn btn-default btn-raised btn-sm btn-lead-edit-del">
+							        					<i class="fa fa-edit editdate " id="@comment.id" data="@comment.comment"></i>
+							        				</a>
+							        			</div>
+							        			<div class="col-md-6  padding-0">
+							        				<a href="javascript:void(0)" class="text-center deleteUserButton btn btn-default btn-raised btn-sm btn-lead-edit-del" data-href="/lead/deleteComment/@comment.id/@session.get("leadId")">
+							        					<i class="fa fa-trash"></i>
+							        				</a>
+								        		</div>
+							        			}else {
+								        			@if(session.get("AppUserRole") == "Admin") {
+								        			<div class="col-md-11 ">
+								        				<div class="pull-right">
+									        				<a href="javascript:void(0)" class="text-center deleteUserButton btn btn-default btn-raised btn-sm btn-lead-edit-del" data-href="/lead/deleteComment/@comment.id/@session.get("leadId")">
+									        					<i class="fa fa-trash"></i>
+									        				</a>
+									        			</div>	
+								        			</div>
+								        			}
+							        			}
+							        		</div>	
+							        	
+						        		</div>
+						        		</div>
+						        		<div class="row">	
+						        		  
+						                <div class="new-text hidden" id="newText@comment.id"> 
+						                    <textarea id="text@comment.id" class="form-control txta"></textarea> 
+						                    <button type="button" class="btn btn-primary btn-sm upload-btn" id="upld@comment.id">upload</button> 
+						                </div>
+							        		<div class="form-group edit-comment-hide"> 
+							        		@*<textarea  class="form-control comment-disable"  disabled="disabled" >@comment.comment</textarea>*@
+							        		<p>@comment.comment</p>
+							       			 </div>
+							       			 <button class="btn btn-primary btn-sm hidden upload-btn">upload</button> 
+						       			 </div>
+						       			 @if(!comment.listFIles.isEmpty()){
+						       			 <div class="row">
+						       			 	<div class="col-md-12 pull-right">
+						       			 		<span>
+						       			 			<i class="fa fa-paperclip"></i>
+						       			 		</span>
+						       			 		<span><b> <a href="/lead/file/@comment.listFIles.get(0).id"><button type="button" class="btn btn-raised btn-warning btn-sm"> @comment.listFIles.get(0).fileName</button></a>  </b></span>
+						       			 	</div>
+						       			 </div>
+						       			 }
+						       		 </div>  
+						        </div>
+					     	</div> 
+					  	</div> 
+					</div>	
+					}
+				}
+					<div class="row">
+					     <div class="col-md-1">
+					          <img src=@{routes.AdminController.getimage(Long.parseLong(session.get("AppUserId")))}  class="img-thumbnail"> 
+					     </div>
+					     <div class="col-md-11">
+					         <div class="lead-chat">
+						        <div class="bubble me">
+						        	<div class="col-md-12 padding-0">
+						        		<div class="col-md-10 headingWrite">
+						        			<h5><b class="leadmodule-bold"> write ur comment</b></h5>
+						        		</div>
+						        		<div class="textAreaLead">
+						       			 <textarea  class="form-control"  name="comment" required="required"></textarea>
+						       			 </div>
+						       			 <div class="col-md-12 padding-0">
+						       			 	<div class="col-md-8 padding-0">
+						       			 		<div class="col-md-4 ">
+						       			 			<h6>Update lead Status</h6>
+						       			 		</div>
+						       			 		<div class="col-md-6">
+						       			 			<select class="form-control" name="leadStatusId">
+						       			 				@if(!listLeadStatus.isEmpty){
+	                         	 							@for(status <- listLeadStatus){
+	                         	 								@if(status.status.equals( models.lead.LeadChatComment.getLatestStatus( (Long.parseLong(session.get("leadId"))), (Long.parseLong(session.get("AppUserId")))) )){
+	                         	 									<option value="@status.id" selected="selected">@status.status</option>
+	                         	 								}else{
+	                             										<option value="@status.id">@status.status</option>
+	                             								}
+	                             							}
+	                            						 }else{
+	                             							<option>No Data Available</option>
+	                            						 }
+						       			 			</select>
+						       			 		</div>
+						       			 	</div>
+						       			 	<div class="col-md-4">
+						       			 		<div class="row">
+						       			 			<div class="col-md-6">
+							       			 			    <div class="choose_file">
+														       <button class="btn btn-primary btn-raised btn-sm">Attach File</button>
+														       <input type="file" name="file" class="leadupfile"/>
+														   </div> 
+							       			 		</div>	
+						       			 			<div class="col-md-6">
+						       			 				<button type="submit" id="" class="btn btn-info btn-raised btn-sm">Comment</button>
+							       			 		</div>
+							       			 	</div>	
+						       			 	</div>
+						       			 	<div class="col-md-4 col-md-offset-8">
+						       			 		<span class="upload-file-path"></span>
+						       			 	</div>
+						       			 </div>
+						       		 </div>  
+						        </div>
+					     	</div> 
+					  	</div> 
+					</div>	
+           	    </div>
+          	</div>
+   		</div>
+ 	</form>
+ 	<div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			            	<h5  id="lblMsgConfirmYesNo" class="fz-16"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger   btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			
+			<!-- end of modal  -->
+	       <div class="modal fade" id="editdate-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h3 class="modal-title" style="margin:0 !important;">Edit Comment</h3>
+			      </div>
+			      <div class="modal-body">
+			       <textarea class="form-control" id="editComment" style="font-weight: 500;"></textarea>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-success btn-sm btn-raised" id="getdata">update</button>
+			        <button type="button" class="btn btn-danger   btn-sm btn-raised" data-dismiss="modal">cancel</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+	       
+	    <!---------------modal end here--------------------->
+			
+</section>
+
+} @footer(""){
+<style>
+.wb{
+word-break: break-all;
+}
+</style>
+<script>
+$(document).on('click','#commented',function(e){
+	alert();
+    $.post('/lead/storeLeadComment',$('#leadCoommentForm').serialize(),function(data) {
+   	 $('#appendData').html(data);
+    }); 
+});
+$('.deleteUserButton').click(function(e){
+	//var name = $(this).attr('userName');
+	var url = $(this).attr('data-href');
+	$('#lblMsgConfirmYesNo').html("Are you sure, you want to delete this comment ?");
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+		$('#modalConfirmYesNo').modal('hide');
+		window.location.href = url;
+	});
+});
+
+$('.editdate').click(function(e){
+	var id = $(this).attr('id');
+	var data = $(this).attr('data');
+	$("#editComment").val(data)
+	$('#editdate-alert').modal('show');
+	$(document).on('click','#getdata',function(e){
+		var msg = $('#editComment').val();
+		$('#editdate-alert').modal('hide');
+		//alert(msg+""+id+""+data)
+		window.location.href = '/lead/updateLeadComment/'+id+'/'+msg
+	});
+});
+
+$(document).on('click', '.edit-test', function() {
+	$(".comment-disable").removeAttr("disabled");
+	$(".upload-btn").removeClass("hidden")
+});
+
+$('.leadupfile').change(function () {
+    var value = $(this).val();
+    $(".upload-file-path").html(value);
+
+});
+
+
+</script>
+ }
+ 
+ 
+ 

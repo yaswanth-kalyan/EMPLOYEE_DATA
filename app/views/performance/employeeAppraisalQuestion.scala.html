@@ -1,0 +1,213 @@
+@(EAQuestions : List[models.performance.PeQuestion] , eEAQuestions : models.performance.PeQuestion)
+@header(" Employee Appraisal Form",12){
+<section>
+	<div class="container">
+		<div class="panel">
+	        <div class="col-md-12">
+	            <a href="/performance/selfAppraisalQuestion" class="btn ">Self-Appraisal Form</a> |
+	            <a href="/performance/employeeAppraisalQuestion" class="btn text-orange">Employee-Appraisal Form</a>
+	        </div>
+            <div class="col-md-12 heading-badge">
+	        @if(eEAQuestions != null){
+            	<h3 class="">Update Employee Appraisal Question </h3>
+	        }else{
+                <h3 class="">Add New Employee Appraisal Question </h3>
+            }
+            </div>
+	        <div class="row">
+	        	<div class="col-md-12">
+	            	<div class="text-center">
+	            	@if(eEAQuestions != null){
+	            		<form class="form-horizontal" id="EAQuestionForm" action="/performance/addUpdateEmployeeAppraisalQuestion"  method="post">
+	            			<input type="hidden" value="@eEAQuestions.id" name="id">
+	                          <div class="row">
+	                              <div class="col-md-2 col-md-offset-2">
+	                                  <div class="pull-left leave-label">  <label>Question <span class="asterisk"> * </span></label></div>
+	                              </div>
+	                              <div class="col-md-6">
+	                                  <textarea class="form-control" name="question" rows="3" id="textArea" required="required">@eEAQuestions.question</textarea>
+	                              </div>
+	                          </div>
+	                          <div class="row">
+	                              <div class="col-md-2 col-md-offset-2">
+	                              <div class="pull-left leave-label">  <label>Note <span class="asterisk"> * </span></label> </div>
+	                              </div>
+	                              <div class="col-md-6">
+	                              	<textarea class="form-control" name="note" rows="5" id="textArea">@eEAQuestions.note</textarea>
+	                              </div>
+	                          </div>
+	                          <div class="row">
+                                 <div class="col-md-2 col-md-offset-2">
+                                    <div class="pull-left leave-label">  <label>Weightage <span class="asterisk"> * </span></label></div>
+                                 </div>
+                                 <div class="col-md-4">
+                                     <input type="text" name="weightage" value="@eEAQuestions.weightage" min="0" max="@models.performance.PeQuestion.getEmployeeRemainingWeightage(eEAQuestions.id)" pattern="^\d*(\.\d{1,2})?$" class="form-control upload" id="inputEmail" required="required">
+                                 </div>
+                              </div>
+                              <div class="row"> 
+                                 <div class="col-md-2 col-md-offset-2">
+                                 <label for="inputEmail" class="pull-left leave-label">Status <span class="asterisk"> * </span> </label>
+                                  </div>
+                                 <div class="col-md-1">
+                                   <div class="radio radio-primary">
+                                     <label>
+                                     @if(eEAQuestions.questionStatus.equals(models.UserProjectStatus.Active) ) {
+                                       	<input type="radio" name="questionStatus" value="@models.UserProjectStatus.Active" checked="checked"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Active
+                                       } else{
+                                       	<input type="radio" name="questionStatus" value="@models.UserProjectStatus.Active"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Active
+                                       }
+                                     </label>
+                                   </div>
+                                </div>
+                                 <div class="col-md-1">
+                                   <div class="radio radio-primary">
+                                     <label>
+                                     @if(eEAQuestions.questionStatus.equals(models.UserProjectStatus.Inactive) ) {
+                                       	<input id="radioInactive" type="radio" name="questionStatus" value="@models.UserProjectStatus.Inactive"  checked="checked"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Inactive
+                                      } else{
+                                      	<input id="radioInactive" type="radio" name="questionStatus" value="@models.UserProjectStatus.Inactive"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Inactive
+                                       }
+                                     </label>
+                                   </div>
+                                 </div>
+                               </div>
+	                          <div class="row">
+	                              <div class="col-md-12" >
+	                                  <input type="submit" value="Update" class="btn btn-primary btn-raised">
+	                              </div>
+	                          </div>
+	                      </form>
+	            	}else{
+	                      <form class="form-horizontal" id="EAQuestionForm" action="/performance/addUpdateEmployeeAppraisalQuestion"  method="post">
+	                          <div class="row">
+	                              <div class="col-md-2 col-md-offset-2">
+	                                  <div class="pull-left leave-label">  <label>Question <span class="asterisk"> * </span></label></div>
+	                              </div>
+	                              <div class="col-md-6">
+	                                  <textarea class="form-control" name="question" rows="3" id="textArea" required="required"></textarea>
+	                              </div>
+	                          </div>
+	                          <div class="row">
+	                              <div class="col-md-2 col-md-offset-2">
+	                              <div class="pull-left leave-label">  <label>Note <span class="asterisk"> * </span></label> </div>
+	                              </div>
+	                              <div class="col-md-6">
+	                              	<textarea class="form-control" name="note" rows="5" id="textArea"></textarea>
+	                              </div>
+	                          </div>
+	                          <div class="row">
+                                 <div class="col-md-2 col-md-offset-2">
+                                    <div class="pull-left leave-label">  <label>Weightage <span class="asterisk"> * </span></label></div>
+                                 </div>
+                                 <div class="col-md-4">
+                                     <input type="text" name="weightage" min="0" max="@models.performance.PeQuestion.getEmployeeRemainingWeightage()" pattern="^\d*(\.\d{1,2})?$" class="form-control upload" id="inputEmail" required="required">
+                                 </div>
+                              </div>
+	                          <div class="row">
+	                              <div class="col-md-12" >
+	                                  <input type="submit" value="Submit" class="btn btn-primary btn-raised">
+	                              </div>
+	                          </div>
+	                      </form>
+	                  }
+		                 <div class="col-md-12 heading-badge">
+		                    	<h3 class="">Existing Employee Appraisal Question</h3>
+		                 </div>
+		                 <div class="col-md-12">
+				          	<table class="table" id="table2">
+				             	<thead>
+				             		<tr>
+				             			<th class=" text-left ">Sno</th>
+				             			<th class=" text-left ">Question</th>
+				             			<th class=" text-left ">Note</th>
+				             			<th class=" text-right ">Weightage</th>
+				             			<th class=" text-center ">Status</th>
+				             			<th class="text-center" width=20%>Options</th>
+				             		</tr>
+				             	</thead>
+				             	<tbody>
+				             	@for((eaQuestion,index) <- EAQuestions.zipWithIndex){
+				             		<tr>
+				             			<td class=" text-left " >@{index+1}</td>
+				             			<td class=" text-left ">@eaQuestion.question</td>
+				             			<td class=" text-left ">@eaQuestion.note </td>
+				             			<td class=" text-right ">@eaQuestion.weightage</td>
+				             			<td class=" text-center">@eaQuestion.questionStatus </td>
+				             			<td align="center">
+				             				<a href="/performance/editEmployeeAppraisalQuestion/@eaQuestion.id" class="btn btn-primary btn-sm btn-raised marginAll0px"><i class="fa fa-edit"></i></a>
+				             			 	@*<button class="btn btn-warning btn-sm btn-raised taskdelbtn deleteSource marginAll0px" url= "/deleteSource/@eaQuestion.id"  id ="deleteSource" userName="@eaQuestion.question" ><i class="fa fa-trash"></i></button>*@
+				               			</td>
+				             		</tr>
+				             		}
+				             	</tbody>
+				             </table>
+	         			</div>  
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+   
+ <div id="modalConfirmYesNo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 id="lblTitleConfirmYesNo" class="modal-title">Confirmation Message</h3>
+            </div>
+            <div class="modal-body">
+                <h5 id="lblMsgConfirmYesNo"></h5>
+            </div>
+            <div class="modal-footer">
+               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>*@
+                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+  
+</section>
+
+} @footer(""){
+<script>
+$('#radioInactive').click(function(e) {
+    $('#lblMsgConfirmYesNo').html("Are you sure, you want to make this question Inactive. It will not appear in form and its weightage will be set to 0.");
+    $('#modalConfirmYesNo').modal('show');
+});
+$("#table2").DataTable(); 
+$('#EAQuestionForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	question: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Question'
+                }
+            }
+        },
+        note: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Note'
+                }
+            }
+        },
+        weightage: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill weightage'
+                }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 
+ 

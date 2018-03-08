@@ -1,0 +1,86 @@
+@(list1:List[UsersDailyReport])
+					@if(!list1.isEmpty){
+						<table class="table tb">
+							<thead>
+								 <tr>
+									<th>S.No</th>
+									<th>Date</th>
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								</tr>
+							</thead>
+							<tbody>
+									@for((usersTimeSheet,index) <- list1.zipWithIndex) {
+									<tr>
+										<td>@{index+1}</td>
+										<td>@usersTimeSheet.getDate.format("dd-MM-yyyy")</td>
+										<td class="wb">@for((todays,index1)<- models.Todays.getList(usersTimeSheet.getToday).zipWithIndex){
+											@{index1+1}. @todays.getToday()<br>
+											}</td>
+										<td class="wb">@for((tomorrow,index2)<- models.Tomorrows.getList(usersTimeSheet.getTomorrow).zipWithIndex){
+											@{index2+1}. @tomorrow.getTomorrow()<br>
+											}</td>
+										<td class="wb">@for((problem,index3)<- models.Problems.getList(usersTimeSheet.getProblem).zipWithIndex){
+											@{index3+1}. @problem.getProblem()<br>
+											}</td>
+										<td>@usersTimeSheet.getRate</td>
+									</tr>
+									}
+								</tbody>
+						</table>
+					}else{
+					<h3 class="text-center">No report this week</h3>
+					}
+	
+	
+
+<style>
+.wb{
+word-break: break-all;
+}
+</style>
+<script>
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true,
+       weekStart: 1
+  });
+ $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    
+	    $.get('/getWeekDR/' + firstDate + '/' + lastDate + '/' + $('#userList').val(), function(data) {
+	         console.log(data)
+	         $("#dailyReportweek12").html(data);
+	     });
+	});
+	
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+
+	$(document).on('change', '#userList', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+    
+	$('.tb').DataTable();
+</script>

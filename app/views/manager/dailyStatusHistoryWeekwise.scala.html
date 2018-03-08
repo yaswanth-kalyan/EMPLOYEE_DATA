@@ -1,0 +1,44 @@
+@(list1:List[UsersDailyReport])
+
+  	
+	
+					@if(!list1.isEmpty){
+						<table class="table tb">
+							  <thead>
+								<tr>
+									<th>S.No.</th>
+									<th>Date</th>
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								</tr>
+							</thead>
+							<tbody>
+									@for((usersTimeSheet,index) <- list1.zipWithIndex) {
+									<tr>
+										<td>@{index+1}</td>
+										<td>@usersTimeSheet.getDate.format("dd-MM-yyyy")</td>
+										<td>@for((todays,index1)<-usersTimeSheet.getToday.zipWithIndex){
+											@{index1+1}. @todays.getToday<br>
+											}</td>
+										<td>@for((tomorrow,index2)<-usersTimeSheet.getTomorrow.zipWithIndex){
+											@{index2+1}. @tomorrow.getTomorrow<br>
+											}</td>
+										<td>@for((problem,index3)<-usersTimeSheet.getProblem.zipWithIndex){
+											@{index3+1}. @problem.getProblem<br>
+											}</td>
+										<td>@usersTimeSheet.getRate</td>
+									</tr>
+									}
+								</tbody>
+						</table>
+					}else{
+					<h3 class="text-center">No report this week</h3>
+					}
+<script>
+$('.tb').DataTable();
+</script>			
+	
+
+

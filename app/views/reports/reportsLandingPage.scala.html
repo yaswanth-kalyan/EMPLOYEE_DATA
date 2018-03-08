@@ -1,0 +1,97 @@
+ 
+@header("Reports",8){
+<section>
+
+ <form action="" id="" method="post">	
+
+	<div class="container">
+		<div class="panel">
+			<div class="panel-body padding-bottom-50 padding-top-0" >
+				<div class="row">
+					<div class="col-md-12">
+							  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" style="display: inline-block;">Summary
+							  <span class="caret"></span></button>
+							  <ul class="dropdown-menu">
+								     @if(session.get("AppUserRole")=="Admin"){
+								     <li><a href="/EmployeeReport/Employee_Monthly_Status_Report">Employee Report</a></li>
+							         <li><a href="/dscdatewisereport/sedr/0">Date-Wise Employee Report</a></li>
+							         <li><a href="/EmployeeReport/sumarry-Week-Wiseemp-Report">Week-Wise Employee Report</a></li>
+							         }else{
+							           <li><a href="/dscdatewisereport/sedr/0">Date-Wise Report</a></li>
+							          <li><a href="/EmployeeReport/sumarry-Week-Wise-Report">Week-Wise Report</a></li>
+							           <li><a href="/EmployeeReport/anytime_report">AnyTime Report</a></li>
+							         }
+							  </ul>
+							  <span class="piperepots">|</span>
+						<div class="dropdown" style="display: inline-block;">
+							  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Attendance
+							  <span class="caret"></span></button>
+							  <ul class="dropdown-menu">
+							  @if(session.get("AppUserRole")=="Engineer" || session.get("AppUserRole") =="Marketing" || session.get("AppUserRole") =="Manager"){
+								    <li><a href="/EmployeeReport/attendance">Week-Wise Report</a></li>
+								    @if(session.get("AppUserRole")=="Manager") {
+								    	<li><a href="/dscdatewisereport/biometric-attendance-yearly/0">Employee Yearly Report</a></li>
+								    }else{
+									    <li><a href="/dscdatewisereport/biometric-attendance-yearly/0">Yearly Report</a></li>
+								    }
+							    }else{
+								    <li><a href="/EmployeeReport/empweek-Wise-Report">Week-Wise Employee Report</a></li>
+								    <li><a href="/EmployeeReport/attendanceComapany">Week-Wise Company Report</a></li>
+								    <li><a href="/dscdatewisereport/biometric-attendance-yearly/0">Employee Yearly Report</a></li>
+								    <li><a href="/EmployeeReport/all-employee-biometric-report">All Employee Biometric Report</a></li>
+							    }
+							  </ul>
+							  <span class="piperepots">|</span>
+					   <div class="dropdown" style="display: inline-block;">
+							  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Daily Status
+							  <span class="caret"></span></button>
+							  <ul class="dropdown-menu">
+							  		@if(session.get("AppUserRole")=="Admin"){
+							         <li><a href="/dscdatewisereport/dscdr/0">Date-Wise Company Report</a></li>
+							         <li><a href="/EmployeeReport/all_employeeDsr">DSR Compliance Report</a></li>
+							         <li><a href="/dscdatewisereport/yearly_report/0">Employee Yearly Report</a></li>
+							  		 }else{
+							  		     @if(session.get("AppUserRole")=="Manager"){
+							  		     	<li><a href="/dscdatewisereport/yearly_report/0">Employee Yearly Report</a></li>
+							  		     }else{
+							  		     	<li><a href="/dscdatewisereport/yearly_report/0">Yearly Report</a></li>
+							  		     }
+							  		 }
+							   </ul>
+					    </div>
+					   @if(session.get("AppUserRole")=="Admin" || session.get("AppUserRole")=="HR"){
+					     <span class="piperepots">|</span>
+					   <div class="dropdown" style="display: inline-block;">
+							  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Leave
+							  <span class="caret"></span></button>
+							  <ul class="dropdown-menu">
+							         <li><a href="/dscdatewisereport/leave_report/0">Employee Yearly Report</a></li>
+							         <li><a href="/dscdatewisereport/leave_balance_report/0">Leave Balance Report</a></li>
+							   </ul>
+					    </div>
+					    
+					    }
+					    @if(session.get("AppUserRole")=="Admin"){
+					     <span class="piperepots">|</span>
+					   <div class="dropdown" style="display: inline-block;">
+							  <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Time Sheet
+							  <span class="caret"></span></button>
+							  <ul class="dropdown-menu">
+							         <li><a href="/EmployeeReport/Employee_Project_Details">Project Employee Hours Report</a></li>
+							   </ul>
+					    </div>
+					    
+					    }
+
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+	</div>
+	</form>
+	
+</section>
+}
+@footer(""){ 
+} 

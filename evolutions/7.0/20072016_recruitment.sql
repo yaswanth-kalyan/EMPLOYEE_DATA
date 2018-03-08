@@ -1,0 +1,2 @@
+Alter table recruitment_applicant add column current_location character varying(255),add column current_company character varying(255),add column applicant_remark text;
+Alter table recruitment_selection_round add column to_date timestamp without time zone;

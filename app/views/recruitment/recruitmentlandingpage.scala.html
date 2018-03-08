@@ -1,0 +1,115 @@
+@header(" configure",11){
+
+<section>
+      <form class="form-horizontal" id="addUserForm" action="@routes.Application.registration()" enctype="multipart/form-data" method="post">
+        <div class="container-fluid padding-left0 padding-right0">
+        <div class="panel">
+ 
+	        <div class="container">
+	         <div class="row paddingbot-30">
+	        	<div class="col-md-16">
+	  				<div class="col-sm-6 col-md-3 col-lg-3">     
+                         <a href="/recruitment/category">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-green" >
+                                     <i class="fa fa-tags  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkgreen">
+                                     <div class="header-item"><h4>Category</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/roles">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-cifg-3" >
+                                     <i class="fa fa-users  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-cifg-dark3">
+                                     <div class="header-item"><h4>Roles</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/skills">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-blue" >
+                                     <img src="https://cdn3.iconfinder.com/data/icons/human-head-business-and-motivation/64/i344-128.png" style="height:46px " class="bigicon"> 
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkblue">
+                                     <div class="header-item"><h4>Skills</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                   <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/source">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-pink" >
+                                     <i class="fa fa-user  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkpink">
+                                     <div class="header-item"><h4>Source</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/interviewType">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-cifg-4" >
+                                     <i class="fa fa-user  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-cifg-dark4">
+                                     <div class="header-item"><h4>InterviewType</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/mailContent">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-cifg-5" >
+                                     <i class="fa fa-envelope-o bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-cifg-dark5">
+                                     <div class="header-item"><h4>Mails Content</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6 col-md-3 col-lg-3 ">     
+                         <a href="/recruitment/MailingList">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-cifg-6" >
+                                     <i class="fa fa-envelope-o bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-cifg-dark6">
+                                     <div class="header-item"><h4>Mailing List</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                </div>
+	            </div>
+            </div>
+            </div>
+        <br><br>
+        </div>
+    </div>    
+   
+    </form>   
+</section>
+
+}
+             
+@footer(""){
+<script>
+ $(".alert").eq(1).hide(0).delay(500).fadeIn(1400);
+ $(".alert").eq(2).hide(0).delay(1000).fadeIn(1800);
+ $(".alert").eq(3).hide(0).delay(1500).fadeIn(2200);
+ $(".alert").eq(4).hide(0).delay(2000).fadeIn(3000);
+ </script>
+}

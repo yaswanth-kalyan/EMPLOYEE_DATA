@@ -1,0 +1,48 @@
+@(dailyReport: List[UsersDailyReport])
+
+<center>
+@if(!dailyReport.isEmpty) {
+	<table class="table td" id="rm">
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Yesterday's Work</th>
+				<th>Plan for Today</th>
+				<th>Problem Faced</th>
+				<th>Rating</th>
+			</tr>
+		</thead>
+		<tbody id="rm1">
+  		 @for(UsersDailyReport <- dailyReport) {
+			<tr>
+				<td>@UsersDailyReport.getDate().format("dd-MM-yyyy") </td>
+				<td>
+				@for((today,index) <- UsersDailyReport.getToday().zipWithIndex){
+					@{index+1}. @today.getToday <br>
+					}
+				</td>
+				<td>
+				@for((tomorrow,index) <- UsersDailyReport.getTomorrow().zipWithIndex){
+					@{index+1}. @tomorrow.getTomorrow <br>
+					}
+				</td>
+				<td>
+				@for((problem,index) <- UsersDailyReport.getProblem().zipWithIndex){
+					@{index+1}. @problem.getProblem <br>
+					}
+				</td>
+				<td>@UsersDailyReport.getRate</td>
+			</tr>
+   		}
+   		</tbody>
+  </table>
+} else {
+<p class="bold">There is no reports for this week</p>
+}
+
+<script>
+$('.td').DataTable({
+	"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+    "iDisplayLength": 100	
+});
+</script>

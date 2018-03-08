@@ -1,0 +1,30 @@
+@(appUserList : List[AppUser], date : java.util.Date)
+
+				<div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Tracker - @date.format("dd-MMM-yyyy")</h3>
+                </div>
+		@if(appUserList.size()>0){
+				<div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped table-hover"  id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th class="text-center">S.No</th>
+	                    			<th class="text-center">AppUser Name</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+								@for((appUser,index) <- appUserList.zipWithIndex){
+									<tr><td>@(index+1)</td>
+									<td>@appUser.getFullName</td></tr>
+								}
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+		}else{
+			<div class="row">
+				<p>No Leaves</p>
+			</div>
+			
+		}

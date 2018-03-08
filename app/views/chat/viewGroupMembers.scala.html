@@ -1,0 +1,37 @@
+@(appUsers:List[models.AppUser])
+@if(appUsers!= null){
+     @for(appUser <- appUsers){
+     @if(appUser.id!=Application.getLoggedInUser().id && appUser.status.equals(UserProjectStatus.Active)){
+    <div class="row grouphover">
+		<div class="searchgrpname-rst">
+		<div class="col-md-2 padding-right0 text-center groupbadge"><img src="@routes.ChatController.getAppsuerProfileImage(appUser.id)"  class="groupimg img-circle" onError="this.onerror=null;makeNoImage(this);" /><span class="hidden">@appUser.userName</span>
+		</div>
+		<div class="col-md-8  padding-left0">
+		
+			<p class="grouppara chat-wth" value="@appUser.id">@appUser.FullName</p>
+		</div>
+		<div class="col-md-1 padding-left0">
+			<span class="col-md-1 dots"> <i class="fa fa-circle online-status@appUser.id fz-8 "></i> </span>
+		</div>
+		</div>
+	</div>
+	} 
+ }
+}
+							
+<script>
+$(document).ready(function(){
+$('.searchgrpname-rst').click(function(){
+	var clId = $(this).find('p').attr('value');
+	var rl = 'USER';
+	$.post("/secure-chat/update-lastseentab/"+clId+"/"+rl, function() {
+	 });
+	 window.location.href='/chat/connect';
+	
+});
+
+});
+
+
+
+</script>								

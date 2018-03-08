@@ -1,0 +1,163 @@
+@(peEmployeeAppraisal : models.performance.PeEmployeeAppraisal)
+@import java.lang.Long; var last=0l;
+               <div class="panel">
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-5 text-left" >
+            			<h3 class="">Update Employee Appraisal </h3>
+             		</div>
+             		<div class="col-md-4 text-left" >
+            			<button type="button" class="btn btn-raised btn-default margin-0">
+							<span>@PEController.getMonth.format("MM-yyyy")</span >
+						</button>
+             		</div>
+                </div>
+                </div>
+               <div class="row">
+                 <div class="col-md-12">
+                        <div class="text-center">
+	                        @if(peEmployeeAppraisal != null){
+	                        <form class="form-horizontal" id="employeeAppraisalForm" action="/performance/updateEmployeeAppraisal"  method="post">
+	                        	<input type="hidden" name="id" value="@peEmployeeAppraisal.id">
+	                        	@for((peAppraisalAnswer,index) <- peEmployeeAppraisal.answerList.zipWithIndex){
+	                        		@(last = {index+1}) 
+		                                <div class="col-md-12">
+		                                <div class="col-md-10 col-md-offset-1">
+		                                    <div class="text-left ">
+		                                    <p>Q@{index+1}. <span>
+		                                    	@for(observedValue <- PEController.convertReference(peAppraisalAnswer.performanceQuestion.question )){
+													@observedValue
+													<br>
+												}
+		                                    	</span
+											</p>
+		                                    </div>
+		                                    <input type="hidden" name="questionId[@index]" value="@peAppraisalAnswer.performanceQuestion.id">
+		                                </div>
+		                                <div class="col-md-1 text-left">
+		                                	<button type="button" class="btn btn-warning btn-sm btn-raised taskdelbtn deleteSource marginAll0px qNote" value="@peAppraisalAnswer.performanceQuestion.note">Note</button>
+		                                </div>
+		                                </div>
+		                                <div class="col-md-12">
+	                                  <div class="col-md-6 padding0">
+										<div class="col-md-2 col-md-offset-2 padding0">
+											<input type="radio" value="1" name="rate[@index]" required @if(peAppraisalAnswer.rate == 1){checked="checked"}/>
+											<br>
+											<label class="control-label">1
+											</label><br>
+											<label class="control-label">Extremely Bad</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="2" name="rate[@index]" required @if(peAppraisalAnswer.rate == 2){checked="checked"}/>
+											<br>
+											<label class="control-label">2</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="3" name="rate[@index]" required @if(peAppraisalAnswer.rate == 3){checked="checked"} />
+											<br>
+											<label class="control-label">3</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="4" name="rate[@index]" required @if(peAppraisalAnswer.rate == 4){checked="checked"} />
+											<br>
+											<label class="control-label">4</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="5" name="rate[@index]" required @if(peAppraisalAnswer.rate == 5){checked="checked"} />
+											<br>
+											<label class="control-label">5</label>
+										</div>
+									</div>
+									<div class="col-md-6 padding0">
+										<div class="col-md-2">
+											<input type="radio" value="6" name="rate[@index]" required @if(peAppraisalAnswer.rate == 6){checked="checked"} />
+											<br>
+											<label class="control-label">6</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="7" name="rate[@index]" required @if(peAppraisalAnswer.rate == 7){checked="checked"}/>
+											<br>
+											<label class="control-label">7</label>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="8" name="rate[@index]" required @if(peAppraisalAnswer.rate == 8){checked="checked"}/>
+											<br>
+											<label class="control-label">8</lfda fdas fdabel>
+										</div>
+										<div class="col-md-2">
+											<input type="radio" value="9" name="rate[@index]" required @if(peAppraisalAnswer.rate == 9){checked="checked"}/>
+											<br>
+											<label class="control-label">9</label>
+										</div>
+										<div class="col-md-2 padding0">
+											<input type="radio" value="10" name="rate[@index]" required @if(peAppraisalAnswer.rate == 10){checked="checked"}/>
+											<br>
+											<label class="control-label">10
+												<br>
+											</label>
+											<label class="control-label">Extremely Good</label>
+										</div>
+									</div>
+	                               </div>
+		                              <div class="col-md-10 col-md-offset-1">
+		                              	<textarea class="form-control" minlength="100"  name="answer[@index]" rows="5" id="textArea" placeholder="Enter Text Min 100 Characters" required="required">@peAppraisalAnswer.answer</textarea>
+		                              </div>
+	                          	}
+	                          		<div class="col-md-12">
+	                          		<div class="col-md-10 col-md-offset-1">
+		                              	<div class="text-left ">
+		                                    <p>Q@{last+1}. <span> Issues/concerns </span></p>
+		                                 </div>
+		                              </div>
+		                              <div class="col-md-1">
+		                                	<button type="button" class="btn btn-warning btn-sm btn-raised taskdelbtn deleteSource marginAll0px qNote" value="Enter Your Issues/concerns">Note</button>
+		                                </div>
+		                            </div>
+		                              <div class="col-md-10 col-md-offset-1">
+		                              	<textarea class="form-control" name="issue" rows="5" id="textArea" placeholder="Enter Issues/concerns">@peEmployeeAppraisal.issue</textarea>
+		                              </div>
+	                          	<div class="row">
+	                                <div class="col-md-12 " >
+	                                    <input type="submit" value="Update" class="btn btn-primary btn-raised">
+	                                </div>
+	                            </div>
+	                            </form>
+	                            }else{
+	                            	<h3 class="text-center">Data Not Available!</h3>
+	                            }
+                        </div>
+                    </div>
+                </div>
+
+	<div id="QNote" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">Note</h3>
+	            </div>
+	            <div class="modal-body">
+	                <textarea id="resNote" rows="5" style="width:100%;min-height:300px;" disabled></textarea>
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo3" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo3">Yes</button>*@
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+	            </div>
+	        </div>
+	    </div>
+	</div> 
+<script>
+$(document).on('click', '.qNote', function() {
+	var Note=$(this).attr('value');
+	$("#resNote").text(Note)
+	$('#QNote').modal('show');
+	
+});
+$('#employeeAppraisalForm').bootstrapValidator();
+$("#allTaskStatusTable").DataTable(); 
+</script>
+
+ 
+ 
+ 

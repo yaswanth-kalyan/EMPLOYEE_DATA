@@ -1,0 +1,164 @@
+@header("",1){ 
+ 
+
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/leaveCalender" class="btn">Leave Calendar</a> |
+                    <a href="/applyLeave" class="btn">Apply Leave </a> |
+                    <a href="/configureLeaves" class="btn  text-orange">Leave Status</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Application Status </h3>
+                </div>
+                <div class="col-md-12">
+                	<div class="col-md-12">
+	                    <table class="table table-bordered table-striped entitlement-table" id="leaveStatus-table">
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Request On</th>
+                 				<th>Date From</th>
+                 				<th>Date To</th>
+                 				<th>No Of Days</th>
+                 				<th>Leave Type</th>
+                 				<th>Reason</th>
+                 				<th>Status</th>
+                 				<th>Aproving Manager</th>
+                 				<th>Cancel</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			<tr>
+                 				<td>1</td>
+                 				<td>11-oct-2016</td>
+                 				<td>14-oct-2016</td>
+                 				<td>19-oct-2016</td>
+                 				<td> 5</td>
+                 				<td>Leave with out pay</td>
+                 				<td>Siste Marriage</td>
+                 				<td>pending Approval</td>
+                 				<td>Priyanka M</td>
+                 				<td align="center">  <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			<tr>
+                 				<td>2</td>
+                 				<td>11-aug-2016</td>
+                 				<td>14-aug-2016</td>
+                 				<td>19-aug-2016</td>
+                 				<td> 5</td>
+                 				<td>Earned</td>
+                 				<td>Urgent Work</td>
+                 				<td> Approvaed</td>
+                 				<td>Priyanka M</td>
+                 				<td align="center">  <a href="#"><i class="fa fa-times disabled"></i></a></td>
+                 			</tr>
+                 			<tr>
+                 				<td>3</td>
+                 				<td>10-nov-2016</td>
+                 				<td>14-nov-2016</td>
+                 				<td>19-nov-2016</td>
+                 				<td> 5</td>
+                 				<td>Compensatory Off</td>
+                 				<td>Sick leave</td>
+                 				<td>Taken</td>
+                 				<td>Priyanka M</td>
+                 				<td align="center">  <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 		</tbody>	
+                 	</table>
+	                </div>
+                </div>
+                
+                 <div class="col-md-12 heading-badge">
+                    	<h3 class="">Entitlement Status</h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                     <table class="table table-bordered table-striped entitlement-table" >
+                 		<thead>
+                 			<tr>
+                 				<th>Leave Type</th> 
+                 				<th>Last Year B/F</th>
+                 				<th>Year to Date Earned</th>
+                 				<th>Total ENlitement</th>
+                 				<th>Year to Date Taken</th>
+                 				<th>Futur Applied(Approved)</th>
+                 				<th>Futur Applied(Pending Approved)</th>
+                 				<th>Available Balance</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			<tr>
+                 				<td>Earned</td>
+                 				<td>2</td>
+                 				<td>20</td>
+                 				<td>22</td>
+                 				<td>2</td>
+                 				<td>10</td>
+                 				<td>0</td>
+                 				<td>10</td>
+                 			</tr>
+                 			<tr>
+                 				<td>Leave Without Pay</td>
+                 				<td> 0</td>
+                 				<td>15</td>
+                 				<td>15</td>
+                 				<td>1</td>
+                 				<td>1</td>
+                 				<td>2</td>
+                 				<td>11</td>
+                 			</tr>
+                 			<tr>
+                 				<td>Compenstory Off</td>
+                 				<td> 0</td>
+                 				<td>1</td>
+                 				<td>1</td>
+                 				<td>1</td>
+                 				<td>0</td>
+                 				<td>0</td>
+                 				<td>0</td>
+                 			</tr>
+                 			<tr>
+                 				<td>Total</td>
+                 				<td>2</td>
+                 				<td>36</td>
+                 				<td>38</td>
+                 				<td>4</td>
+                 				<td>11</td>
+                 				<td>2</td>
+                 				<td>22</td>
+                 			</tr>
+                 		</tbody>	
+                 	</table>
+	                </div>
+                </div>
+                
+                
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+
+$('.mydate1').datepicker({
+      format: 'dd-mm-yyyy',
+      endDate: new Date(),
+      autoclose: true
+ })
+  $('.mydate2').datepicker({
+	    format: ' yyyy',
+	    viewMode: 'years',
+	    minViewMode: 'years',
+	    endDate: new Date() /*specify current year */
+});
+$("#leaveStatus-table").dataTable();
+</script>
+ }
+ 
+ 

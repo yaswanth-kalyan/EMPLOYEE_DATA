@@ -1,0 +1,65 @@
+@(list1:List[Attendance],from:String,to:String,id:Long)
+
+  	
+	
+					<br>
+					@if(!list1.isEmpty){
+						<table class="table" id="dtable1">
+							  <thead>
+								<tr>
+									 <th class="text-center">S.No.</th>
+									 <th class="text-center">Date</th>
+									 <th class="text-center">Status</th>
+									 <th class="text-center">In Time</th>
+									 <th class="text-center">Essl In Time</th>
+		                             <th class="text-center">Out Time</th>
+		                             <th class="text-center">Essl Out Time</th>
+		                             <th class="text-center">Hours</th>
+		                             <th class="text-center">Essl Hours</th>
+		                             <th class="text-center">Time In Office</th>
+		                             <th class="text-center">Essl Break Time</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+									@for((attendance,index) <- list1.zipWithIndex) {
+									<tr>
+										<td class="text-center">@{index+1}</td>
+									<td class="text-center">@attendance.getDate.format("dd-MM-yyyy")</td>
+									<td class="text-center">@attendance.getStatus</td>
+									<td class="text-center">@if(attendance.getInTime!=null){
+										@attendance.getInTime.format("hh:mm a")}</td>
+									<td class="text-center">@if(attendance.getEsslIntime!=null){
+										@attendance.getEsslIntime.format("hh:mm a")}</td>
+									<td class="text-center">@if(attendance.getOutTime!=null){
+										@attendance.getOutTime.format("hh:mm a")}</td>
+									<td class="text-center">@if(attendance.getEsslOuttime!=null){
+										@attendance.getEsslOuttime.format("hh:mm a")}</td>
+									<td class="text-center">@if(attendance.getSpendTime!=null){
+										@attendance.getSpendTime}</td>	
+	                                <td class="text-center">@if(attendance.esslSpendtime!=null){
+	                                  	@attendance.esslSpendtime}</td>
+                                       <td class="text-center">@if(attendance.timeInOffice!=null){
+	                                  	@attendance.timeInOffice}</td>
+	                                <td class="text-center">@if(attendance.esslBreakTime!=null){
+	                                 	@attendance.esslBreakTime}</td>
+									</tr>
+									}
+								</tbody>
+						</table>
+				
+					 <div align="center">
+							<a href='@utils.ConstructReportUrl.urlCommonPart()ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FAverage_Main_Report_Datewise&from=@from&to=@to&id=@id&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>
+							@*<a href='http://158.85.160.189:8080/jasperserver/flow.html?_flowId=viewReportFlow&standAlone=true&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FAverage_Main_Report_Datewise&from=@from&to=@to&id=@id&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>*@
+							
+						</div>
+						
+					}else{
+					<h3 class="text-center">No report this week</h3>
+					}
+			
+	<script>
+$("#dtable1").DataTable();
+</script>
+
+

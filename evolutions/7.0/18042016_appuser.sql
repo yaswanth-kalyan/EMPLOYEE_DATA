@@ -1,0 +1,1 @@
+Alter table app_user add column dob timestamp;

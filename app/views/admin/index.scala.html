@@ -1,0 +1,184 @@
+@(message: String)
+@import play.Play;
+
+@import play.mvc.Http.Session
+
+
+<style>
+#customBtn{
+background-color: #4285f4;
+color: rgb(255, 255, 255) !important;
+padding: 10px;
+height: 40px;
+width: 90%;
+margin-bottom: 20px !important;
+}
+#customBtn a{
+color:#fff;
+font-weight: bold;
+
+}
+#customBtn a:hover{
+text-decoration: none;
+}
+#customBtn .fa{
+color:#fff;
+}
+</style>
+@header("Login",-1) {
+				
+					<head>
+                        <meta name="google-signin-scope" content="profile email">
+                        <meta name="google-signin-client_id" content=@Play.application().configuration().getString("google.clientid")>
+                        <script src="https://apis.google.com/js/platform.js" async defer></script>
+                     </head>
+  		   		<center><img src="/assets/images/bb8_logo_thrymr.png" class="logo"></center>
+			      <div class="container">
+				    <div class="row">
+						<div class="col-md-6 col-md-offset-3">
+						<div class="loginInside">
+				    		<div class="loginPanel panel-warning" style="height:135px !important;">
+							  	<div class="panel-heading loginHead" >
+							    	<h3 class="text-lightgray  text-center">Thrymr Software Employee Portal</h3>
+							 	</div>
+							  	<div class="panel-body">
+							  	@if(utils.Constants.FORM_DISPLAY.equals("true")){
+									  		  <form method="POST"  class="form-horizontal "  role="form" action="@routes.Application.login()">
+									  			<br>
+											    <div class="form-group">
+											      <label class="control-label col-sm-3" for="email">Category:</label>
+											      <div class="col-sm-8">
+											       <select name="role" id="role" class="form-control" required="required" autocomplete="off">
+												     @for(role <- models.Roles.values()) {
+												     		@if(role.equals(models.Roles.Engineer)){
+												     		<option value="@role" selected="selected">@role</option>
+												     		} else {
+												       		<option value="@role">@role</option>
+												       		}
+												       } 
+													</select>
+											      </div>
+											    </div>
+											    <br><br>
+											    <div class="form-group">
+											      <label class="control-label col-sm-3" for="email">Email:</label>
+											      <div class="col-sm-8">
+											        <input type="email" class="form-control" name="email" required="required">
+											      </div>
+											    </div>
+											    <br>
+											    <br>
+											    
+											    <div class="form-group">
+											      <label class="control-label col-sm-3" for="pwd">Password:</label>
+											      <div class="col-sm-8">          
+											        <input type="password" class="form-control" name="password"  required="required">
+											      </div>
+											    </div>
+											    <br>
+											    <div class="form-group">        
+											      <div class="col-md-10 col-md-offset-1">
+											          <input type="submit" class="btn btn-raised btn-warning btn-lg loginsubmit" value="login" />
+											    </div>
+											   </div> 
+											   <div class="form-group text-center">
+											          <a href="/forgetPasswordPage" class="btn btn-default text-white">forgot Password ?</a>
+											   </div>
+												<!--   <button type="button" class="btn btn-block btn-social btn-google-plus margintop-0"  onclick='googleLogin();'><i class="fa fa-google"></i> Sign in with Google</button> -->
+									 </form>
+									 }
+									 
+									    <center>
+									    <br>
+											<div id="customBtn" class="form-group">
+									          <a  class="g-signup">
+									          	<span class="g-logo">
+									          		<i class="fa fa-google"></i>
+									          	</span>
+									          	<span class="g-text">
+									          		Login with Google
+									          	</span>
+									          </a>
+									        </div>
+								        </center>
+						
+									 @* <center><div class=" g-signin2" data-width="250" data-height="40" data-longtitle="true" id="customBtn" data-theme="dark"></div></center><br>*@
+							    </div>
+							</div>
+						</div>
+					   </div>
+					</div>
+				</div>
+}
+@footer(""){
+	<script src="@routes.Assets.versioned("js/jquery-1.11.3.js")" type="text/javascript"></script>	
+	<script src="@routes.Assets.versioned("js/bootstrap.min.js")"></script>
+	<script src="@routes.Assets.versioned("js/googleplugin.js")" type="text/javascript"></script>
+	<script>
+		$('#hiddenRole').val($('#role').val());
+		$(document).on('change','#role',function(res){
+			$('#hiddenRole').val($(this).val());
+		});
+		$(".loginInside").hide(0).delay(100).fadeIn(1000);
+		$(".logo").hide(0).delay(300).fadeIn(3000);
+		
+		
+		$(function(){
+	   	   $('.panel-body').one('mouseenter',function(){	
+		   	$('#customBtn').click();
+		   });
+	   });
+		
+		$(document).on('click','#customBtn',function(e){
+			startApp();
+			
+		});
+		
+			  var googleUser = {};
+			  var startApp = function() {
+			    gapi.load('auth2', function(){
+			      // Retrieve the singleton for the GoogleAuth library and set up the client.
+			      auth2 = gapi.auth2.init({
+			        client_id: '@Play.application().configuration().getString("google.clientid")',	
+			        cookiepolicy: 'single_host_origin',
+			        // Request scopes in addition to 'profile' and 'email'
+			        //scope: 'additional_scope'
+			      });
+			   
+			      attachSignin(document.getElementById('customBtn'));
+			    });
+			  };
+			  function attachSignin(element) {
+			    console.log(element.id);
+			    auth2.attachClickHandler(element, {},function(googleUser) {
+			          /*document.getElementById('name').innerText = "Signed in: " +
+			              googleUser.getBasicProfile().getName();*/
+			            console.log("inside the method");  
+			                var id_token = googleUser.getAuthResponse().id_token;
+			                $('<form action="@routes.Application.signInUsingGoogle()" method="post"><input name="idtoken" value="'+id_token+'"></form>').appendTo('body').submit();
+			                
+			
+				  //xhr.open('POST', 'http://localhost:9000/login-mongo-process');
+				  //xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				 // xhr.onload = function() {
+				   // console.log('Signed in as: ' + xhr.responseText);
+				  //};
+				  //xhr.send('idtoken=' + id_token);
+				  	
+			        }, function(error) {
+			          alert(JSON.stringify(error, undefined, 2));
+			        });
+			        
+			        	
+			  }
+			  function signOut() {
+			    var auth2 = gapi.auth2.getAuthInstance();
+			    auth2.signOut().then(function () {
+			      console.log('User signed out.');
+			      alert("dasas");
+			    });
+			  }
+			  
+  </script>
+}
+

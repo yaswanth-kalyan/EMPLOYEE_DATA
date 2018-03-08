@@ -1,0 +1,660 @@
+@(lead : models.lead.Lead , listContacts : List[models.lead.CompanyContacts],listLeadContact : List[models.lead.LeadContactInfo])
+@header("Edit Lead",6){
+
+<section>
+    <form class="form-horizontal" id="editLeadForm" action="/lead/updateLead"  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/all-leads" class="btn text-orange">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") {|
+                    <a href="/configure-lead" class="btn">Configure Lead Status</a>
+                    }
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <div class="col-md-10">
+                    	<h3 class="">Edit Lead</h3>
+                    </div> 
+                </div>
+                <div class="row">
+               		<div class="col-md-12">
+               			<div class="row">
+	               			<div class="col-md-2 col-md-offset-4">
+	               				 <div class="col-xs-4 availabilityContainer">
+						                <div class="radio">
+						                    <label>
+						                    @if(lead.getCompany != null){
+						                    <input type="radio" name="availability" class="ind-comp" value="0" />
+						                    }else{
+						                    <input type="radio" name="availability" class="ind-comp" value="Indivual" checked />
+						                    }
+						                    Individual </label>
+						                </div>
+						                 
+						            </div>
+	               			</div>
+	               			<div class="col-md-2">
+	               				 <div class="col-xs-2 availabilityContainer">
+						                <div class="radio">
+						                    <label>
+						                    @if(lead.getCompany != null){
+						                    <input type="radio" name="availability" class="ind-comp" value="Company" checked /> 
+						                    }else{
+						                    <input type="radio" name="availability" class="ind-comp" value="Company"  />
+						                    }
+						                    Company </label>
+						                </div>
+						            </div>
+	               			</div>
+	               			<div class="clearfix"></div>
+               			</div>
+	        			 <div class="row companyname">
+	                         <div class="col-md-2 col-md-offset-3">
+	                             <div class="pull-left leave-label">  
+	                             	<label  class="control-label">Company Name <span class="asterisk"> * </span></label>
+	                             </div>
+	                         </div>
+	                         <div class="col-md-4">
+	                         	 <div class="form-group">
+		                         	 <select class="form-control company-select selections" id="ComID" name="companyId" autocomplete="off" required>
+		                         	 	<option value="">Select One</option>
+		                         	 	<option value="0"> Add Company</option>
+		                         	 	@for(company <- models.lead.Company.getAllCompanys()){
+		                         	 		@if(lead.getCompany != null && lead.getCompany.id == company.id){
+		                             		<option value="@company.id" selected="selected"> @company.companyName</option>
+		                             		}else{
+		                             		<option value="@company.id"> @company.companyName</option>
+		                             		}
+		                             	}
+		                             </select>
+	                             </div>
+	                         </div>
+	                     </div>
+	                      <div class="row">
+	                          <div class="col-md-2 col-md-offset-3">
+	                          <div class="pull-left leave-label"> 	<label  class="control-label"> Opportunity Title</label> <span class="asterisk"> * </span></div>
+	                          </div>
+	                          <div class="col-md-4">
+	                          	<div class="form-group is-empty">
+	                          	<input type="hidden" class="form-control" name="leadId" id="leadId" value="@lead.id" required="required"/>
+	                          		<input type='text' class="form-control" name="opportunityTitle" value="@lead.opportunityTitle"  id="textArea"/><span class="material-input"></span></div>
+	                          </div>
+	                      </div>
+	                      <div class="row">
+	                          <div class="col-md-2 col-md-offset-3">
+	                          <div class="pull-left leave-label"> 	<label  class="control-label"> Opportunity Description</label> </div>
+	                          </div>
+	                          <div class="col-md-4">
+	                          	<div class="form-group is-empty"><textarea class="form-control" name="opportunityDiscription" rows="5" id="textArea">@lead.getOpportunityDiscription</textarea><span class="material-input"></span></div>
+	                          </div>
+	                      </div>
+                      
+	                      <div class="row">
+	                         <div class="col-md-2 col-md-offset-3">
+	                             <div class="pull-left leave-label">  
+	                             	<label  class="control-label">Source</label>
+	                             </div>
+	                         </div>    
+	                         <div class="col-md-4">
+	                         	 <div class="form-group">
+		                         	 <select class="form-control selections" name="leadSource" autocomplete="off">
+		                         		 <option value="">Select One</option>
+		                             	@for(source <- models.lead.LeadSource.values()){
+		                             		@if(lead.leadSource != null && lead.leadSource.equals(source)){
+		                             			<option value="@source" selected="selected">@source.toString().replaceAll("_", " ")</option>
+		                             		}else{
+		                             			<option value="@source">@source.toString().replaceAll("_", " ")</option>
+		                             		}
+		                         	 	}
+		                             </select>
+	                             </div>
+	                         </div>
+	                     </div>
+                     
+                     <div class="row">
+                         <div class="col-md-2 col-md-offset-3">
+                             <div class="pull-left leave-label">  
+                             	<label  class="control-label">Lead Status <span class="asterisk"> * </span></label>
+                        	 </div>
+                         </div>
+                         <div class="col-md-4">
+                         	 <div class="form-group">
+	                         	 <select class="form-control selections" name="leadStatusId" autocomplete="off">
+	                             	@if(!models.lead.LeadStatus.getAllLeadStatus.isEmpty){
+	                         	 		<option value="">Select One</option>
+	                         	 	@for(status <- models.lead.LeadStatus.getAllLeadStatus){
+	                         	 		@if(lead.getLeadStatus.status.equals(status.status)){
+	                             			<option value="@status.id" selected="selected">@status.status</option>
+	                             		}else{
+	                             			<option value="@status.id">@status.status</option>
+	                             		}
+	                             	}
+	                             }else{
+	                             	<option>No Data Available</option>
+	                             }
+	                             </select>
+                             </div>
+                  		 </div>
+                 	  </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label">  	<label  class="control-label">Estimated Amount </label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"><input type="text" name="estimatedAmount" 
+                          	 pattern="^\d*(\.\d{1,2})?$" step="0.01"
+           						 title="This should be a number with up to 2 decimal places."
+                          	@if(lead.estimatedAmount != null) {value="@String.format("%.2f", lead.estimatedAmount).trim()"} class="form-control" /></div>
+                          </div>
+                      </div><br>
+              </div>
+              </div>    
+               <div class="col-md-12 heading-badge">
+                    <h3 class="">Contact Details </h3>
+                </div> 
+               <div class="row">
+               	<div class="col-dm-6 col-md-offset-3">
+               		<div class="row">
+               			<div class="col-md-8">
+               			@if(!listContacts.isEmpty()){
+                 			<table class="table indiviual-table hidden" id="addLeadcompTable2">
+			                   	<thead>
+			                   		<tr>
+			                   			<th>Name</th>
+			                   			<th></th> 
+			                   		</tr>
+			                   	</thead>
+			                   	<tbody>
+			                   	 @if(listLeadContact != null && listLeadContact.size() > 0){
+			                   	 	@for((contact1,index) <- listLeadContact.zipWithIndex){
+			                   		<tr id="firstRow2">
+			                   			<td class="appendSelectContact">
+			                   				 <select class="form-control lead-table1 nameDrop selections ConID" autocomplete="off" name="">
+			                   				 		<option value="0">Select One</option>
+			                   				 		<option value="#"> Add Contact</option>
+				                             	@for(contact <- listContacts){
+				                   						@if(contact1.companyContact.id != null && contact1.companyContact.id == contact.id){
+				                   							<option value="@contact.id" selected="selected">@contact.getContactName</option>
+				                   						}else{
+				                   							<option value="@contact.id">@contact.getContactName</option>
+				                   						}
+				                   					}
+				                             </select> 
+			                   			</td>
+			                   			<td class="text-center">
+			                   			@if(index ==0){
+			                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow2" value="+">
+			                   			} else{
+				                   				<a href="/lead/deleteLeadContact/@lead.id/@contact1.id" class="btn ">
+				                   				<button type="button" class="btn btn-danger btn-raised btn-sm ">x</button></a>
+				                   			}
+			                   			</td>
+			                   		</tr>
+		                   			}
+		                   		   }else{
+			                   		<tr id="firstRow2">
+			                   			<td class="appendSelectContact">
+			                   				 <select class="form-control lead-table1 nameDrop selections ConID" autocomplete="off" name="">
+			                   						 <option value="0">Select One</option>
+			                   						 <option value="#"> Add Contact</option>
+				                             	@for(contact <- listContacts){
+				                   					<option value="@contact.id">@contact.getContactName</option>
+				                   				}
+				                             </select> 
+			                   			</td>
+			                   			<td class="text-center">
+			                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow2" value="+">
+			                   			</td>
+			                   		</tr>
+		                  		  }
+		                    	</tbody>
+		                   </table>
+		                 
+		                   <table class="table companyname-table " id="addLeadcompTable1">
+			                   	<thead>
+			                   		<tr>
+			                   			<th>Name</th>
+			                   			<th  class="jobTitle">Job Title</th>
+			                   			<th></th> 
+			                   		</tr>
+			                   	</thead>
+			                   	<tbody>
+			                   	 @if(listLeadContact != null && listLeadContact.size() > 0){
+			                   	 	@for((contact1,index) <- listLeadContact.zipWithIndex){
+				                   		<tr id="firstRow1">
+				                   			<td class="appendSelectContact"><br>
+				                   				 <select class="form-control lead-table nameDrop selections ConID" autocomplete="off" name="cid[]">
+				                   				 <option value="0">Select One</option>
+				                   				 <option value="#"> Add Contact</option>
+				                   				 @for(contact <- listContacts){
+				                   						@if(contact1.companyContact.id != null && contact1.companyContact.id == contact.id){
+				                   							<option value="@contact.id" selected="selected">@contact.getContactName</option>
+				                   						}else{
+				                   							<option value="@contact.id">@contact.getContactName</option>
+				                   						}
+				                   					}
+					                             </select> 
+				                   			</td>
+				                   			<td class="jobTitle">  
+				                   				<input type="text" class="form-control margintop-10 setValue jj" placeholder="job Title." 
+				                   				@if(lead.getCompany != null){
+				                   				value="@models.lead.CompanyContactInfo.getJobTitle(lead.getCompany.getId, contact1.companyContact.id)"} name="jobTitle[]" ">
+				                   			</td>
+				                   			<td class="text-center">
+				                   			@if(index ==0){
+				                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow1" value="+">
+				                   			} else{
+				                   				<a href="/lead/deleteLeadContact/@lead.id/@contact1.id" class="btn ">
+				                   				<button type="button" class="btn btn-danger btn-raised btn-sm ">x</button></a>
+				                   			}
+				                   			</td>
+				                   		</tr>
+				                   		}
+			                   		}else{
+				                   		<tr id="firstRow1">
+				                   			<td class="appendSelectContact"><br>
+				                   				<select class="form-control lead-table nameDrop selections ConID"  autocomplete="off" name="cid[]">
+				                   				<option value="0">Select One</option>
+				                   				<option value="#"> Add Contact</option>
+				                   				@for(contact <- listContacts){
+				                   					<option value="@contact.id">@contact.getContactName</option>
+				                   				}
+					                     	   </select> 
+				                   			</td>
+				                   			<td>  
+				                   				<input type="text" class="form-control margintop-10 setValue jj" placeholder="job Title" name="jobTitle[]" ">
+				                   			</td>
+				                   			<td class="text-center">
+				                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow1" value="+">
+				                   			</td>
+				                   		</tr>
+			                   		}
+			                   	</tbody>
+		                   </table>
+		                   }else{
+		                   	<h3 class="text-center">No Data Available</h3>
+		                   	<option value="#"> Add Contact</option>
+		                   }
+						</div>
+					</div>
+               	</div>
+					<div class="text-center">
+                       <button type="reset" class="btn btn-warning btn-raised">Clear</button>
+                       <button type="submit" class="btn btn-primary btn-raised">Update</button>
+                     </div>
+             </div>
+	     </div>
+ </form>
+</section>
+
+} @footer(""){
+<script>
+	$('.selections').chosen({
+		width : "100%"
+	});
+	$(document)
+			.on(
+					'click',
+					'#addRow1',
+					function() {
+						$('.selections').chosen('destroy');
+						var firstRow = $('#firstRow1').clone();
+						firstRow.find('input').val('');
+						firstRow.find('.nameDrop').val('');
+						firstRow.find('input').removeAttr('required');
+						firstRow
+								.find('#addRow1')
+								.parent()
+								.html(
+										' <center><button type="button" class="btn btn-danger btn-raised btn-sm deleteRow">x</button></center>');
+						$('#addLeadcompTable1').append(firstRow);
+						$(".selections").chosen();
+					});
+	$(document)
+			.on(
+					'click',
+					'#addRow2',
+					function() {
+						$('.selections').chosen('destroy');
+						var firstRow = $('#firstRow2').clone();
+						firstRow.find('input').val('');
+						firstRow.find('.nameDrop').val('');
+						firstRow.find('input').removeAttr('required');
+						firstRow
+								.find('#addRow2')
+								.parent()
+								.html(
+										' <center><button type="button" class="btn btn-danger btn-raised btn-sm deleteRow">x</button></center>');
+						$('#addLeadcompTable2').append(firstRow);
+						$(".selections").chosen();
+					});
+	$(document).on('click', '.deleteRow', function() {
+		$(this).closest('tr').remove();
+	});
+
+	$(document).ready(
+			function() {
+				var onloadres = $(".ind-comp").val();
+				if (onloadres == "Indivual") {
+					$(".companyname , .jobtitle").css("display", "none");
+					$(".indiviual-table").removeClass("hidden")
+					$(".companyname-table").addClass("hidden");
+					$(".company-select").attr("name", "")
+					$('#editLeadForm').bootstrapValidator('removeField',
+							$(".company-select"));
+					$(".lead-table1").attr("name", "cid[]");
+					$(".lead-table").attr("name", "");
+					$(".jj").attr("name", "");
+				}
+				$(".ind-comp").change(
+						function() {
+							var res = $(this).val();
+							if (res == "Company") {
+								$(".companyname , .jobtitle ").css("display",
+										"block");
+								$(".companyname-table").removeClass("hidden")
+								$(".indiviual-table").addClass("hidden")
+								$(".company-select").attr("name", "companyId");
+								$('#editLeadForm').bootstrapValidator(
+										'addField', $(".company-select"));
+								$(".lead-table").attr("name", "cid[]");
+								$(".lead-table1").attr("name", "");
+								$(".jj").attr("name", "jobTitle[]");
+							} else {
+								$(".companyname , .jobtitle").css("display",
+										"none");
+								$(".indiviual-table").removeClass("hidden")
+								$(".companyname-table").addClass("hidden");
+								$(".company-select").attr("name", "");
+								$('#editLeadForm').bootstrapValidator(
+										'removeField', $(".company-select"));
+								$(".lead-table1").attr("name", "cid[]");
+								$(".lead-table").attr("name", "");
+								$(".jj").attr("name", "");
+							}
+
+						});
+
+			});
+
+	$('#editLeadForm').bootstrapValidator({
+		framework : 'bootstrap',
+		// This option will not ignore invisible fields which belong to inactive panels
+		excluded : ':disabled',
+		fields : {
+			opportunityTitle : {
+				validators : {
+					notEmpty : {
+						message : 'Please fill  opportunityTitle '
+					}
+				}
+			},
+			opportunity : {
+				validators : {
+					notEmpty : {
+						message : 'Please fill Opportunity'
+					}
+				}
+			},
+			leadSource1 : {
+				validators : {
+					notEmpty : {
+						message : 'Please Choose an option'
+					}
+				}
+			},
+			leadStatusId : {
+				validators : {
+					notEmpty : {
+						message : 'Please Choose an option'
+					}
+				}
+			}
+		}
+	});
+
+	$(document).on(
+			'change',
+			'.ConID',
+			function() {
+				var dropdown = $(this);
+				dropdown.parent().find('.errMsg').remove();
+				$.ajax({
+					url : '/lead/getDuplicateJobTitle/' + $('#ComID').val()
+							+ '/' + $(this).val(),
+					type : "GET",
+					success : function(result) {
+						if (result) {
+							// $(".setValue").removeAttr("value");
+							dropdown.closest('#firstRow1').find('.setValue')
+									.attr('value', result).val(result);
+							//  $(".addMsg").html('<span >'+result+'</span>');
+							//dropdown.parent().append('<span class="errMsg">'+result+'</span>');
+							//  $('#Mssg-alert').modal('show');
+						} else {
+							// dropdown.closest('#firstRow1').find('.setValue').attr('value','');
+							dropdown.closest('#firstRow1').find('.setValue')
+									.attr('value', result).val(result);
+						}
+					}
+				});
+			});
+
+	$(document).on('chosen:showing_dropdown', '.selections', function() {
+		$('body').mCustomScrollbar('destroy');
+	});
+	$(document).on('chosen:hiding_dropdown', '.selections', function() {
+		$('body').mCustomScrollbar();
+	});
+
+	var currentDrodown = '';
+	$(document).on('change', '#ComID', function(e) {
+		console.log("on change 1 called");
+		if ($(this).val() == "0") {
+			$('#addCompanyForm')[0].reset();
+			$('#company-alert').modal('show');
+		}
+	});
+
+	$(document).on('change', '.ConID', function(e) {
+		if ($(this).val() == "#") {
+			currentDrodown = $(this);
+			$('#addContactForm')[0].reset();
+			$('#contact-alert').modal('show');
+		}
+	});
+
+	$(document).on(
+			'click',
+			'#addcom',
+			function(e) {
+				e.preventDefault();
+				var d1 = $('#companyName').val();
+				var d2 = $('#address').val();
+				console.log(d1 + "==" + d2);
+				if (d1.length == 0 || d2.length == 0) {
+					alert("please fill the required fields");
+				} else {
+					$.post('/lead/addCompany',
+							$('#addCompanyForm').serialize(), function(data) {
+								var option = '';
+								$.each(data, function(k, v) {
+									option = $("<option value="+k+" selected>"
+											+ v + "</option>");
+								});
+								$("#ComID option").removeAttr('selected');
+								$("#ComID option").prop('selected', false);
+								$("#ComID").append(option)
+								$("#ComID").trigger('chosen:updated');
+								$('#company-alert').modal('hide');
+							});
+				}
+			});
+
+	$('#addCompanyForm')
+			.bootstrapValidator(
+					{
+						framework : 'bootstrap',
+						// This option will not ignore invisible fields which belong to inactive panels
+						excluded : ':disabled',
+						fields : {
+							companyName : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill Company Name'
+									},
+									remote : {
+										message : 'Company Name Already Existed',
+										type : 'POST',
+										url : '/isExistCompanyName',
+										data : function(validator) {
+											return {
+												companyName : validator
+														.getFieldElements(
+																'companyName')
+														.val()
+											}
+										}
+									}
+								}
+							},
+							address : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill  Company Address'
+									}
+								}
+							}
+						}
+					});
+
+	$('.birthdaydate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	})
+	$('.anniversaryDate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	})
+	$(document)
+			.on(
+					'click',
+					'#addCt',
+					function() {
+						var elements = $('<div class="row newfiled"><div class="form-group">'
+								+ '<div>'
+								+ '<div class="col-md-4">'
+								+ '<select class="form-control" name="contactType[]">'
+								+ '<option> Mobile</option>'
+								+ '<option> Home</option>'
+								+ '<option> Work</option>'
+								+ '</select>'
+								+ '</div>'
+								+ '<div class="col-md-2">'
+								+ '<input type="tel" name="countryCode[]" class="form-control margin-top-10"placeholder="CCode" maxlength="3">'
+								+ '</div>'
+								+ '<div class="col-md-4">'
+								+ '<input type="tel" name="contactNo[]" class="form-control margin-top-10 contactNo">'
+								+ '</div>'
+								+ '<div class="col-md-2 myclose">'
+								+ '<input type="button" class="btn btn-warning btn-xs  margin-top-10 btn-raised deleteRow" value="X" />'
+								+ '</div>' + '</div>' + '</div></div>');
+						$(".appendhere").append(elements)
+						$('#addContactForm').bootstrapValidator('addField',
+								elements.find('.contactNo'));
+					});
+	$(document).on('click', '.deleteRow', function() {
+		$(this).closest('.newfiled').remove();
+	});
+
+	$('#addContactForm')
+			.bootstrapValidator(
+					{
+						framework : 'bootstrap',
+						// This option will not ignore invisible fields which belong to inactive panels
+						excluded : ':disabled',
+						fields : {
+							contactName : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill Contact Name'
+									},
+									remote : {
+										message : 'Contact Name Already Existed',
+										type : 'POST',
+										url : '/isExistContactName',
+										data : function(validator) {
+											return {
+												contactName : validator
+														.getFieldElements(
+																'contactName')
+														.val()
+											}
+										}
+									}
+								}
+							},
+							'contactNo[]' : {
+								validators : {
+									regexp : {
+										regexp : /^[0-9]+$/i,
+										message : 'please enter 10 to 15 numbers'
+									},
+									stringLength : {
+										message : 'please enter 10 to 15 numbers',
+										max : 15,
+										min : 10
+									}
+								}
+							}
+						}
+					});
+
+	$(document).on(
+			'click',
+			'#addConta',
+			function(e) {
+				e.preventDefault();
+				console.log("add contact called");
+				var d1 = $('#contactName').val();
+				if (d1.length == 0) {
+					alert("please fill the required fields");
+				} else {
+					$('#contact-alert').modal('hide');
+					$.post('/lead/addCompanyContact', $('#addContactForm')
+							.serialize(), function(data) {
+						var option = '', key = '';
+						$.each(data,
+								function(k, v) {
+									key = k;
+									option = $("<option value="+k+">" + v
+											+ "</option>");
+								});
+						currentDrodown.closest('.appendSelectContact').find(
+								'.ConID option').removeAttr('selected');
+						currentDrodown.closest('.appendSelectContact').find(
+								'.ConID option').prop('selected', false);
+						$('.ConID').append(option)
+						currentDrodown.closest('.appendSelectContact').find(
+								'.ConID option[value=' + key + ']').attr(
+								'selected');
+						currentDrodown.closest('.appendSelectContact').find(
+								'.ConID option[value=' + key + ']').prop(
+								'selected', true);
+						$('.ConID').trigger('chosen:updated');
+						$('#company-alert').modal('hide');
+
+						//currentDrodown.closest('.appendSelectContact').html(data);
+					});
+				}
+			});
+</script>
+ }
+@staticAddContact() 
+@staticAddCompany()
+ 
+ 

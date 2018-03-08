@@ -1,0 +1,96 @@
+@(message: String)
+
+@main("BB8") {
+	
+	
+	<html>
+	<head><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>
+
+				var d1=new Date();
+				document.getElementById("demo1").innerHTML = d1.getDate()+'-'+d1.getMonth()+1+'-'+d1.getFullYear();
+
+				
+				$(document).on('click','#next1',function(){
+					timesheet1 = $('#question').val();
+					$.get('/daily/'+timesheet1,function(data){
+						 $("#todays5").html(data);
+					});
+				});
+
+				
+				
+				
+			
+				</script>
+	</head>
+	<body>
+	
+	@if(message.charAt(0)=='4'){
+		
+		
+		<div id="todays3">
+	<h3 style="color:#20B2AA">daily status</h3>
+					   		<h3 style="color:#20B2AA" id="demo1"></h3>
+							  	 <div class="row col-md-4 col-md-offset-4">
+							  	 <form action=@routes.EngineerController.dailyStatus1() method="post">
+	<table class='table table-bordered table-striped'>
+			  			 
+			  		
+			   				<tr>
+			  					<td>@message &nbsp;&nbsp;</td>
+			  				</tr>
+			  				<tr>
+			   					<td> &nbsp;&nbsp;&nbsp;
+			   						<textarea rows="" cols="" name="question4" id="question" class="form-control Qus" required="required"></textarea>
+			   					</td>
+			   				</tr>
+			   				
+			  				<tr>
+				  				<td>
+				  					<input type="submit" class="btn btn-primary btn-width next123" id="next1" value="next">
+				  					 
+				  				 </td>
+			  				 </tr>
+			  			
+			  		 </table>
+			  		 </form>
+			  		  </div>
+			  		  </div>
+		
+		}else{
+	<div id="todays2">
+	<h3 style="color:#20B2AA">daily status</h3>
+					   		<h3 style="color:#20B2AA" id="demo1"></h3>
+							  	 <div class="row col-md-4 col-md-offset-4">
+	<table class='table table-bordered table-striped'>
+			  			 
+			  		
+			   				<tr>
+			  					<td>@message &nbsp;&nbsp;</td>
+			  				</tr>
+			  				<tr>
+			   					<td> &nbsp;&nbsp;&nbsp;
+			   						<textarea rows="" cols="" name="today" id="question" class="form-control Qus" required="required"></textarea>
+			   					</td>
+			   				</tr>
+			   				
+			  				<tr>
+				  				<td>
+				  					<input type="button" class="btn btn-primary btn-width next123" id="next1" value="next">
+				  					 
+				  				 </td>
+			  				 </tr>
+			  			
+			  		 </table>
+			  		  </div>
+			  		  </div>
+			  		  }
+	
+	<div id="todays5"></div>
+	
+		
+				</body>
+	</html>
+	
+	}

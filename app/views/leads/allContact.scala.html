@@ -1,0 +1,115 @@
+@(contactsList : List[models.lead.CompanyContacts])
+@header("Contacts",6){
+<section>
+   
+        <div class="container">
+            <div class="col-md-12 panel">
+            	<div class="row">
+                    <a href="/all-leads" class="btn">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn text-orange">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") { |
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                </div>
+                <div class="row heading-badge">
+                    <div class="col-md-7">
+                    	<h3 class="">All Contacts </h3>
+                    </div>
+                    <div  id="action" class=" col-md-3 btn btn-primary btn-raised margin-0"><i class="fa fa-cloud-upload"></i>&nbsp;Import from LinkedIn</div>
+                    <div class="col-md-2">
+                    	<a href="/add-contact">	
+                    		<input type="button" class="btn btn-primary btn-raised margin-0" value="Add Contact">
+                    	</a>
+                     </div>	
+                </div>
+                <form  action="/lead/uploadContactExcellSheet" method="post" enctype="multipart/form-data" id="csv">
+ 					<div align="center">
+ 						<input type="file" name="file" class=" btn btn-raised btn-warning btn-sm" required="required">
+ 			 			<button type="submit" class='btn btn-success btn-raised' id="sub1">Import Contacts .CSV File</button>
+            		</div>
+            	</form> 
+                <div class="row">
+               		<div class="col-md-12">
+               		@if(!contactsList.isEmpty){
+                    	<table class="table table-bordered allcomanyTable">
+                    		<thead>
+                    			<tr>
+                    				 <th style="display:none;"></th>	
+                    				<th> Contact Name</th>
+                    				<th>Contact No</th>
+                    				<th> Email-ID </th>
+                    				<th> Location</th>
+                    				<th> Associated With</th>
+                    				<th> Option</th>
+                    			</tr>
+                    		</thead>
+                    		<tbody>
+                  		@for((contact,index)<- contactsList.zipWithIndex) {
+                    			<tr>
+                    			<td style="display:none;">@{index+1}</td>	
+                    			 	<td align="left"> @contact.contactName </td>
+                    				<td align="left"> @for(no <- contact.contactNoList){
+                    					@if(no.contactNo != null) {
+                    						@no.countryCode&nbsp;  @no.contactNo <br>
+                    						}
+                    					} 
+                    			 	</td>
+                    				<td
+                    				align="left"> @contact.emailID </td>
+                    				<td align="left"> @contact.location </td>
+                    			<td align="left">@if(!staticController.getComapnyName(contact.id).isEmpty()){
+                    					@for(names <- models.lead.CompanyContactInfo.getCompanyList(contact.id)){
+                    						@if(names.Company != null && names.Company.getCompanyName != null && !names.Company.getCompanyName.isEmpty()) {
+                    							@names.Company.getCompanyName
+                    						}
+                    						<br>
+                    						
+                    					}
+                    				} </td>  
+                    				<td> 
+                    					<a href="/edit-contact/@contact.id"><i class="fa fa-edit"></i></a> 
+                    				</td> 
+                    			</tr>
+                    		}
+                    		</tbody>
+                    	</table>
+                    }else{
+                    	<h3 class="text-center">No Data Available</h3>
+                    }
+                    </div>
+                </div> 
+            </div>
+        </div>
+
+   
+</section>
+
+} @footer(""){
+<script>
+ $(".allcomanyTable").DataTable({
+	 "aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+     "iDisplayLength": 100
+ });
+
+ $(document).ready(function(){  
+	    $("#action").click(function(){  
+	        $("#csv").slideToggle("slow");  
+	    });  
+	});  
+
+ $('.leadupfile').change(function () {
+	    var value = $(this).val();
+	    $(".upload-file-path").html(value);
+
+	});
+</script>
+<style>     
+#csv {  
+    display:none;  
+}  
+</style>  
+ }
+ 
+ 
+ 

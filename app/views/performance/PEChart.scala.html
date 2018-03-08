@@ -1,0 +1,228 @@
+@(appUserList : List[AppUser])
+@import java.lang.Long; var last=0l;
+@header(" PE DashBoard ",12){
+<section>
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+               	<a href="/performance/selfAppraisal" class="btn ">Self Appraisal</a> 
+                 	@if(PEController.checkIsMoreRoles()) {
+                    	| <a href="/performance/employeeAppraisal" class="btn">Employee Appraisal</a> 
+                 	}
+                 	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR") {
+                    	| <a href="/performance/PEDashBoard" class="btn text-orange">PE DashBoard</a> |
+                    	<a href="/performance/configureQuestionnaire" class="btn">Configure Questionnaire</a>
+                 	}
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-9 text-left" >
+            			<h3 class="">Performance Chart </h3>
+             		</div>
+                </div>
+               <div class="row">
+                 <div class="col-md-12">
+                        <div class="text-center">
+                        	<div class="col-md-12">
+	                        	<div class="col-md-5 text-right">
+	                               <label for="inputEmail" class="control-label">Select Start Month</label>
+	                            </div>   
+	                            <div class="col-md-3">
+	                                  <div id="sandbox-container">
+	                                      <input type="text" id="startMonth" class="form-control text-center mydate" placeholder="MM-YYYY" required readonly>
+	                                  </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-12">
+	                        	<div class="col-md-5 text-right">
+	                               <label for="inputEmail" class="control-label">Select End Month </label>
+	                            </div>   
+	                            <div class="col-md-3">
+	                                  <div id="sandbox-container">
+	                                      <input type="text" id="endMonth" class="form-control text-center mydate1" placeholder="MM-YYYY" required readonly>
+	                                  </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-12">
+	                        	<div class="col-md-5 text-right">
+	                               <label for="inputEmail" class="control-label">Select Employee </label>
+	                            </div>   
+	                            <div class="col-md-3">
+	                                  <div id="sandbox-container">
+	                                      <select name="#"  class="form-control text-center" id="employeeName" required="required">
+		                               		<option value="0">Select</option>
+		                                     @for( appUser <- appUserList) { 
+				                               <option value="@appUser.id">@appUser.getFullName()</option>
+						                     }
+		                           		</select>
+	                                  </div>
+	                            </div>
+	                        </div>
+	                        <div class="col-md-12">
+	                        	<div class="col-md-7 text-right">
+	                               <button class="btn btn-raised btn-success margin-0" id="LineChartStart">Generate</button>
+	                            </div>
+	                        </div><br><br>
+	                        <div class="col-md-12" id="selectedSEMonthData" style="height: 500px; width: 90%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+} @footer(""){
+<script type="text/javascript" src="/assets/js/canvasjs.min.js"></script>
+<script type="text/javascript">
+	window.onload = function () {
+		
+}
+</script>
+<script>
+var datenew = '@PEController.getMonth()';
+datenew = moment(datenew).format("MM-YYYY");
+$('#employeeName').chosen();
+$('.mydate').datepicker({
+    format: 'mm-yyyy',
+    viewMode: 'months', 
+    minViewMode: 'months',
+    endDate: datenew,
+    autoclose: true
+}).on('changeDate', function(e) {
+    var stDate = $('#startMonth').val();
+	$('.mydate1').datepicker({
+	    format: 'mm-yyyy',
+	    startDate: stDate,
+	    viewMode: 'months', 
+	    minViewMode: 'months',
+	    endDate: datenew,
+	    autoclose: true
+	});
+ });
+
+$('#endMonth1').on('click', function(e){
+var stDate = $('#startMonth').val();
+	$('.mydate11').datepicker({
+	    format: 'mm-yyyy',
+	    startDate: stDate,
+	    viewMode: 'months', 
+	    minViewMode: 'months',
+	    endDate: datenew,
+	    autoclose: true
+	});
+});
+$("#allTaskStatusTable").DataTable();
+$(document).on('click', '#LineChartStart', function(e) {
+	var empId = $('#employeeName').val();
+	var startMonth = $('#startMonth').val();
+	var endMonth = $('#endMonth').val();
+	//var startDate = new Date(startMonth);
+	//var enddate = new Date(endMonth);
+	//alert(startDate);
+	//alert(empId+","+startMonth+","+endMonth);
+	var arraySAAR = [];
+	var arrayWAR = [];
+    if (empId != 0 && startMonth != '' && endMonth != '') {
+    	$.get('/performance/PELineChart/'+ empId +'/'+startMonth+'/'+endMonth, function(data) {
+    		if(isEmpty(data)){
+    		$.each(data,function(index,value){
+	    		if(index == 'SAAR'){
+	    			$.each(value,function(index,value){
+	    				arraySAAR.push({  x: (new Date(index)), y: value});
+	    			});
+	    		}else{
+	    			$.each(value,function(index,value){
+	    				arrayWAR.push({  x: (new Date(index)), y: value});
+	    			});
+	    		}
+    		});
+    		var chart = new CanvasJS.Chart("selectedSEMonthData",
+    				{
+
+    					title:{
+    						text: "Line Chart For Employee SAAR - WAR",
+    						fontSize: 30
+    					},
+    		                        animationEnabled: true,
+    					axisX:{
+
+    						gridColor: "Silver",
+    						tickColor: "silver",
+    						valueFormatString: "MMM/YY",
+    						interval:1,
+    				        intervalType: "month",
+    						title: "Dates"
+
+    					},                        
+    		                        toolTip:{
+    		                          shared:true
+    		                        },
+    					theme: "theme2",
+    					axisY: {
+    						gridColor: "Silver",
+    						tickColor: "silver",
+    						title: "Rating"
+    					},
+    					legend:{
+    						verticalAlign: "center",
+    						horizontalAlign: "right"
+    					},
+    					data: [
+    					{        
+    						type: "line",
+    						showInLegend: true,
+    						lineThickness: 2,
+    						name: "SAAR",
+    						markerType: "square",
+    						color: "#F08080",
+    						dataPoints: arraySAAR
+    					},
+    					{        
+    						type: "line",
+    						showInLegend: true,
+    						name: "WAR",
+    						color: "#20B2AA",
+    						lineThickness: 2,
+
+    						dataPoints: arrayWAR
+    					}
+
+    					
+    					],
+    		          legend:{
+    		            cursor:"pointer",
+    		            itemclick:function(e){
+    		              if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+    		              	e.dataSeries.visible = false;
+    		              }
+    		              else{
+    		                e.dataSeries.visible = true;
+    		              }
+    		              chart.render();
+    		            }
+    		          }
+    				});
+
+    		chart.render();
+    		}else{
+    			$("#selectedSEMonthData").html('<h3 class="col-md-9 text-right">This Months Data Not Available</h3>');
+    		}
+        });
+    } else {
+    	
+    	 $("#selectedSEMonthData").html('<h3 class="col-md-9 text-right">Select Months And Employee </h3>');
+    }
+}); 
+
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return true;
+    }
+    return false;
+}
+</script>
+ }
+ 
+ 
+ 

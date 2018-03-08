@@ -1,0 +1,155 @@
+@header("All Policies",0){
+<div class="container">
+	<div class="panel">
+		<div class="col-md-12">
+			<div class="row">
+				@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+					<a href="/user-policy" class="btn ">User Policy</a> | 
+				}
+				<a href="/all-policy" class="btn text-orange">All Policies</a>
+			</div>
+		</div>
+		<div class="col-md-12 heading-badge">
+			<h3>Policies</h3>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+					<div class="col-md-12" style="border-right: 1px solid #D5D5D5;">
+						<div class="row">
+							<div class="panel-body col-md-12">
+							@if(models.incident.Policy.find.all.isEmpty()){
+								<h3 id="" class="modal-title text-center"> Present No policies </h3>
+							}
+							@for((policy,index) <- models.incident.Policy.find.all.zipWithIndex){
+								<div class="col-md-3 viewPolicyDocument" value="@policy.id" name="@policy.policyName">
+									<a href="#" class="panel hoverpanel panel-warning">
+										<div class="panel-heading text-center color-panel alert" >
+											<div class="row row-table">
+												<div class="col-xs-12 pv-lg landinCards">
+													<div class="text-uppercase">
+														<h5>@policy.policyName</h5>
+													</div>
+												</div>
+												<div class="col-md-12 eye-blk hidden">
+													<i class="fa fa-eye fa-4x" aria-hidden="true"></i>
+												</div>
+											</div>
+										
+										</div>
+											<div class="hoverdiv" title="view">
+												<i class="fa fa-eye" aria-hidden="true" ></i>
+											</div>
+									</a>
+								</div>
+								}
+							</div>
+						</div>
+					</div>
+			</div>
+
+		</div>
+
+		</section>
+	</div>
+</div>
+<div id="viewPlicyDocu" class="modal fade">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<div class="col-md-12" id="selectedHeading"></div>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-12" id="selectedMonthFormData"></div>
+			</div>
+			<div class="modal-footer">
+				<button id="btnNoConfirmYesNo" type="button"
+					class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+} @footer(""){
+<script>
+	$("#incidentTable").dataTable()
+	$('.uploadpdf').change(function() {
+		if (this.files && this.files[0]) {
+			var reader = new FileReader();
+			reader.onload = imageIsLoaded;
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+
+	function imageIsLoaded(e) {
+		var res = $(".uploadpdf").val();
+		$('#viewpdf').html(res);
+	};
+	
+	$('.viewPolicyDocument').click(function(e){
+		var id = $(this).attr('value');
+		var name = $(this).attr('name');
+		$("#selectedHeading").html('<h3 id="lblTitleConfirmYesNo" class="modal-title"> View '+name+' Document</h3>');
+		$("#selectedMonthFormData").html('<iframe src="/getPolicyDocument/'+id+'"style="width: 100%; min-height: 600px;" frameborder="0"></iframe>');
+		$('#viewPlicyDocu').modal('show');
+	});
+	
+	/*
+	$(".alert").mouseover(function(){
+		$(".eye").css("display","none")
+		$(".eye").addClass("eyehover");
+	})
+	$(".alert").mouseout(function(){
+		//$(".eye").css("display","inline-block")
+		$(".eye").removeClass("eyehover");
+	})*/
+	
+</script>
+<script type="text/javascript">
+       
+$(document).ready(function(){
+	 
+	$('.hoverdiv').hide();
+	$( ".hoverpanel" )
+	  .on( "mouseenter", function() {
+	    
+		  $(this).children('.hoverdiv').show();
+	  })
+	  .on( "mouseleave", function() {
+		 $(this).children('.hoverdiv').hide();
+	  });
+	    
+	   /*  ran_col();
+	    
+	    function ran_col() {
+	    	var safeColors = ['60','c6','bc','99','ff','00'];
+	    	var rand = function() {
+	    	    return Math.floor(Math.random()*6);
+	    	};
+	    	var randomColor = function() {
+	    	    var r = safeColors[rand()];
+	    	    var g = safeColors[rand()];
+	    	    var b = safeColors[rand()];
+	    	    return "#"+r+g+b;
+	    	};//function name
+	    	$('.color-panel').each(function() {
+	            $(this).css('background',randomColor());
+	        });
+           
+	    
+        } */
+	$(document).ready(function(){
+		  var colors = ["#00cc99","#00cc66","#33ccff","#ff0066","#009900","#990099","#ff33cc","#ff5050","#00c6bc","#ff9933","#ff0000","#33cc33","#00cc99","#ff33cc","#3333ff","#ff66ff"];                
+		  var rand = Math.floor(Math.random()*colors.length);  
+		  $('.color-panel').each(function(rand){
+
+		  $(this).css("background-color", colors[rand]);
+		  })         
+		});
+	});
+        </script>
+
+}

@@ -1,0 +1,151 @@
+@(recruitmentApplicants:List[models.recruitment.RecruitmentApplicant])
+@import models.recruitment.RecruitmentApplicant;
+@import models.recruitment.RecruitmentSelectionRound;
+@header(" Openings",11){
+<section>
+        <div class="container">
+            <div class="panel">
+            	<div class="panel-body">
+                <div class="row">
+                	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+                        <a href="/recruitment/openings" class="btn ">Openings<div class="ripple-container"></div></a> |
+               			<a href="/recruitment/applicants" class="btn ">Applicants</a> |
+				        <a href="/recruitment/recruitmentlandingpage" class="btn ">Configure</a> |
+				        <a href="/recruitment/jobReferralHistory" class="btn">Referrals</a> | 
+				    }
+				    @if(models.recruitment.InterviewerAppUser.checkAppUser(Long.parseLong(session.get("AppUserId")))){
+				        <a href="/recruitment/interviewerFeedback" class="btn text-orange ">Interviewer Feedback</a> |
+				    }
+				        <a href="/recruitment/jobOpening" class="btn">Refer a friend</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                	<h3>Fill Feedback</h3>
+                </div> 		          		 
+                @if(recruitmentApplicants!=null && !recruitmentApplicants.isEmpty){
+               		<div  id="addRoundsForm" class="row">
+                       <div class="col-md-12">   
+                         <form class="form-horizontal" id="addInterviewFeedback" action="/recruitment/addInterviewerFeedBack" method="post">
+                          <div class="col-md-6 col-md-offset-3">
+                            <div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Applicant Name <span class="asterisk"> * </span></label>
+	                                   <select name="applicantId" id="applicant" class="form-control text-left" required="required" >
+		                                <option value="">Select</option>
+		                                @for(applicant<-recruitmentApplicants){
+		                               			<option value="@applicant.id">@applicant.applicantName (@applicant.applicationId)</option>
+		                               			}
+		                             </select>
+	                            </div> 
+		                  	</div>
+                          	<div class="row">
+	                      		<div class="form-group is-empty">
+	                          		<label for="inputEmail" class="control-label">Interview Round <span class="asterisk"> * </span></label>
+	                            	 	<select name="interviewRoundId" id="interviewRound" class="form-control text-left" required="required" >
+		                            		<option value="">Select</option>
+		                         		</select>
+	                        	</div> 
+		                 	</div><br>
+		                 	<div class="row">
+                            	<div class="form-group is-empty">
+                                  	<label>Remarks</label>   
+                                	<textarea class="form-control" name="remark" rows="5" id="textArea"></textarea>
+                                </div>	 
+						   </div>
+                            <div class="row">
+                           		<div class="form-group is-empty">
+                                 		<label>FeedBack <span class="asterisk"> * </span></label>   
+                                 	 		<input name="feedback"  value="Selected" type="radio"> <label>Selected</label>  
+                                          	<input name="feedback"  value="Rejected"  type="radio"> <label>Rejected</label>   
+                                          	<input name="feedback"  value="NotSure"  checked="" type="radio"> <label>NotSure</label>  
+                               	</div>	 
+                       		</div>
+                        	<div class="row">
+                               	<div class="col-md-12 text-center" >
+                                   	<input type="submit" value="Submit" class="btn btn-primary btn-raised" id="">
+                               	</div>
+                           	</div>   
+                             </div>
+                          </form>
+                         </div>
+                      </div> 
+               }else{
+               		<div class="row text-center" >
+               			<h3 class="text-center">No interviews scheduled</h3>
+               		</div>
+               }
+              </div>  
+            </div>
+        </div>
+
+   
+     <div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Submit Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>  
+			
+</section>
+
+} @footer(""){
+<script>
+$(document).on('change', '#applicant', function() {
+	var id=$(this).val();
+	$('#interviewRound').html('');
+	$.get('/recruitment/addInterviewFeedBack/'+id,function(data){
+		$('<option>').val("").text("select").appendTo("#interviewRound");
+		$.each(data, function(key,value){
+			$('<option>').val(key).text(value).appendTo("#interviewRound");
+		});
+	});
+});
+
+$('#submitFeedbackConfirm').click(function(e) {
+    $('#lblMsgConfirmYesNo').html("Are you sure, you want to submit the Feedback");
+    $('#modalConfirmYesNo').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo', function(e) {
+    	$('#addInterviewFeedback').submit();
+    	 $('#modalConfirmYesNo').modal('hide');
+    });
+});
+$("#allTaskStatusTable").DataTable(); 
+
+$('#addInterviewFeedback').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	applicantId: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Applicant'
+                }
+            }
+        },
+        interviewRoundId: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Interview Round'
+                }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 
+ 

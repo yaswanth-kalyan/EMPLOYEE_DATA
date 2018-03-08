@@ -1,0 +1,88 @@
+@(allCompanys : List[models.lead.Company])
+@header("Companies",6){
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="col-md-12 panel">
+	            <div class="row">
+                    <a href="/all-leads" class="btn">Leads</a> |
+                    <a href="/all-companies" class="btn text-orange">Companies</a> |
+                    <a href="/all-contacts" class="btn ">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") { |
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                  	 <div class="row heading-badge">
+	                    <div class="col-md-10">
+	                    	<h3 class="">All Companies </h3>
+	                    </div>
+	                 @*   <div class="col-md-2">
+		                    <a href="/lead/downloadAllCompanysExcellSheet">
+	                			<button type="button" class="btn btn-primary btn-raised margin-0">
+	                				<i class="fa fa-download" style="font-size:16px"></i>&nbsp; &nbsp;Export in csv
+	                			</button>
+	                		</a>
+	                	</div> *@
+	                    <div class="col-md-2">
+	                    	<a href="/add-company">	
+	                    		<input type="button" class="btn btn-primary btn-raised margin-0" value="Add Company">
+	                    	</a>
+	                     </div>	
+                  	 </div>
+                  </div>
+                </div>
+                <div class="row">
+                @if(!allCompanys.isEmpty){
+               
+               		<div class="col-md-12">
+                    	<table class="table table-bordered allcomanyTable">
+                    		<thead>
+                    			<tr>
+                    				<th>Company ID</th>
+                    				<th> Company Name</th>
+                    				<th> Address </th>
+                    				<th> Website</th>
+                    				<th> No . Of Leads</th>
+                    				<th> Option</th>
+                    			</tr>
+                    		</thead>
+                    		<tbody>
+                    		@for(company <- allCompanys){
+                    			<tr>
+                    				<td align="left"> @company.id </td>
+                    				<td align="left"> @company.companyName </td>
+                    				<td align="left"> @company.address </td>
+                    				<td align="left"> @company.website </td>
+                    				<td align="left"> @models.lead.Lead.getLeadsbyComapny(company.id) </td>
+                    				<td align="center"> 
+                    					<a href="/edit-company/@company.id"><i class="fa fa-edit"></i></a>   
+                    				</td> 
+                    			</tr>
+                    		}
+                    		</tbody>
+                    	</table>
+                    </div>
+                    }else{
+                    	<h3 class="text-center">No Data Available</h3>
+                    }
+                </div> 
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+ $(".allcomanyTable").DataTable({
+	 "aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+     "iDisplayLength": 100	
+ });
+</script>
+ }
+ 
+ 
+ 

@@ -1,0 +1,111 @@
+    @header("Attendance History",4){
+    <section>
+        <div class="container">
+        <div class="panel">
+        	
+        	<div class="col-md-12">
+	        	@if(session.get("AppUserRole") == "HR"){
+	        		<a href="/add-attendence" class="btn ">Add Data</a> |
+	                @if(session.get("AppUserRole") == "HR"){
+	                <a href="/attendance-history" class="btn text-orange">My History</a> |
+	                }
+	                <a href="/user-wise-attendance" class="btn">User-wise-report</a> |
+	                <a href="/date-wise-attendance" class="btn">Date-wise-report</a> 
+	        	}else {
+	                <a href="/attendance-history" class="btn  text-orange">My History</a> |
+	                <a href="/user-wise-manager-attendance" class="btn">User-wise-report</a> |
+	                <a href="/date-wise-manager-attendance" class="btn">Week-wise-report</a> 
+	            }
+            </div>
+            <div class="panel-body">
+            	<div class="row">
+	                 <div class="col-md-12 heading-badge">
+	                    <h3>My History</h3>
+			        </div>
+			     </div>
+      			<div class="col-md-6 col-md-offset-3" >
+						<div id="currentProjects">
+				</div>
+				 </div>
+                    <div class="row">
+                    <h5 class="text-center bold">Weekly Attendance</h5>
+                      <div class="col-md-3 col-md-offset-5">
+                            <div id="sandbox-container">
+                                <input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY" value="@models.DailyReport.getTodayDate()" autocomplete="off" readonly>
+                            </div>
+                      </div>
+				 <div class="col-md-12" id="dailyReportweek">
+                   <table class="table">
+                                <thead>
+                                 <tr>
+									<th>S.No.</th>
+									<th>Date</th>
+									<th>Status</th>
+									<th>In Time</th>
+									 <th>Essl In Time</th>
+		                             <th>Out Time</th>
+		                             <th>Essl Out Time</th>
+		                             <th>Hours</th>
+		                             <th>Essl Hours</th>
+		                             <th>Time In Office</th>
+		                             <th>Essl Break Time</th>
+									
+								</tr>
+                                </thead>
+                            
+                              </table>
+                    </div>
+                   </div>
+           </div>
+           </div>
+						</div>
+				 </section>
+        }
+
+@footer(""){
+<script>
+$(document).ready(function() {
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true,
+       weekStart: 1
+  });
+});
+  $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "  -  " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    
+	    $.get('/attendanceHistoryManager/' + firstDate + '/' + lastDate , function(data) {
+	         console.log(data)
+	         $("#dailyReportweek").html(data);
+	     });
+	});
+	
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+
+	$(document).on('change', '#userList', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+    
+	
+</script>
+}

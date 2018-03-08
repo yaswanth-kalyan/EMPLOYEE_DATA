@@ -1,0 +1,188 @@
+@(task:Task)
+<style>
+
+
+.strik{
+	text-decoration: line-through;
+	width:97% !important; 
+}
+
+@@media screen and (min-width: 768px) and (max-width: 1366px)
+{	
+	.taskRight-btmscroll{
+		min-height:20vh !important;
+		max-height:20vh !important;
+		overflow-y:auto; 
+	}
+	
+}
+@@media screen and (min-width: 1080px) and (max-width: 1920px){
+	.taskRight-btmscroll{
+		min-height:45vh;
+		 max-height:45vh;
+		overflow-y:auto;
+	}
+}	
+	.taskRight-topscroll{
+		margin-top:10px;
+		min-height:10vh; 
+		overflow-y:auto;
+	
+	}
+	.taskright-btm-main{
+		min-height:10vh; 
+		background:#fff;
+		border:1px solid #ddd;
+	}
+	.comment-txta {
+   		min-height: 35px;
+		max-height:100px;
+		margin-top:2px;
+		border-top:3px solid #ddd;
+		margin-bottom:1px !important;;
+		padding-left:8px;
+		color:#000;
+		font-size:13px
+		
+	}
+	.taskchat-wrap{
+	}
+	.TaskCommentTime{
+		font-size:9px;
+	}
+	.chat-msg{
+		font-size:13px;
+	
+	}
+	.updateflash{
+		cursor: pointer
+	}
+	
+</style>
+@import java.util.Collections
+        	<div class="taskRight-topscroll1">
+                   <input type="hidden" value="@task.getId" name="taskId" id="taskId">
+                   <div class="pull-right">
+					 @if(task.getCreatedBy.equals(AppUser.find.byId(Long.parseLong(session.get("AppUserId"))))){
+						 <button class="btn btn-default  taskdelbtn deleteTaskButton" url1= "/deleteTask/@task.getId" data-id="@task.getId" id ="deleteTaskButton" userName="@task.getTitle" @*onclick="gettaskId(@task.getId)"*@><i class="fa fa-trash"></i></button>
+						   }
+						  
+					</div>
+					<div class="restore">
+						<i class="fa fa-arrow-right"></i>Hide 
+					</div>
+					
+					  <div class="form-group is-empty ">
+                                          <label for="inputEmail" class="control-label">Title  </label>
+                                          <textarea   class="form-control comment-txta" id="title" name="title" value="@task.getTitle"  onkeyup="textAreaAdjust(this)" >@task.getTitle</textarea>
+                                            
+                                     </div>  
+				
+					<div class="form-group is-empty ">
+                                          <label for="inputEmail" class="control-label">Description  </label>
+                                          
+                                          <textarea   class="form-control comment-txta" id="description" name="description" value="@task.getDescription"  onkeyup="textAreaAdjust(this)" >@task.getDescription</textarea>
+                                     <span class="material-input"></span>
+                                     </div>
+                                     @if((AppUser.find.byId(Long.parseLong(session.get("AppUserId"))).getId+"inbox")!=task.getTaskList.getTaskListName){
+                                     <label for="inputEmail" class="control-label">Assign To </label> 
+					<div class="task-rightside-assignto">
+						<select class="chosen form-control task-right-cmn" id="sel1" name="assignToId">
+						 <option value="">select User</option>
+					       @for(appUser<-task.getTaskList.getAppUsers){
+					       	@if(appUser.equals(task.getAssignTo)){
+					       		<option value="@appUser.getId" selected>@appUser.getFullName</option>
+					       		}else{
+					       
+					        <option value="@appUser.getId">@appUser.getFullName</option>
+					        }
+					        }
+					      </select>
+					</div>
+					}
+					<button type="button" id="taskupdate" class="btn btn-primary btn-raised btn-sm updatebtntaskright">Update</button>
+					@if(session.get("isTaskUpdate") == "Yes"){
+					<div class="alert alert-dismissible alert-success  updatealertTaskright">
+					  <button type="button" class="close" data-dismiss="alert">×</button>
+					   You Record is successfully Updated 
+					</div>
+					}
+					 </div>
+					 <br/> 
+						<label for="inputEmail" class="control-label"> Comments </label>
+					 <div class="taskright-btm-main">
+						 <div class="taskRight-btmscroll">
+							<div class="comment-wrap">
+							 	@if(task.getComments!=null && !task.getComments.isEmpty()){
+							 		@for(taskComment<-task.getComments){
+									 	<div class="commentshow" id="commentshow">
+									 	       @if(taskComment!=null){
+									 	       	<div class="taskchat-wrap">
+										 			<div class="taskchat"><i class="fa fa-user fa-x"></i></div>
+					   							    <div class="taskchat tasktime">
+					   							    	<div class="row">
+					   							    		<div class="col-md-7">		
+							   							    	 <div class="bold margin-top-3px" >@taskComment.getAppUser.getFullName</div>
+							   							    </div>
+							   							    <div class="col-md-5 padding-left0 padding-right0 margin-top1">
+							   							    	<div class="TaskCommentTime">@taskComment.getCommentDate.format("dd-MM-yyyy hh:mm a")</div>
+							   							    </div>
+							   							</div>    	
+					   							    </div>
+					   							   </div> 
+									 			<div class="chat-msg">@taskComment.getComment</div>
+									 			}
+									 	</div>
+						 			}
+		  	   		 		    }
+							</div>
+					  </div>
+					  <textarea class="form-control comment-txta " id="commenttxtbx" name="comment" placeholder="Leave a comment.." onkeyup="textAreaAdjust(this)" ></textarea>
+				   </div>
+				   <div class="TaskCommentTime text-center">
+				  Task created by @task.getCreatedBy.getFullName On @task.getCreationDate.format("dd-MM-yyyy hh:mm a")
+				  </div>
+				  	  
+<script>
+$('select.chosen').chosen();
+var message;
+$('#commenttxtbx').keyup(function(e){ 
+    var code = (e.keyCode ? e.keyCode : e.which);
+    if(code == 13) { 
+     message = $("#commenttxtbx").val();
+    
+    var taskid=$("#taskId").val();
+    	$.post('/taskComment',{comment:message,taskId:taskid} ,function(data){
+    		 $(".middle").removeClass("col-md-10");
+			   $(".middle").addClass("col-md-8");
+			   $("#taskEdit").html(data);
+			   $(".right").removeClass("hidden")
+			    $(".comment-txta").focus();
+		
+	 });
+       
+    }	
+});
+
+function textAreaAdjust(o) {
+    o.style.height = "1px";
+    o.style.height = (25 + o.scrollHeight) + "px";
+}
+var height = 0;
+
+$('.taskRight-btmscroll .comment-wrap').each(function(i, value) { 
+    height += parseInt($('.comment-wrap').height());
+});
+
+height += '';
+$('.taskRight-btmscroll').animate({
+    scrollTop: height
+}, 100);
+
+
+/*$(document).on('click',".updatebtntaskright",function(){
+	$(".updatealertTaskright").removeClass("hidden") 
+});
+*/
+</script>
+              		 

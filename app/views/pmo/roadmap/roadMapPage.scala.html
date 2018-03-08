@@ -1,0 +1,143 @@
+@(roadMapId : Long,projectId:Long) @header("Tasks",2){
+<div class="container">
+	<div class="panel">
+		<br />
+		<div class="col-md-12 heading-badge">
+			 <div class="col-md-10">
+                    	<h3 class="">Road Map</h3>
+             </div>
+             <div class="test-right col-md-2">
+				 <a href="/all-project">
+		            <button type="button" class="btn btn-primary btn-raised margin-0">Back</button>
+		         </a>
+             </div>
+		</div>
+					<div class="row">
+						<form action="@controllers.pmo.routes.RoadMapController.saveRoadMap()" method="post" id="roadMap-form">
+							<div class=" ">
+								<div class="col-md-12">
+									<div class="col-md-6 col-md-offset-2">
+										<div class="form-group">
+											 <input type="text" class="form-control" id="formGroupExampleInput" name="title" placeholder="Name of RoadMap">
+										</div>
+										<span class="material-input"></span>
+									</div>
+									<input type="hidden" name="projectId" id="projectId" value="@projectId">
+									<div class="col-md-4">
+										<button type="submit" class="btn btn-warning btn-raised btn-sm margin-0"id="roadMap">Create RoadMap</button>
+									</div>
+								</div>	
+							</div>
+								
+						</form>
+					</div><br>
+				<div class="row">
+					<div class="col-md-12 col-md-offset-1"  id="roadMapTable"></div>
+					@*<div class="col-md-3">
+						<div class="hidden editshowroadmap">
+							<h5>Edit Roadmap</h5>
+						</div>
+						<div  id="right-panel">
+						</div>		
+					</div>*@
+						<input type="hidden" id="roadMapId" value="@roadMapId">
+				</div>
+	</div>
+</div>
+<div id="modalEditRoadmap" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header heading-badge">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleEditRoadmap" class="modal-title">Edit Road Map</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="right-panel"></h5>
+			            </div>
+			            <div class="modal-footer">
+			               @* <button id="btnYesEditRoadmap" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoEditRoadmap" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>*@
+			            </div>
+			        </div>
+			    </div>
+			</div>
+@footer(""){
+	<script> 
+	$("#roadMap-form").bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	title: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                } 
+	            }
+	        } 
+	    }
+	});	
+	
+	$(document).ready(function() {
+		//showTableData();
+		var roadMapId = $('#roadMapId').val();
+		if (roadMapId) {
+			editRoadMap(roadMapId);
+		}
+		var projectId = $('#projectId').val();
+		if(projectId){
+			roadmapListByProject(projectId);
+		}else{
+			 alert("no roadmap available for projects!!!!");
+		}
+	});
+		
+	function editRoadMap(roadMapId) {
+		console.log("roadMapId " + roadMapId);
+		$.get("/road-map/edit/" + roadMapId, function(data) {
+			if (data.status == "true") {
+				$('#right-panel').empty();
+				$('#right-panel').append(data.page);
+				$(".editshowroadmap").removeClass("hidden")
+				$('#modalEditRoadmap').modal('show');
+			}
+		});
+	};
+
+	function deleteRoadMap(roadMapId) {
+		var projectId = $('#projectId').val();
+		$.post('/road-map/delete/' + roadMapId, function(data) {
+			console.log(data)
+			if (data.status) {
+				//showTableData();
+				roadmapListByProject(projectId);
+				alert(data.message);
+			}
+
+		});
+	}
+
+/*	function showTableData() {
+		$.get("/road-map/list", function(data) {
+			if (data.status == "true") {
+				$('#roadMapTable').empty();
+				$('#roadMapTable').append(data.page);
+				$("#dtable2").DataTable();
+			}
+		});
+	} */
+
+	function roadmapListByProject(projectId){
+		$.get("/road-map/list-by-project/"+projectId, function(data) {
+			if (data.status == "true") {
+				$('#roadMapTable').empty();
+				$('#roadMapTable').append(data.page);
+				$("#dtable2").DataTable();
+			}
+		});
+	}
+	</script>
+}
+}

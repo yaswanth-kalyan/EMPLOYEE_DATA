@@ -1,0 +1,57 @@
+@header("Working Days",7){
+
+<section>
+    <form class="form-horizontal" id="#" action="@routes.AdminLeaveController.saveWorkingDays()" enctype="multipart/form-data" method="post">
+        <div class="container">
+            <div class="panel">
+                 @secondNavbarLeaves(4)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Working Days</h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                        @for(days <- models.leave.Days.values()){
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">@days.getDays()</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control" name="@days.getDays1()">
+                                    @defining(models.leave.WorkingDays.find.where().eq("day", days).findUnique()){workingDay =>
+                                    @for(sections <- models.leave.DaysSection.values()){
+                                    @if(workingDay != null && workingDay.day.equals(days) && workingDay.daysSection.equals(sections)){
+                                    <option value="@sections" selected="selected">@sections.getDaysSection()</option>
+                                    }else{
+                                    	<option value="@sections">@sections.getDaysSection()</option>
+                                    	}
+                                    	}
+                                    	}
+                                    </select>
+                                </div>
+                            </div>
+                            }
+						<br/> 
+                            <br/>
+                             <div class="row">
+                                <div class="col-md-2 col-md-offset-5">
+                                    <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                                </div>
+                                <div class="col-md-1 hidden">
+                                    <button type='clear' class="btn btn-warning btn-raised" >Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+		$(".leaves-table").dataTable();
+	</script>
+ }

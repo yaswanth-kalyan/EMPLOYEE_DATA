@@ -1,0 +1,96 @@
+@(appliedLeavesList : List[models.leave.AppliedLeaves])
+@import java.text.SimpleDateFormat;
+@header("Team Leave Tracker",7){ 
+ 
+
+<section>
+    
+        <div class="container">
+            <div class="panel">
+                @secondNavbarLeaves(6)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Tracker </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped table-hover"  id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>S.No</th>
+	                    			<th>Requested On</th>
+	                    			<th>Employee ID</th>
+	                    			<th>Employee Name</th>
+	                    			<th>Status</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	
+	                    	@for((leave,index)<- appliedLeavesList.zipWithIndex){
+	                    	<tr data-href="@leave.id">
+		                    			<td>@(index+1)</td>
+		                    			<td>@(new SimpleDateFormat("dd-MM-yyyy").format(leave.createdOn))</td>
+		                    			
+		                    			<td>@if(leave.appUser.getEmployeeId() != null && !leave.appUser.employeeId.isEmpty &&  !leave.appUser.getEmployeeId().isEmpty){@leave.appUser.getEmployeeId()}</td>
+		                    			<td>@leave.appUser.getAppUserFullName()</td>
+		                    			
+		                    			<td>@leave.leaveStatus.getLeaveStatus()</td>
+	                    		</tr>
+	                    	}
+	                    		
+	                    		<!-- <tr data-href="www.com">
+	                    			<td>3</td>
+	                    			<td>14-01-2015</td>
+	                    			<td>02</td>
+	                    			<td>pankaj</td>
+	                    			<td>Taken</td>
+	                    		</tr> -->
+	                    		<!-- <tr>
+	                    			<td>1</td>
+	                    			<td>18-01-2015</td>
+	                    			<td>23</td>
+	                    			<td>priyanka</td>
+	                    			<td>pending Approval</td>
+	                    		</tr> -->
+	                    		<!-- <tr>
+	                    			<td>3</td>
+	                    			<td>14-01-2015</td>
+	                    			<td>02</td>
+	                    			<td>pankaj</td>
+	                    			<td>Taken</td>
+	                    		</tr> -->
+	                    		<!-- <tr>
+	                    			<td>1</td>
+	                    			<td>18-01-2015</td>
+	                    			<td>23</td>
+	                    			<td>priyanka</td>
+	                    			<td>pending Approval</td>
+	                    		</tr> -->
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                <div id="employe-div">
+      
+            </div>
+            </div>
+        </div>
+
+   
+</section>
+
+} @footer(""){
+ 	<script>
+ 		$("#leave-Tracker-table").dataTable();
+ 		$(document).on('click','#leave-Tracker-table tr', function(){
+ 			var ne = $(this).attr('data-href');
+ 			$.get("/secure-get-employe-details/"+ne,function(data){
+ 				$("#employe-div").html(data);
+ 			});
+ 		});
+ 		
+ 		
+ 		
+ 	</script> 
+ }
+ 
+ 

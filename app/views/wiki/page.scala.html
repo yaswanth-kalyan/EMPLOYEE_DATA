@@ -1,0 +1,24 @@
+@(page:models.wiki.Page) 
+@header("Wiki",13) {
+<div class="container panel">
+
+<div class="row">
+<div class="col-md-4">
+<a href="@controllers.wiki.routes.PageController.renderForm(page.id)" class="btn btn-raised btn-primary btn-sm">Edit</a>
+<a href="@controllers.wiki.routes.PageController.delete(page.id)" class="btn btn-raised btn-danger btn-sm">Delete</a>
+</div>
+<div class="col-md-4 col-md-offset-4">
+   <h4>Last edited By : <span class="label label-success"> @{page.getLastHistory.appUser.getFullName()}</span></h4>
+</div>
+</div>
+
+<h1>@page.title</h1>
+
+<hr>
+			@if(page.pageHistoryList.size > 0 ) {
+				@Html(page.getLastHistory.getHtml)
+			}
+}
+@footer(""){
+	
+}

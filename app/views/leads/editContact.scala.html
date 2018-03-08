@@ -1,0 +1,276 @@
+@(contact : models.lead.CompanyContacts, ListCCInfo : List[models.lead.CompanyContactInfo])
+@header("Edit Contact",6){
+<section>
+    <form class="form-horizontal" id="editContactForm" action="/lead/updateCompanyContact"  method="post">
+        <div class="container">
+            <div class="panel">
+                 <div class="col-md-12">
+                    <a href="/all-leads" class="btn">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn text-orange">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") {|
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <div class="col-md-10">
+                    	<h3 class="">Edit Contact  </h3>
+                    </div>
+                </div>
+                <div class="row">
+               		<div class="col-md-12">
+               		 <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Name</label> <span class="asterisk"> * </span></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="hidden" name="id" class="form-control" value="@contact.id" id="contactId" required="">
+                          		<input type="text" name="contactName" class="form-control" value="@contact.contactName" required="">
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Contact Number</label></div>
+                          </div>
+                          <div class="col-md-4 appendhere">
+                          	<div class="row" >
+                          	@if(!contact.contactNoList.isEmpty()){
+                          		@for((contactNo,index) <-contact.contactNoList.zipWithIndex){
+								<div class="myContact form-group">
+	                          		<div class="col-md-4">
+	                          			<select class="form-control" name="contactType[]" autocomplete="off">
+	                          				@for(contactType <- models.lead.ContactType.values()) {
+	                          					@if(contactType.equals(contactNo.contactType)){
+		                          				<option value="@contactNo.contactType">@contactNo.contactType </option>
+	                          					}else{
+	                          					<option value="@contactType">@contactType </option>
+	                          					}
+	                          				}
+	                          			</select>
+	                          		</div>
+	                          		<div class="col-md-2">
+		                          		<input type="tel" name="countryCode[]" value="@contactNo.countryCode"  class="form-control margin-top-10" placeholder="CCode" maxlength="3">
+	                          		</div>
+	                          		<div class="col-md-4">
+		                          		<input type="tel" name="contactNo[]" value="@contactNo.contactNo" class="form-control margin-top-10" autocomplete="off">
+	                          		</div>
+	                          		<div class="col-md-2 myclose">
+	                          		@if(index == 0){
+		                          		<input type="button" class="btn btn-primary btn-xs  margin-top-10 btn-raised" id="addCt" value="+" />
+		                          	}else{
+		                          		<a href="/lead/deleteCompanyContactNos/@contact.id/@contactNo.id"><button type="button" class="btn btn-warning btn-xs  margin-top-10 btn-raised">x</button></a>
+		                          	}
+	                          		</div>
+	                          	</div>
+	                          	}
+	                         }else{
+	                         	<div class="myContact form-group">
+	                          		<div class="col-md-4">
+	                          			<select class="form-control" name="contactType[]" autocomplete="off">
+	                          				@for(contactType <- models.lead.ContactType.values()) {
+	                          				<option value="@contactType">@contactType </option>
+	                          				}
+	                          			</select>
+	                          		</div>
+	                          		<div class="col-md-2">
+		                          		<input type="tel" name="countryCode[]" class="form-control margin-top-10" placeholder="CCode" maxlength="3">
+	                          		</div>
+	                          		<div class="col-md-4">
+		                          		<input type="tel" name="contactNo[]" class="form-control margin-top-10" autocomplete="off">
+	                          		</div>
+	                          		<div class="col-md-2 myclose">
+		                          		<input type="button" class="btn btn-primary btn-xs  margin-top-10 btn-raised" id="addCt" value="+" />
+	                          		</div>
+	                          	</div>
+	                         }	
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Email Id</label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="Email" name="emailID" value="@contact.emailID" class="form-control">
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Location</label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="location" value="@contact.location" class="form-control" >
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Birthday</label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="dob" class="form-control birthdaydate"  @if(contact.dob != null){value="@contact.dob.format("dd-MM-yyyy")"}  placeholder="DD-MM-YYYY" readonly>
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Anniversary</label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="anniversaryDate" class="form-control anniversaryDate"  @if(contact.anniversaryDate != null){value="@contact.anniversaryDate.format("dd-MM-yyyy")"}  placeholder="DD-MM-YYYY"  readonly>
+                          	</div>
+                          </div>
+                      </div>
+                         
+                     </div>
+                  </div> 
+                  <div class="row">
+               		<div class="col-md-12">
+               		 <div class='col-md-6 col-md-offset-3 margin-top-10'>
+               		 @if(!ListCCInfo.isEmpty){
+	               		 	<table class="table table-bordered"> 
+	               		 		<thead>
+	               		 			<tr>
+	               		 				<th>Company</th>
+	               		 				<th>Job Title</th>
+	               		 			</tr>
+	               		 		</thead>
+	               		 		<tbody>
+	               		 		@for(company <- ListCCInfo){
+	               		 			<tr>
+	               		 				<td>@company.Company.getCompanyName</td>
+	               		 				<td>@company.jobTitle</td>
+	               		 			</tr>
+	               		 			}
+	               		 		</tbody>
+	               		 	</table>
+               		 	}
+               		 </div>
+               		 <div class="clearfix"></div>
+               		 <div class="text-center">
+                           <button type="reset" class="btn btn-warning btn-raised">Clear</button>
+                           <button type="submit" class="btn btn-primary btn-raised">Update</button>
+                         </div> 
+                  </div>   
+                </div> 
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+	$('.birthdaydate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	})
+	$('.anniversaryDate').datepicker({
+		format : 'dd-mm-yyyy',
+		endDate : ' new Date()',
+		autoclose : true
+	})
+	$(document)
+			.on(
+					'click',
+					'#addCt',
+					function() {
+						var elements = $('<div class="row newfiled"><div class="form-group">'
+								+ '<div>'
+								+ '<div class="col-md-4">'
+								+ '<select class="form-control" name="contactType[]">'
+								+ '<option> Mobile</option>'
+								+ '<option> Home</option>'
+								+ '<option> Work</option>'
+								+ '</select>'
+								+ '</div>'
+								+ '<div class="col-md-2">'
+								+ '<input type="tel" name="countryCode[]" class="form-control margin-top-10"placeholder="CCode" maxlength="3">'
+								+ '</div>'
+								+ '<div class="col-md-4">'
+								+ '<input type="tel" name="contactNo[]" class="form-control margin-top-10 contactNo">'
+								+ '</div>'
+								+ '<div class="col-md-2 myclose">'
+								+ '<input type="button" class="btn btn-warning btn-xs  margin-top-10 btn-raised deleteRow" value="X" />'
+								+ '</div>' + '</div>' + '</div></div>');
+						$(".appendhere").append(elements)
+						$('#editContactForm').bootstrapValidator('addField',
+								elements.find('.contactNo'));
+					});
+	$(document).on('click', '.deleteRow', function() {
+		$(this).closest('.newfiled').remove();
+	});
+
+	$('#editContactForm')
+			.bootstrapValidator(
+					{
+						framework : 'bootstrap',
+						// This option will not ignore invisible fields which belong to inactive panels
+						excluded : ':disabled',
+						fields : {
+							contactName : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill Contact Name'
+									},
+									remote : {
+										message : 'Contact Name Already Existed',
+										type : 'POST',
+										url : '/isExistContactName',
+										data : function(validator) {
+											return {
+												contactName : validator
+														.getFieldElements(
+																'contactName')
+														.val(),
+												id : $('#contactId').val()
+											}
+										}
+									}
+								}
+							},
+							'contactNo[]' : {
+								validators : {
+									regexp : {
+										regexp : /^[0-9]+$/i,
+										message : 'please enter 10 to 15 numbers'
+									},
+									stringLength : {
+										message : 'please enter 10 to 15 numbers',
+										max : 15,
+										min : 10
+									}
+								}
+							},
+							website : {
+								validators : {
+									remote : {
+										message : 'website Name Already Existed',
+										type : 'POST',
+										url : '/isExistWebsiteName',
+										data : function(validator) {
+											return {
+												website : validator
+														.getFieldElements(
+																'website')
+														.val()
+											}
+										}
+									}
+								}
+							}
+						}
+					});
+</script>
+ }
+ 
+ 
+ 

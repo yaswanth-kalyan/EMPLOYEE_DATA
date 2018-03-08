@@ -1,0 +1,157 @@
+@(appUser : List[AppUser])
+@header("All Users",1){
+	<section>
+        <div class="container">
+		    <div class="panel">
+		        <div class="col-md-12">
+			       <a href="/all-user" class="btn  text-orange">All User</a> |
+		           <a href="/add-user" class="btn">+Add User</a>
+		        </div>
+		        <div class="col-md-12 heading-badge">
+		        	<h3>All User details</h3>
+		        </div>
+		        <div class="row">
+		            <div class="col-md-12">
+		                <div class="">
+		                    <div class="bs-component">
+		                          <div class="col-md-12">
+										<div class="table-responsive">
+		                              		<table class="table table-bordered" id="dtable1">
+												<thead>
+					                                <tr>
+					                                    <th>S.No</th>
+					                                    <th>Emp-ID</th>
+					                                    <th>Name</th>
+					                                    <th>Organi zation</th>
+					                                    <th>Joining Date</th>
+					                                    <th>Job Title</th>
+					                                    <th>Role</th>
+					                                    <th title="Reporting Manager">RM</th>
+					                                    <th>Email ID</th>
+					                                    <th>Mobile</th>
+					                                    <th>Status</th>
+					                                    <th>Edit</th>
+					 									@*<th>Delete</th>
+					 									<th>Change Password</th> *@
+					                                </tr>
+					                            </thead>
+					                            <tbody>
+					                            
+					                               @for((appUser,index) <- appUser.zipWithIndex ) {
+					                                 <tr>
+					                                    <td>@{index+1}</td>
+														<td>@if(appUser.getEmployeeId != null){@appUser.getEmployeeId.toUpperCase()}</td>
+					                                    <td>@appUser.FullName</td>
+					                                    <td>@if(appUser.organisation != null){@appUser.organisation}</td>
+					                                    <td>
+					                                    	@if(appUser.joinedDate != null) {
+					                                    		@appUser.joinedDate.format("dd-MM-yyyy")
+					                                    	}                                    
+					                                    </td>
+					                                    <td>@appUser.jobTitle</td>
+					                                    <td>
+					                                        @for(role<- appUser.role) { 
+					                                        	@role.role,&nbsp; 
+					                                          }
+					                                    </td>
+					                                   
+					                                    <td> @models.AppUser.getAppUserName(appUser.getReportMangerId)</td>
+					                                    <td>@appUser.email</td>
+					                                    <td>@appUser.mobileNo</td>
+					                                    <td>@appUser.status</td>
+					                                    <td class="text-center">
+					                                       	<a href="/editUser/@appUser.id">
+					                                       		<i class="fa fa-pencil-square-o"></i>
+					                                       	</a>
+					                                      @* 	<button class="text-center updateUserButton" value="@appUser.id"><i class="fa fa-pencil-square-o"></i></button>	
+					                                    </td>
+					                                   	@* <td class="text-center">
+					                                    	<button class="text-center deleteUserButton" userName="@appUser.getFullName" url="/deleteAppUser/@appUser.id"><i class="fa fa-trash"></i></button>
+					                                    </td>
+													 <td class="text-center">
+					                                    	<button class="text-center"><i class="fa fa-key"></i></button>
+					                                    </td> *@
+					                                    </tr>
+					                                    }
+					                                    
+					                            </tbody>
+				                        	</table>
+										</div>
+		                        	</div>
+		                    	</div>
+		                	</div>
+		            	</div>
+		        	</div>
+		    	</div>  
+    		</div> 
+    		<div id="modalUpdateUserProfile" class="modal fade">
+			    <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblTitleUpdateUserProfile"></h5>
+			            </div>
+			        </div>
+			    </div>
+			</div> 
+			<div id="modalConfirmYesNo" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmYesNo"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+</section>
+}
+@footer(""){
+<script>
+       $(document).ready(function() {
+          $('.mydate').datepicker({
+              format: 'dd-mm-yyyy',
+              endDate: ' new Date()',
+              autoclose: true
+          });
+          $("#dtable1").DataTable({
+        	     "aLengthMenu": [10, 25, 50,100,150,200,250,300 ],
+        		 "iDisplayLength": 100
+        		 
+          })
+  });
+
+$('.updateUserButton').click(function(e){
+	var id = $(this).attr('value');
+	 $.get('/editUser/'+id, function(data) {
+		$('#lblTitleUpdateUserProfile').html(data);
+		$('#modalUpdateUserProfile').modal('show');
+     });
+	
+});
+
+      
+$('.deleteUserButton').click(function(e){
+	var name = $(this).attr('userName');
+	var url = $(this).attr('url');
+	$('#lblMsgConfirmYesNo').html("Are You sure wnt to delete User with name : "+name);
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+		window.location.href = url;
+	});
+});
+  </script>
+}

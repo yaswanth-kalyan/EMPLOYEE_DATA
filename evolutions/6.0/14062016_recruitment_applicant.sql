@@ -1,0 +1,1 @@
+ALTER TABLE recruitment_applicant ADD COLUMN Notice_Period double precision,ADD COLUMN Current_CTC double precision,ADD COLUMN Expected_CTC double precision;

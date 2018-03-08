@@ -1,0 +1,413 @@
+@(appUser : List[AppUser],appUserFill:List[Attendance],date:java.util.Date)
+@import java.util.Random;
+@header("attendance",5){
+<link href="/assets/stylesheets/bootstrap-datetimepicker.min.css" type="text/css" /> 	
+<section>
+    <div class="container"import com.sun.xml.internal.ws.wsdl.writer.document.Import>
+        <div class="panel">
+            <div class="col-md-12">
+                <a href="/add-attendence" class="btn  text-orange">Add Data</a> |
+                @if(session.get("AppUserRole") == "HR"){
+                <a href="/attendance-history" class="btn">My History</a> |
+                }
+                <a href="/user-wise-attendance" class="btn">User-wise-report</a> |
+                <a href="/date-wise-attendance" class="btn">Week-wise-report</a> 
+            </div>
+            <div class="panel-body">
+ 				<div class="row">
+	                 <div class="col-md-12 heading-badge">
+	                	 <div class="col-md-6">
+	                     	<h3>Add Attendance</h3>
+	                     </div>
+	                     <div class="col-md-3">
+		                    <div  id="action1" class="btn btn-primary btn-raised margin-0">
+		                     	<i class="fa fa-cloud-upload"></i>&nbsp;Import Attendance XlsSheet
+		                     </div>
+		                 </div>   
+		                 <div class="col-md-3">
+		                     <div  id="action" class="btn btn-primary btn-raised margin-0">
+		                     	<i class="fa fa-cloud-upload"></i>&nbsp;Upload Biometric Attendance
+		                     </div>
+		                 </div>    
+			        </div>
+			     </div>
+ 			</div>
+ 			<form  action="@routes.AdminController.uploadAttendance()" method="post" enctype="multipart/form-data" id="csv">
+	               		<div align="center">
+			 				<input type="file" name="file" class="btn btn-raised btn-warning btn-sm btn-align" required="required">
+	               		</div>
+	               		<div align="center">
+			 			 	<button type="submit" class='btn btn-success btn-raised' id="sub1">Upload Biometric Attendance </button>
+	               		</div>
+            </form> 
+            <form  action="@routes.AdminController.uploadAttendanceXls()" method="post" enctype="multipart/form-data" id="csv1">
+	 			<div  class="col-md-12 align="center">
+	 				<div class="col-md-6 col-md-offset-2">
+            		    <div class="form-group">
+            		    	<div class="row">
+                           		<div class="col-md-5 text-right">
+                                   <label class=" control-label" for="selectDate">From </label>
+                               	</div>
+                               	<div class="col-md-7">
+	                                 <ul class="attendance-dp">
+	                                 	<li><input type="text" name="fromDate" value="@date.format("dd-MM-yyyy")" class="form-control  startDatex" placeholder="DD-MM-YYYY"  readonly id="startDatexx"><span>To</span></li> 
+	                                 	<li><input type="text" name="toDate" value="@date.format("dd-MM-yyyy")" class="form-control  endDatex" placeholder="DD-MM-YYYY"  readonly id=""></li>
+	                                 	<div class="clearfix"></div>
+	                                 </ul>
+                               	</div> 	
+                             </div>   
+                          </div>  
+	                </div>
+	            </div>
+              	<div align="center">
+	 				<input type="file" name="file" class="btn btn-raised btn-warning btn-sm btn-align" required="required">
+              	</div>
+              	<div align="center"">
+	 			 	<button type="submit" class='btn btn-success btn-raised' id="sub1">Import Attendance XlsSheet</button>
+              	</div>
+            </form>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="clear-fix"></div> 
+                    <div class="col-md-12">
+                    <br><br><br>
+                       <form id="myForm"  action="@routes.AdminController.attendenceSubmit()" method="post">
+                      			<div class="col-md-6 col-md-offset-3">
+		                   		    <div class="form-group">
+		                   		    	<div class="row">
+                                    		<div class="col-md-4 text-right">
+	                                           <label class=" control-label" for="selectDate">Select Date </label>
+	                                       </div>
+	                                       <div class="col-md-4">
+	                        
+                                          	  <input type="text" name="date1" value="@date.format("dd-MM-yyyy")" class="form-control mydate" placeholder="DD-MM-YYYY"  readonly id="selectDate">
+                                          </div> 	
+                                       </div>   
+                                    </div>  
+		                       </div>
+		                       <br /><br />
+                    <div id="attendance">
+                     <table class="table table-bordered table-hov mytable" id="dtable2">
+                            <thead>
+                                <tr>
+                                    <th class="width15p">User</th>
+                                    <th class="">Attendance status</th>
+                                    <th class="width15p">In time</th>
+                                    <th class="width15p">Out time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 <tr class="myrow" id="myrow">
+                                    <td>
+                                        <select class="form-control mydropdown" name="ids[]" id="appUser" required="required">
+                                         	<option value="">Select Employee</option>
+                                        	@for(appuser<-appUser){
+                                            <option value="@appuser.id">@appuser.FullName</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                    	<div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status[0]'  checked value="present" class="attendencestatus" autocomplete="off" required="required" >
+	                                            Present
+	                                        </label>
+                                        </div>
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status[0]' value="absent" class="attendencestatus"  autocomplete="off" >
+	                                            Absent
+	                                        </label>
+                                        </div>
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status[0]' value="WFH" class="attendencestatus"  autocomplete="off" >
+	                                            WFH
+	                                        </label>
+                                        </div>
+                                        <div class="col-md-3">
+	                                        <label class="radio-inline">
+	                                            <input type="radio" name='status[0]' value="CL" class="attendencestatus"  autocomplete="off" >
+	                                            CL
+	                                        </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                      <div class="input-group form-group bootstrap-timepicker timepicker">
+									      <input id="timepicker" type="text" name="inTime[]" class="form-control timepickerInput  input-small" placeholder="select time" value="10:00 AM" required="required">
+									      <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+									  </div>
+                                    </td>
+                                    <td> 
+                                      <div class="input-group  form-group  bootstrap-timepicker timepicker">
+									      <input id="timepicker1" type="text" name="outTime[]" class="form-control timepickerInput  input-small" placeholder="select time" value="8:00 PM" required="required">
+									      <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+									  </div>
+                                    </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-md-12">
+                    		<div class="text-center">
+                    			<button type="submit" class='btn btn-success btn-raised' id="sub">submit</button>
+                    			<button type="reset" class='btn btn-warning btn-raised '>cancel</button>
+                    		</div>
+                    	</div>
+                   
+	                    <div class="col-md-12">
+		                    <table class="table table-bordered" id="dtable1">
+								<thead>
+		                              <tr>
+		                                  <th>S.No</th>
+		                                  <th>User Name</th>
+		                                  <th>Status</th>
+		                                  <th>In Time</th>
+		                                  <th>Essl In Time</th>
+		                                  <th>Out Time</th>
+		                                  <th>Essl Out Time</th>
+		                                  <th>Hours</th>
+		                                  <th>Essl Hours</th>
+		                                  <th>Time In Office</th>
+		                                  <th>Essl Break Time</th>
+		                                  <th>Edit</th>
+		                              </tr>
+		                          </thead>
+		                          <tbody>
+		                              @for((appUserfill,index) <- appUserFill.zipWithIndex ) {
+			                               <tr>
+			                                  <td>@{index+1}</td>
+			                                  <td>@appUserfill.appUser.getFullName</td>
+			                                  
+			                                  <td>@appUserfill.status</td>
+			                                  <td>@if(appUserfill.inTime!=null){
+			                                  @appUserfill.inTime.format("hh:mm a")}</td>
+			                                  <td>@if(appUserfill.getEsslIntime!=null){
+			                                  	 @appUserfill.esslIntime.format("hh:mm a")}</td>
+			                                  <td>@if(appUserfill.outTime!=null){
+			                                  @appUserfill.outTime.format("hh:mm a")}</td>
+			                                   <td>@if(appUserfill.getEsslOuttime!=null){
+			                                  	 @appUserfill.esslOuttime.format("hh:mm a")}</td>
+			                                  <td>@if(appUserfill.spendTime!=null){
+			                                  @appUserfill.spendTime}</td>
+			                                  
+			                                  <td>@if(appUserfill.esslSpendtime!=null){
+			                                  @appUserfill.esslSpendtime}</td>
+			                               
+			                                 <td>@if(appUserfill.timeInOffice!=null){
+			                                  @appUserfill.timeInOffice}</td>
+			                                  
+			                                    <td>@if(appUserfill.esslBreakTime!=null){
+			                                  @appUserfill.esslBreakTime}</td>
+			                                 <td >
+		                                      	<button type="button" class="fa fa-pencil-square-o edit" value="@appUserfill.getId"></button>
+		                                      </td>
+			                              </tr>
+		                              }
+		                          </tbody>
+		                     </table>
+	                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+</div>
+    <div id="modalConfirmYesNo" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h4>
+                </div>
+                <div class="modal-body">i
+                    <p id="lblMsgConfirmYesNo"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnYesConfirmYesNo" type="button" class="btn btn-primary">Yes</button>
+                    <button id="btnNoConfirmYesNo" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+ </div>
+</section>
+} @footer(""){
+<script src="/assets/javascripts/bootstrap-datetimepicker.min.js"></script>
+<script>
+	$('#appUser').chosen();
+	$(function() {
+		$('.mydate,.startDatex').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true,
+		}).on('changeDate', function(e) {
+			var stDate = $('#startDatexx').val();
+			$('.endDatex').datepicker({
+				format : 'dd-mm-yyyy',
+				startDate : stDate,
+				endDate : ' new Date()',
+				autoclose : true
+			}).change();
+			;
+		});
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if (dd < 10) {
+			dd = '0' + dd
+		}
+		if (mm < 10) {
+			mm = '0' + mm
+		}
+		var today = dd + '-' + mm + '-' + yyyy;
+
+	});
+
+	$('.mydate').on('changeDate', function(e) {
+		var value = $(".mydate").val();
+		$.get('/attendence/' + value, function(data) {
+			$("#attendance").html(data);
+		});
+	});
+	$("#dtable1").DataTable()
+	$('#date1').val($('#date').val());
+
+	$(document).ready(
+			function() {
+				$('table .timepickerInput').timepicker();
+				$('.myrowhide').hide();
+
+				$('.deleteUserButton').click(
+						function(e) {
+							var name = $(this).attr('userName');
+							var url = $(this).attr('url');
+							$('#lblMsgConfirmYesNo').html(
+									"Are You sure wnt to delete User with name : "
+											+ name);
+							$('#modalConfirmYesNo').modal('show');
+						});
+
+				$(document).on('click', '#btnYesConfirmYesNo', function(e) {
+					window.location.href = url;
+				});
+			});
+
+	$(document).on('change', '.attendencestatus', function(e) {
+		if ($(this).val() == 'present') {
+			$(".hidedatetime").removeClass("hidden")
+		}
+		if ($(this).val() == 'absent') {
+			$(".hidedatetime").addClass("hidden")
+		}
+	});
+	$(".myrow:first").find('.timepickerInput').timepicker().val('');
+	$('.timepickerInput').timepicker({
+		defaultTime : 'value'
+	});
+	$(document)
+			.on(
+					'click',
+					'#addRow',
+					function() {
+						var newIndex = $('.myrow').length;
+						var clone = $(".myrow:first").clone();
+						var mydrpval = $(".mydropdown").val();
+						clone.removeClass('existent')
+								.insertAfter(".myrow:last").find(
+										'input[type="radio"]').prop('name',
+										'status[' + newIndex + ']');
+						newIndex++;
+						clone.find('select option').removeAttr('disabled',
+								false);
+						clone.find('select option').prop('disabled', false);
+						$('#dtable2 select option:selected').each(
+								function() {
+
+									clone.find(
+											'select option[value="'
+													+ $(this).val() + '"]')
+											.attr('disabled', 'true');
+									clone.find(
+											'select option[value="'
+													+ $(this).val() + '"]')
+											.prop('disabled', 'true');
+
+								})
+						clone.find('.timepickerInput').timepicker().val('');
+						clone
+								.find('td')
+								.eq(4)
+								.html(
+										'<button type="button" class="btn btn-raised btn-danger btn-xs removeRow">X</button>')
+
+						var $originalSelects = $(".myrow:first").find('select');
+						clone.find('select').each(function(index, item) {
+							//set new select to value of old select
+							$(item).val($originalSelects.eq(index).val());
+							$(".myrow:first select").val("")
+							$(".myrow:first input").val("")
+						});
+
+					});
+
+	$(document).on('click', '.mytable', function() {
+		// remove entrypr
+		if ($(this).parents('.mytable').first().hasClass('existent')) {
+			alert('You can not remove the first attribute entry.');
+		} else {
+			$(this).parents('.mytable').first().remove();
+		}
+	});
+
+	//select
+	$(document).on(
+			'change',
+			'.attendencestatus',
+			function(e) {
+				if ($(this).val() == 'present') {
+					$(this).closest('tr').find('.timepickerInput').removeAttr(
+							'disabled');
+				}
+				if ($(this).val() == 'absent') {
+					$(this).closest('tr').find('.timepickerInput').attr(
+							'disabled', 'true');
+				}
+				if ($(this).val() == 'WFH') {
+					$(this).closest('tr').find('.timepickerInput').attr(
+							'disabled', 'true');
+				}
+			});
+	$(document).on('click', '.removeRow', function() {
+		$(this).closest('tr').remove();
+	})
+
+	$(document).ready(function() {
+		$("#action").click(function() {
+			$("#csv1").slideUp("slow");
+			$("#csv").slideToggle("slow");
+		});
+		$("#action1").click(function() {
+			$("#csv").slideUp("slow");
+			$("#csv1").slideToggle("slow");
+		});
+	});
+</script>
+
+<style>     
+#csv {  
+    display:none;  
+}  
+#csv1 {  
+    display:none;  
+} 
+</style>
+}
+  

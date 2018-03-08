@@ -1,0 +1,194 @@
+@(message:String,projects:List[Projects])
+@header("Manage Team Members",1){
+	<section>
+	<form action="@routes.ManagerController.manageTeamMemberAction()" method="post">
+        <div class="container">
+		    <div class="panel">
+       		 <div class="panel-body">
+		    <h3 class="text-center" id="message">@message</h3>
+		        <div class="row">
+				        <a href="/manager/projects" class="btn  ">projects</a> |
+				         <a href="/manager/manage-team-members" class="btn text-orange ">Manage Team Members</a>
+				</div>    
+		        <div class="row">
+			        <div class="col-md-12 heading-badge">
+			             <h3>Manage Team Members </h3>
+			         </div>
+			    </div> 
+					<div class="col-md-8 col-md-offset-2">
+						<div class="row">
+							<div class="form-group is-empty">
+				                  <label for="inputEmail" class="control-label col-md-4">Projects</label>
+				                  <div class="col-md-8">
+					                    <select name="projectName" id="projectName" class="form-control text-left" autocomplete='off' required>
+					               			<option value="">Select Project</option>
+					               			@for(project<-projects){
+					               				@if(project.status.equals(models.UserProjectStatus.Active)){
+					               				
+					              			<option value=@project.getId()>@project.getProjectName</option>
+					              			}
+					              			}
+					              		</select>
+					              </div>		
+				            	 <span class="material-input"></span><span class="material-input"></span>
+				             </div>
+				             </div>
+							<br><br><br><br>
+							</div>
+							<div class="col-md-12" id="todays5">
+						
+						        <div class="dual-list list-left col-md-5">
+						            <div class="well ">
+						                <div class="row">
+						                    <div class="col-md-10 tex-left">
+							                    <h5>All Members</h5>
+							                      <div class="form-group is-empty">
+						                            <input type="text" name="SearchDualList" class="form-control" placeholder="Search" />
+						                     	 </div>
+							                    </div>
+						                    <div class="col-md-2">
+					                            <a class="btn btn-xs btn-raised selector" title="select all">
+					                            	<i class="fa fa-check-square-o"></i>
+					                            </a>
+						                    </div>
+						                </div>
+						                <ul class="list-group">
+						                    
+						                </ul>
+						            </div>
+						        </div>
+						
+						        <div class="list-arrows col-md-2 text-center">
+						            <button class="btn btn-default btn-raised btn-sm move-left">
+						                <i class="fa fa-chevron-left"></i>
+						            </button>
+						
+						            <button class="btn btn-default btn-raised btn-sm move-right">
+						                <i class="fa fa-chevron-right"></i>
+						            </button>
+						        </div>
+						
+						        <div class="dual-list list-right col-md-5">
+						            <div class="well">
+						                <div class="row">
+						                    <div class="col-md-10">
+						                    <h5>Team Members</h5>
+					                            <div class="form-group is-empty">
+						                            <input type="text" name="SearchDualList" class="form-control" placeholder="Search" />
+						                     	 </div>
+						                    </div>
+						                    <div class="col-md-2">
+					                            <a class="btn btn-xs btn-raised selector" title="select all">
+					                            	<i class="fa fa-check-square-o"></i>
+					                            </a>
+						                    </div>
+						                </div>
+						                <ul class="list-group">
+						                    
+						                </ul>
+						            </div>
+						        </div>
+						
+							</div>
+						</div>
+				  	</div>
+				</div>
+		</form>
+</section>
+}
+@footer(""){
+<script>
+$(function () {
+	
+	$(document).on('change','#projectName',function(){
+		var timesheet = $('#projectName').val();
+		if(timesheet!='0')
+		{
+		$.get('/manageteammember/'+timesheet,function(data){
+			 $("#todays5").html(data);
+		});
+		}
+	});
+	
+    $('body').on('click', '.list-group .list-group-item', function () {
+        $(this).toggleClass('active');
+    });
+    $(document).on('click','.list-arrows button',function () {
+        var $button = $(this), actives = '';
+        if ($button.hasClass('move-left')) {
+            actives = $('.list-right ul li.active');
+            actives.clone().appendTo('.list-left ul');
+            actives.remove();
+            var list = "";
+            $('#group2 li').each(function(){
+            	list += '<option value="' + $(this).attr('data-value') + '" selected>' + $(this).text() + '</option>';
+             });
+            $('#teamMembers').html(list);
+        } else if ($button.hasClass('move-right')) {
+            actives = $('.list-left ul li.active');
+            actives.clone().appendTo('.list-right ul');
+            actives.remove();
+            var list = "";
+            $('#group2 li').each(function(){
+            	list += '<option value="' + $(this).attr('data-value') + '" selected>' + $(this).text() + '</option>';
+             });
+            $('#teamMembers').html(list);
+        }
+    });
+    $(document).on('click','.dual-list .selector',function () {
+        var $checkBox = $(this);
+        if (!$checkBox.hasClass('selected')) {
+            $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
+            $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+        } else {
+            $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
+            $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+        }
+    });
+    $(document).on('keyup','[name="SearchDualList"]',function (e) {
+        var code = e.keyCode || e.which;
+        if (code == '9') return;
+        if (code == '27') $(this).val(null);
+        var $rows = $(this).closest('.dual-list').find('.list-group li');
+        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        $rows.show().filter(function () {
+            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+            return !~text.indexOf(val);
+        }).hide();
+    });
+
+});
+
+$(document).on('change', '#projectName', function() {
+    var projectVal = $(this).val();
+    if (projectVal == '') {
+        alert("Select Project");
+    }
+    else
+    {
+              $("#message").hide();
+    }
+  });
+
+</script>
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

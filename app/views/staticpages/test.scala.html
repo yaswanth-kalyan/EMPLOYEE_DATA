@@ -1,0 +1,164 @@
+@header("Leave Calendar",7){
+  <style type="text/css">
+  .mychkbox{
+    display: none;
+    width: 100%;
+    padding: 5px 0px;
+    background-color: #fff; 
+    margin:1px 0px;
+  }
+  .list-chanel{
+    width: 100%; 
+    padding: 5px 3px;
+    margin: 2px 0px;
+    border: 1px dotted #ddd;
+    background-color: #D0A8AF
+  }
+  .list-chanel:hover .panel-edit{
+    display: inline-block;
+  }
+  .panel-edit{
+    display: none;
+  }
+  .chkboxwrap{
+    margin: 2px 0px;
+    padding: 6px 0px;
+    display: block;
+    border: 1px solid #ddd;
+  }
+  .activemiddlediv{
+    background: #757575; 
+  }
+  </style>
+</head>
+<body>
+<div class="container-fluid" style="padding:0px !important;"> 
+            <div class="col-md-12 panel">
+                <div class="row">
+                  <div class="col-md-3" style="height:93vh;background:pink">
+                    
+                     <!-- Trigger the modal with a button -->
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Creat new chanle</button>
+                    <div class="modal-display"></div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                      <div class="modal-dialog">
+                      
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <input type="text" class="form-control modal-name" placeholder="enter name">
+                            
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-success save-modal-data" data-dismiss="modal">save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="modal fade" id="myModal2" role="dialog">
+                      <div class="modal-dialog">
+                      
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <input type="text" class="form-control eidt-modal-name" placeholder="enter edited name"> 
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-success update-modal-data" data-dismiss="modal">save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                
+                  <div class="col-md-9 middle" style="height:93vh;background:#09f;overflow: scroll;">
+                    <input type="text" class="form-control srh" placeholder="fasdf">
+                    
+                     <div class="checkbox mychkbox">
+                     
+                         <p class="chat-wrapper"> </p> 
+                      </div>
+
+                  </div>
+                  <div class="col-md-3 hidden right " style="height:93vh;background:pink">
+                  </div>
+                </div>
+            </div>
+      </div>
+      }
+      @footer(""){
+      <script type="text/javascript">
+     
+          $(".mychkbox").dblclick(function(){
+              $(".middle").removeClass("col-md-9")
+              $(".middle").addClass("col-md-6");
+              $(".right").removeClass("hidden")
+          });
+          $(".restore").click(function(){
+              $(".middle").removeClass("col-md-6")
+              $(".middle").addClass("col-md-9");
+              $(".right").addClass("hidden");
+
+          })
+          $(".srh").keypress(function(){
+
+              var res = $(this).val(); 
+              $(".txt").html(res)
+          })
+         
+          $(".save-modal-data").click(function(){
+              var modal_name =$(".modal-name").val(); 
+              var res = "<div class='list-chanel'>"+modal_name+"<a href='#'><i class='fa fa-pencil-square-o pull-right panel-edit'></i></a></div>"
+              $(".modal-display").append(res);
+          })
+          $(document).on('click','.list-chanel',function(){ 
+            var particularList = $(this);
+            var modal_name = '';
+            $('#myModal2').on('shown.bs.modal', function () {
+              $(".update-modal-data").click(function(){
+                  modal_name = $(".list-chanel").text(); 
+                  particularList.text(''); 
+                  var updateval=$(".eidt-modal-name").val();
+                  particularList.text(updateval); 
+              });
+            }).modal('show');
+          });
+
+          var newMessage = ''; 
+            $('.srh').keyup(function(e){ 
+                newMessage = $(this).val();
+                //alert(newMessage); 
+                var code = (e.keyCode ? e.keyCode : e.which);
+                 if(code == 13) { //Enter keycode
+                    $(".mychkbox").css("display","block")
+                    var res ="<div class='chkboxwrap checkbox'>"+"<label><input type='checkbox'>"+newMessage+"</div>"
+                   $('.chat-wrapper').append(res);
+                   $('.message').val('');
+                   $(".srh").val("");
+                 }
+                  $(".chat-wrapper").click(function(){
+                    $(this).addClass("activemiddlediv")
+                  })
+                   $(".chat-wrapper").dblclick(function(){
+                    var right_contnet= $(this).text();
+                    console.log(right_contnet)
+                    $(this).removeClass("activemiddlediv")
+
+                  })
+                $('.right-panel').scrollTop($('.right-panel')[0].scrollHeight);
+            });
+
+
+
+      </script> 
+      }

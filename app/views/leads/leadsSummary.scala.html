@@ -1,0 +1,81 @@
+@(listLeadSummary : List[models.lead.LeadSummary])
+@import java.lang.Double; var nhrs=0.0d;var tthrs=0.0d;
+@header("Leads Summary",6){
+	<section>
+        <div class="container">
+       			<div class="col-md-12 panel">
+       				<div class="row">
+                    <a href="/all-leads" class="btn text-orange">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") {|
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                </div >
+                <div class="row heading-badge">
+              		<div class="col-md-12">
+                    	<h3 class="">Leads Summary</h3>
+                    </div>
+       			</div>
+			        <div class="row">
+			            <div class="col-md-12">
+			                <div class="">
+			                    <div class="bs-component">
+			                          <div class="col-md-12">
+			                           @if(!listLeadSummary.isEmpty()){
+			                              <table class="table table-bordered" id="dtable1">
+				                           <thead>
+				                               <tr>
+				                                   <th >S.No.</th>
+				                                   <th >Lead Status</th>
+				                                   <th >No. of Leads</th>
+				                                   <th >Total Estimated Amount</th>
+				                               </tr>
+				                           </thead>
+			                                <tbody>
+			                                @for((leadSummary,index) <- listLeadSummary.zipWithIndex){
+													<tr>
+														<td>@{index+1}</td>
+														<td>@leadSummary.leadStatus.status</td>
+														<td align="right">@leadSummary.totalStatus</td>
+														<td align="right"> 
+														@(tthrs+=leadSummary.totalEstimatedAmount)
+														@models.lead.Lead.getIndianCurrencyFormat(leadSummary.totalEstimatedAmount)
+														@* @String.format("%.2f", leadSummary.totalEstimatedAmount) *@</td>
+													</tr>				                                	
+			                                }
+			                                <tr><th >Total Amount</th><td></td><td></td><td align="right">
+			                                @models.lead.Lead.getIndianCurrencyFormat(tthrs)
+			                                </td></tr>
+			                                </tbody>
+			                              </table>
+			                              }else{
+			   		 							<h3 class="text-center">No Data available </h3><br><br>
+			    						 }
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>  
+			 </div>  
+</section>
+	
+}
+
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable({
+			"order": [ 0, 'asc' ],
+			"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+		     "iDisplayLength": 100	
+		});
+	});
+</script>
+}

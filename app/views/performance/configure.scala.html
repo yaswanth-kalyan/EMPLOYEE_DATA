@@ -1,0 +1,52 @@
+@header(" configure",12){
+<section>
+      <form class="form-horizontal" id="addUserForm" action="@routes.Application.registration()" enctype="multipart/form-data" method="post">
+        <div class="container-fluid padding-left0 padding-right0">
+        <div class="panel">
+	        <div class="container">
+	         <div class="row paddingbot-30">
+	        	<div class="col-md-12">
+	  				<div class="col-sm-6">     
+                         <a href="/performance/selfAppraisalQuestion">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-green" >
+                                     <i class="fa fa-tags  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkgreen">
+                                     <div class="header-item"><h4>Self-Appraisal Form</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	                 <div class="col-sm-6">     
+                         <a href="/performance/employeeAppraisalQuestion">
+                             <div class="text-center alert">
+                                 <div class="col-md-5 stats-item bg-orange" >
+                                     <i class="fa fa-users  bigicon" aria-hidden="true"></i>
+                                 </div>
+                                 <div  class="col-md-7 stats-item bg-darkorange">
+                                     <div class="header-item"><h4>Employee-Appraisal Form</h4></div>
+                                 </div>
+                             </div>   
+                         </a>        
+	                 </div>
+	            </div>
+            </div>
+            </div>
+        <br><br>
+        </div>
+    </div>    
+   
+    </form>   
+</section>
+
+}
+             
+@footer(""){
+<script>
+ $(".alert").eq(1).hide(0).delay(500).fadeIn(1400);
+ $(".alert").eq(2).hide(0).delay(1000).fadeIn(1800);
+ $(".alert").eq(3).hide(0).delay(1500).fadeIn(2200);
+ $(".alert").eq(4).hide(0).delay(2000).fadeIn(3000);
+ </script>
+}

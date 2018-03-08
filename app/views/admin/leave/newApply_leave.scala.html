@@ -1,0 +1,297 @@
+@import java.text.SimpleDateFormat;
+@header("Apply Leave",7){ 
+<section>
+        <div class="container">
+            <div class="panel">
+                 @secondNavbarLeaves(3)
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-10">
+                    	<h3 class="">Apply Leave </h3>
+                	</div>
+                	<div class="col-md-2">
+                		@*@if(AdminLeaveController.checkUserExp()){
+                		<a href="#">	
+	                    		<input type="button" class="btn btn-primary btn-raised WFH margin-0" value="Apply WFH">
+	                    </a>
+	                    }*@
+                	</div>
+                </div>
+                
+                	
+			      <div class="col-md-12"> 
+			      @defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	              @defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+			      @for(leave <- models.leave.Leaves.find.where().eq("appUser",Application.getLoggedInUser()).eq("year",date1).findList()){	
+	  			  @if(!leave.leaveType.leaveType.equals("Leave Without Pay")){
+	  			  <div class="col-md-3 margin-top-10">
+				    <div class="color-panel">
+				      <div style="border-bottom:1px dotted #fff;font-size:16px;font-weight:600;color:#fff;padding-bottom:10px;" class="text-center">@leave.leaveType.leaveType</div>
+				      <div class="noofLeaves" style="padding-top:20px;padding:8px;">
+				      	<div class="text-center" style="font-size:16px;font-weight:600;color:#fff">
+	                    	@if(leave != null){
+	                    		@leave.remainingLeaves
+	                    	}
+				      	</div>
+				      </div>
+				    </div> 
+		          </div>
+		          }
+		          }
+	              }
+		          }
+		          </div> 
+		                 
+               <div class="row">
+                @* 	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Available Balance</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	@for(leaveType <- models.leave.LeaveType.find.all()){
+	                    	<tr>
+	                    	<td>@leaveType.leaveType</td>
+	                    	@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    	@defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+	                    	@defining(models.leave.Leaves.find.where().eq("appUser",Application.getLoggedInUser()).eq("leaveType",leaveType).eq("year",date1).findUnique()){leave =>
+	                    	@if(leave != null){
+	                    	<td>@leave.remainingLeaves</td>
+	                    	}else{
+	                    	<td>0.0</td>
+	                    	}
+	                    	}
+	                    	}
+	                    	}
+	                    	</tr>
+	                    	}
+	                    	<tr><td colspan="2" class="text-center"><input type="button" class="btn btn-success btn-sm btn-raised " id="lApply" value="Apply" /></td></tr>
+	                    	</tbody>
+	                    </table>
+	                </div>*@
+	                <div class="text-center">
+		                <input type="button" class="btn btn-danger btn-md btn-raised margin-top-10" id="lApply" value="Apply" />
+	                </div>
+                </div>
+                <div id="leave-div">
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-10">
+                    	<h3 class="">Enter To Apply Leave </h3>
+                	</div>
+                </div>
+                 <form action="@routes.AdminLeaveController.applyLeave" id="applyLeavesForm" method="post">
+                <div class="row">
+	                <div class="col-md-12 form-group">
+	                	<div class=" col-md-2 col-md-offset-3 text-left">
+	                        <label for="inputEmail" class="control-label">From <span class="asterisk"> * </span> </label>
+	                    </div>
+	                    <div class="col-md-3 text-left">
+	                       <input type="text" name="fromDate" class="form-control mydate1"  readonly>
+	                    	<span class="material-input"></span>
+	                    </div>
+	                </div>
+                	<div class="col-md-12 form-group">
+	                	<div class=" col-md-2 col-md-offset-3 text-left">
+	                        <label for="inputEmail" class="control-label">To Date<span class="asterisk"> * </span> </label>
+	                    </div>
+	                    <div class="col-md-3 text-left">
+	                        <input type="text" name="toDate" class="form-control mydate2"  readonly>
+	                    	<span class="material-input"></span>
+	                    </div>
+	                </div>
+	                <div class="col-md-12 form-group">
+	                	<div class=" col-md-2 col-md-offset-3 text-left">
+	                        <label for="inputEmail" class="control-label">Duration <span class="asterisk"> * </span> </label>
+	                    </div>
+	                    <div class="col-md-3 text-left">
+                       			<div class="form-group">	
+                    				<select class="form-control dayselect" name="duration" >
+                    				@for(duration <- models.leave.DurationEnum.values()){
+                    					<option value="@duration">@duration.getDuration()</option>
+                    					}
+                    					
+                    				</select>
+                   				</div>
+                   				<div class="form-group">	
+                    				<select class="form-control typeofdayselect" name="partialEnum" >
+                    				@for(partialDays <- models.leave.PartialDaysEnum.values()){
+                    					<option value="@partialDays">@partialDays.getPartialDays()</option>
+                    					}
+                    				</select>
+                   				</div>
+	                    </div>
+	                </div>
+	                <div class="col-md-12 form-group">
+	                	<div class=" col-md-2 col-md-offset-3 text-left">
+	                        <label for="inputEmail" class="control-label">Reason <span class="asterisk"> * </span> </label>
+	                    </div>
+	                    <div class="col-md-3 text-left">
+	                       <textarea type="text" name="reason" rows="5"  class="form-control" ></textarea>
+	                    	<span class="material-input"></span>
+	                    </div>
+	                </div>
+                </div><br>
+                   <div class="row">
+                        <div class="col-md-6 text-right">
+                            <button type='button' class="btn btn-warning btn-reset btn-raised" >Reset</button>
+                        </div>
+                        <div class="col-md-2">
+                            <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+   
+</section>
+
+} @footer(""){
+<script>
+	/* $(document).on('click', '.btn-raised', function() {
+		$.get("/leave-details/" + $(this).attr("leave_type"), function(data) {
+			$("#leave-div").html(data);
+		});
+	});
+ */
+	$(document).on('click', '.WFH', function() {
+		$.get("/apply-WFH", function(data) {
+			$("#leave-div").html(data);
+		});
+	});
+
+
+
+
+	 $(function(){
+		 
+		 
+		 
+		 
+         $('.typeofdayselect').hide();
+         $('.dayselect').change(function(){
+     	  var halfday  = $(this).val();
+     	 // alert(halfday);
+     	   if(halfday == "HALF_DAY"){
+     		   if($(".mydate1").val() == $(".mydate2").val()){
+     			   $('.typeofdayselect').hide();
+     		   }else{
+     			   $('.typeofdayselect').show();
+     		   }
+     	  }else{
+     		  $('.typeofdayselect').hide();
+     	  } 
+         }); 
+     });
+     
+	 var StartDate = '@AdminLeaveController.getStartDate()';
+	 StartDate = moment(StartDate).format("DD-MM-YYYY");
+     
+	 var EndDate = '@AdminLeaveController.getEndDate()';
+	 EndDate = moment(EndDate).format("DD-MM-YYYY");
+     
+      $(document).ready(function(){
+    	  
+     var eventDates = {};
+     var d = new Date();
+ 	var n = d.getFullYear(); 
+ 	var start = StartDate;
+ 	var end = EndDate;
+     $.get("@routes.AdminLeaveController.getHolidaysList()",function(data){
+     	 $.each(data,function(index,value){
+     		 eventDates[ new Date( value)] = new Date( value );
+  	    }); 
+ 	 $('.mydate1,.mydate2').datepicker({
+         format: 'dd-mm-yyyy',
+         startDate: start,
+         endDate: end,
+         daysOfWeekDisabled: [0, 6],
+         beforeShowDay: function(date) {
+         	var highlight = eventDates[date];
+             if (highlight) {
+             	return {classes: 'highlight',tooltip: 'Holiday'};
+             } else if(date.getDay() == 0 || date.getDay() == 6 ){
+             	 return {classes: 'back-days',tooltip: 'Holiday'};
+             }else{
+             	return {classes: '',tooltip: 'Workingday'};
+             }
+          },
+         autoclose: true,
+         todayHighlight: true
+     });
+   }); 
+     });
+     $('.mydate1').on('changeDate',function (e) {
+        var fromDate = $(this).val();
+        $('.mydate2').datepicker('setStartDate', fromDate);
+        $('.mydate2').val('');
+        $('#applyLeavesForm').bootstrapValidator('revalidateField', 'fromDate');
+ 	   $('#applyLeavesForm').bootstrapValidator('revalidateField', 'toDate');
+     });
+     $('.mydate2').on('changeDate',function (e) {
+ 	   $('#applyLeavesForm').bootstrapValidator('revalidateField', 'toDate');
+     });
+     
+     
+     
+         
+	$('#applyLeavesForm').bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	   excluded: [':disabled'],
+	    fields: {
+	       fromDate: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please Choose From Date'
+	                }
+	            }
+	        },
+	        toDate: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please Choose To Date'
+	                }
+	            }
+	        },
+	         reason: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please Fill The Reason'
+	                },
+	                stringLength: {
+		                min:10,
+                        max: 200,
+                        message: 'The reason must be more than 10 and less than 200 characters'
+                	}
+	            }
+	        }
+	    }
+	});
+      
+	$(document).ready(function() {
+		
+		$(document).on('click','.btn-reset',function(){
+			$('#applyLeavesForm').bootstrapValidator('resetForm', true);
+		});
+		
+		
+  	    $("#leave-div").hide();  
+		$("#lApply").click(function() {
+			  $("#leave-div").slideToggle("slow");  
+	    });
+	    
+	    var colors = ["#00cc99","#00cc66","#33ccff","#ff0066","#009900","#990099","#ff33cc","#ff5050","#00c6bc","#ff9933","#ff0000","#33cc33","#00cc99","#ff33cc","#3333ff","#ff66ff"];                
+		var rand = Math.floor(Math.random()*colors.length);
+		$('.color-panel').each(function(rand){
+			  $(this).css({"background-color":colors[rand],"padding":"10px","border-radius":"8px"});
+			  
+	    })         
+	});
+		 
+</script>
+ }
+ 
+ 

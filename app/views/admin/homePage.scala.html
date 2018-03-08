@@ -1,0 +1,168 @@
+@header("Home",0){
+  <section>
+    <div class="container">
+        <div class="panel">
+        <div class="panel-body">
+	        <div class="row heading-badge">
+	            <h3>Admin DashBoard</h3>
+	        </div>
+        <div class="row">
+        	<div class="panel">
+					<div class="panel-body col-md-12">
+						<div class="col-md-6">
+							 <div align="center">
+        						<h3 style="font-weight: 600;font-family: arial, sans-serif;">On Leave Today</h3>
+						       		   <div class="text-center  todayleaves">
+						       		   	<table class="table table-bordered" id="dtable1">
+			                           	 	<tbody>
+			                           	 	@if(!controllers.staticController.getLeaves().isEmpty()){
+								       		   @for((appliedLeaves,index) <- controllers.staticController.getLeaves().zipWithIndex){
+								       		  		<tr>
+								       		  			@if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.APPROVED)){
+								       		  			<td align="center"><a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  			}else {
+								       		  				@if(appliedLeaves.leaveStatus.equals(models.leave.LeaveStatus.PENDING_APPROVAL)){
+								       		  				<td align="center"><a href="#" class="text-orange-new" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  				}else{
+								       		  				<td align="center"><a href="#" class="leaves_color_absent" data-toggle="popover" data-placement="top"  data-content="@appliedLeaves.startDate.format("dd-MM-yyyy")-@appliedLeaves.endDate.format("dd-MM-yyyy")"   data-trigger="hover">@appliedLeaves.appUser.getFullName()</a></td>
+								       		  				}
+								       		  			}
+								       		  		</tr>
+								       		 	} 
+								       		 }else{
+													<div class="text-center  todayleaves">No Leaves</div>						       		 
+								       		 }
+						       			</tbody>
+						       		 </table>
+						          </div>
+						    </div>
+						</div>
+						<div class="col-md-6">
+							<div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+						</div>
+					</div>
+					<div class="panel-body col-md-12">
+						<div class="col-md-6">
+							<div id="chartContainer4" style="height: 300px; width: 100%;"></div>
+						</div>
+						<div class="col-md-6">
+							<div id="chartContainer5" style="height: 300px; width: 100%;"></div>
+						</div>
+					</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>    
+    </div>
+    </section>
+}
+@footer(""){
+<script type="text/javascript" src="/assets/js/canvasjs.min.js"></script>
+<script type="text/javascript">
+window.onload = function () {
+var array1 = [];
+var array2 = [];
+var array3 = [];
+$.get('/get-pieChart1',function(data){
+	 $.each(data,function(index,value){
+		 array1.push({  y: value, name: index.toString(), legendMarkerType: "triangle"});
+		 });
+	var chart1 = new CanvasJS.Chart("chartContainer1",
+	{
+		title:{
+			text: "Today's Daily Status",
+		},
+                animationEnabled: true,
+		legend: {
+			verticalAlign: "bottom",
+			horizontalAlign: "center"
+		},
+		theme: "theme1",
+		data: [
+		{        
+			type: "pie",
+			indexLabelFontFamily: "Garamond",       
+			indexLabelFontSize: 15,
+			indexLabelFontWeight: "bold",
+			startAngle:0,
+			indexLabelFontColor: "MistyRose",       
+			indexLabelLineColor: "darkgrey", 
+			indexLabelPlacement: "inside", 
+			toolTipContent: "{name}: {y}",
+			showInLegend: true,
+			indexLabel: "#percent%", 
+			dataPoints: array1
+		}
+		]
+	});
+	chart1.render();
+	 });
+	$.get('/get-pieChart2',function(data){
+	 $.each(data,function(index,value){
+		 array2.push({  y: value, name: index.toString(), legendMarkerType: "triangle"});
+		 });
+		var chart4 = new CanvasJS.Chart("chartContainer4",
+				{
+			title:{
+				text: "Current Job Openings' Status",
+			},
+	                animationEnabled: true,
+			legend: {
+				verticalAlign: "bottom",
+				horizontalAlign: "center"
+			},
+			theme: "theme1",
+			data: [
+			{        
+				type: "pie",
+				indexLabelFontFamily: "Garamond",       
+				indexLabelFontSize: 15,
+				indexLabelFontWeight: "bold",
+				startAngle:0,
+				indexLabelFontColor: "MistyRose",       
+				indexLabelLineColor: "darkgrey", 
+				indexLabelPlacement: "inside", 
+				toolTipContent: "{name}: {y}",
+				showInLegend: true,
+				indexLabel: "#percent%", 
+				dataPoints: array2
+			}
+			]
+		});
+	chart4.render();
+});
+	$.get('/get-pieChart3',function(data){
+		 $.each(data,function(index,value){
+			 array3.push({ y: value, legendText: index, label: index });
+			 });
+			var chart5 = new CanvasJS.Chart("chartContainer5",
+					{
+						title:{
+							text: "Current Leads' Status",
+						},
+						exportFileName: "Pie Chart",
+						//exportEnabled: true,
+		                animationEnabled: true,
+							legend:{
+								verticalAlign: "bottom",
+								horizontalAlign: "center"
+							},
+							data: [
+							{       
+								type: "pie",
+								showInLegend: true,
+								toolTipContent: "{legendText}: <strong>{y}</strong>",
+								indexLabel: "#percent%",
+								dataPoints: array3
+						}
+						]
+					});
+					chart5.render();
+	});
+}
+</script>
+<script>
+	  $('[data-toggle="popover"]').popover();   
+	</script>
+}

@@ -1,0 +1,92 @@
+@header("Daily status History",3){
+  	<section class="container"> 
+		<div class="panel">
+			<div class="panel-body">
+			<div class="row">
+                <a href="/engineer/fill-status" class="btn">Today's</a> |
+                 <a href="/engineer/status-history" class="btn text-orange">History</a>
+            </div>
+			<div class="row heading-badge">
+				<div class="col-md-12">
+					<h3>Daily status History</h3>
+				</div>	
+			</div>
+			<div class="row">
+				<h5 class="text-center bold">Select Week</h5>
+				<div class="col-md-3 col-md-offset-5">
+					<div id="sandbox-container">
+						<input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY" value="@models.DailyReport.getTodayDate()" autocomplete="off" readonly>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<br>
+					<div class="col-md-12" id="dailyReportweek">
+						<table class="table tb">
+							<thead>
+								<tr>
+									<th>S.No</th>
+									<th>Date</th>
+									<th>Yesterday's work</th>
+									<th>Plan for Today</th>
+									<th>Problem faced</th>
+									<th>Rating</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+}
+@footer(""){
+<script>
+$(document).ready(function() {
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true,
+       weekStart: 1
+  });
+});
+  $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    
+	    $.get('/dailyStatusWeekwise/' + firstDate + '/' + lastDate , function(data) {
+	         console.log(data)
+	         $("#dailyReportweek").html(data);
+	     });
+	});
+	
+	function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+
+	$(document).on('change', '#userList', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+
+	$('.tb').DataTable();
+	
+</script>
+}

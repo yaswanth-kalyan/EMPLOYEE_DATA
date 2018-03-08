@@ -1,0 +1,96 @@
+@import java.text.SimpleDateFormat;
+@header("Apply Leave",7){ 
+ 
+
+<section>
+   
+        <div class="container">
+            <div class="panel">
+                 @secondNavbarLeaves(3)
+                <div class="col-md-12 heading-badge">
+                	<div class="col-md-10">
+                    	<h3 class="">Apply Leave </h3>
+                	</div>
+                	<div class="col-md-2">
+                		@*@if(AdminLeaveController.checkUserExp()){
+                		<a href="#">	
+	                    		<input type="button" class="btn btn-primary btn-raised WFH margin-0" value="Apply WFH">
+	                    </a>
+	                    }*@
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Available Balance</th>
+	                    			<th></th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	@for(leaveType <- models.leave.LeaveType.find.all()){
+	                    	<tr>
+	                    	<td>@leaveType.leaveType</td>
+	                    	@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    	@defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+	                    	@defining(models.leave.Leaves.find.where().eq("appUser",Application.getLoggedInUser()).eq("leaveType",leaveType).eq("year",date1).findUnique()){leave =>
+	                    	@if(leave != null){
+	                    	<td>@leave.remainingLeaves</td>
+		                    	@if(leave.remainingLeaves > 0){
+		                    	<td><input type="button" class="btn btn-success btn-sm btn-raised @if(leave.remainingLeaves == 0.0f){disabled}" leave_type="@leaveType.id" value="Apply" /></td>
+		                    	}else{
+		                    	<td><input type="button" class="btn btn-success btn-sm btn-raised disabled" value="Apply" /></td>
+		                    	}
+	                    	}else{
+	                    	<td>0.0</td>
+	                    	<td><input type="button" class="btn btn-success btn-sm btn-raised disabled" value="Apply" /></td>
+	                    	}
+	                    	}
+	                    	}
+	                    	}
+	                    	</tr>
+	                    	}
+	                    		<!-- <tr>
+	                    			<td>Compensatory Off</td>
+	                    			<td>0</td>
+	                    			<td><input type="button" class="btn btn-success btn-sm btn-raised disabled" value="Apply" /></td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Total</td>
+	                    			<td>28</td>
+	                    			<td></td>
+	                    		</tr> -->
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                <div id="leave-div">
+                 
+                
+            </div>
+        </div>
+
+   
+</section>
+
+} @footer(""){
+<script>
+$(document).on('click','.btn-raised', function(){ 
+	$.get("/leave-details/"+$(this).attr("leave_type"),function(data){
+		$("#leave-div").html(data);
+	});
+});
+
+$(document).on('click','.WFH', function(){ 
+	$.get("/apply-WFH",function(data){
+		$("#leave-div").html(data);
+	});
+});
+
+     
+</script>
+ }
+ 
+ 

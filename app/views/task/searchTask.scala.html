@@ -1,0 +1,107 @@
+@(allTask:List[Task],taskLists:List[TaskList])
+	@import bean.AddTaskBean
+				<div class="search col-md-12"  id="search">
+              		<div class="row"> 
+					     <div class="col-md-12" style="max-height:75vh;overflow:auto;">
+					         <div class="lead-chat">
+					         
+							     <div class="col-md-12  srhmsg" style="margin-bottom:3px"  >
+							     @for(taskList<-taskLists){
+							     	@if(AddTaskBean.compare(allTask,taskList.getTasks)){
+							     		<div class="row">
+								     		<div class="col-md-4">
+									     		<div class="well well-sm" style="background:#f89e34;margin-top:22px ;margin-bottom:6px ">
+									     				@taskList.getTaskListName
+									     		</div>		
+								     		</div>
+								     	</div>	
+							          @for(task<-allTask){
+							          	 
+							          	@if(taskList.equals(task.getTaskList)){
+									      <div onclick = "taskIdForEdit(@task.getId)" >
+							        		 @if(task.isTaskMark()==true && task.getStatus.getStatus.equals("open")){
+							        			 <div class="well well-sm  top" style="margin-bottom:2px" onclick = "taskIdForEdit1(@task.getId)"  >
+													<i class='fa fa-square-o '></i>
+													<span class="">@task.getTitle</span>
+												<div class="pull-right">
+					                    		        <button class="btn btn-default  taskdelbtn  markTaskButton" userName="@task.getTitle" url="/markTask/@task.getId"><i class="fa fa-star taskstar-bg"></i></i></button>
+					                    		    </div>   
+												 </div>	
+												 
+												 }
+										</div>
+										}
+									}		
+								      @for(task<-allTask){
+								      	@if(taskList.equals(task.getTaskList)){
+									      <div onclick = "taskIdForEdit(@task.getId)" >
+							        		 @if(task.getStatus.getStatus.equals("open") && task.isTaskMark()==false){
+							        			 <div class="well well-sm  top" style="margin-bottom:2px" onclick = "taskIdForEdit1(@task.getId)"  >
+													<i class='fa fa-square-o '></i>
+													<span class="">@task.getTitle</span>
+													 <div class="pull-right">
+						                    		        <button class="btn btn-default  taskdelbtn markTaskButton" userName="@task.getTitle" url="/markTask/@task.getId"><i class="fa fa-star-o taskstar-brdr"></i></button>
+	                    		        			</div> 
+	                    		         
+	                    		         
+												 </div>	
+												 
+												 }
+										</div>
+										}
+									}		
+								 	@for(task<-allTask){
+								 		@if(taskList.equals(task.getTaskList)){
+										<div onclick = "taskIdForEdit(@task.getId)" >				  
+											@if(task.getStatus.getStatus.equals("close")&& task.isTaskMark()==true){
+											   <div class="wrap">
+													<div class="well well-sm  bottom " style="margin-bottom:2px"  onclick = "taskIdForEdit1(@task.getId)"  >
+														<i class='fa fa-check-square-o '></i>
+														<span class="strik">@task.getTitle</span>
+														 <div class="pull-right">
+						                    		        <button class="btn btn-default  taskdelbtn markTaskButton" userName="@task.getTitle" url="/markTask/@task.getId"><i class="fa fa-star taskstar-bg"></i></button>
+	                    		        			</div> 
+	                    		          
+	                    		         
+	                    		         
+										            </div>
+									           </div> 
+								           } 
+									     </div>	 
+									     }
+							     	 }
+							     	 
+							     	 	@for(task<-allTask){
+								 		@if(taskList.equals(task.getTaskList)){
+										<div onclick = "taskIdForEdit(@task.getId)" >				  
+											@if(task.getStatus.getStatus.equals("close")&&task.isTaskMark()==false){
+											   <div class="wrap">
+													<div class="well well-sm  bottom " style="margin-bottom:2px"  onclick = "taskIdForEdit1(@task.getId)"  >
+														<i class='fa fa-check-square-o '></i>
+														<span class="strik">@task.getTitle</span>
+														 <div class="pull-right">
+						                    		        <button class="btn btn-default  taskdelbtn markTaskButton" userName="@task.getTitle" url="/markTask/@task.getId"><i class="fa fa-star-o taskstar-brdr"></i></button>
+	                    		        			</div> 
+	                    		          
+	                    		         
+	                    		         
+										            </div>
+									           </div> 
+								           } 
+									     </div>	 
+									     }
+							     	 }
+							     	 }
+							     	 
+							     	 }
+							     </div> 
+					     	   </div> 
+					  	</div> 
+					</div>	
+           	    </div>
+           	   
+          
+<script>
+
+
+</script>

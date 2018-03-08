@@ -1,0 +1,484 @@
+
+@header("Leave Calendar",7){
+  <style type="text/css">
+  .mychkbox{
+    display: none;
+    width: 100%;
+    padding: 5px 0px;
+    background-color: #fff; 
+    margin:1px 0px;
+  }
+  .list-chanel{
+        width: 100%;
+    padding: 5px 10px;
+    margin: 2px 0px;
+    border: 1px dotted #ddd;
+    background-color: #fff;
+    font-weight: 500;
+    color: #000;
+    
+  }
+  .list-chanel:hover .panel-edit{
+    display: inline-block;
+  }
+  .panel-edit{
+    display: none;
+  }
+  .chkboxwrap{
+    margin: 5px 0px;
+    padding: 6px 4px;
+    display: block;
+    border: 1px solid #D2D2D2;
+    border-top:5px solid #fff;
+  }
+  .activemiddlediv{
+    background: #cecece; 
+  }
+  .task_title{
+  	padding:5px 14px;
+  	margin:3px 0px; 
+  	border:1px solid #ddd;
+  	display:none;
+  }
+  .restore-pos{
+  	position:fixed;
+  	bottom:10px;
+  	width:95%;
+  }
+  .tasktable{
+  	background:#fff;
+  }
+  </style>
+</head>
+<body>
+<div class="container-fluid" style="padding:0px !important;"> 
+            <div class="col-md-12 panel">
+                <div class="row">
+                  <div class="col-md-3" style="height:93vh;background:#d2d2d2">
+                    
+                     <!-- Trigger the modal with a button -->
+                    <button type="button" class="btn btn-primary btn-sm btn-raised" data-toggle="modal" data-target="#myModal">Creat new chanle</button>
+                    <div class="modal-display"></div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                      <div class="modal-dialog">
+                      
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <div class="row">
+								<div class="col-md-4">
+	                                <div class="pull-left leave-label">  <label>Task Title <span class="asterisk"> * </span></label></div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group is-empty">
+										<input type="text" class="form-control modal-name" name="title" required="required" data-bv-field="title">
+								     	<small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Please fill title</small><small class="help-block" data-bv-validator="remote" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Task Title Name Already Existed</small><span class="material-input"></span></div>
+								</div>
+							</div>                            
+							<div class="row">
+							<div class="col-md-4">
+								<div class="pull-left">
+									<label class="control-label"> Description</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group is-empty">
+									<textarea class="form-control" name="description" rows="5"></textarea>
+								<span class="material-input"></span></div>
+							</div>
+						</div>
+                            
+							<div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Assign To</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="col-md-12">
+										<select class="form-control assigndrp commondrp" name="assignToId" id="assignTo" autocomplete="off">
+											<option value="">Select User</option>
+											@*@for(appUser<-appUsers){*@
+												<option value="@@appUser.getId">@@appUser.getFullName</option>
+												 
+										</select>
+									</div>
+								</div>			 	   
+							</div>
+                          	<div class="col-md-12">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Add Users</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group is-empty">
+													<div class="col-md-12">
+														<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+															@*for(appUser<-appUsers){*@
+																<option value="@@appUser.getId">@@appUser.getFullName</option>
+															 
+														</select>
+													</div>
+												</div>
+											</div>
+									</div>
+								</div>
+                          	<div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Project</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="form-group is-empty">
+											<div class="col-md-12">
+												<select class="form-control" name="projectId" id="projectId" autocomplete="off">
+													<option value="">Select Project</option>
+													@*for(project<-projects){*@
+														<option value="@@project.getId">@@project.getProjectName</option>
+												</select>
+											</div>
+										<span class="material-input"></span></div>
+									</div>
+								</div>
+							</div>
+                          <div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Chat Group</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group">
+										<div class="col-md-12">
+											<select class="form-control" name="chatGroupId" id="chatGroup">
+												<option value="">Select ChatGroup</option>
+													@* for(chatGroup<-chatGroups){*@
+													<option value="@@chatGroup.id">@@chatGroup.name</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+                        </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-success save-modal-data" data-dismiss="modal">save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="modal fade" id="myModal2" role="dialog">
+                      <div class="modal-dialog">
+                      
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-body">
+                            <div class="row">
+								<div class="col-md-4">
+	                                <div class="pull-left leave-label">  <label>Task Title <span class="asterisk"> * </span></label></div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group is-empty">
+										<input type="text" class="form-control modal-name" name="title" required="required" data-bv-field="title">
+								     	<small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Please fill title</small><small class="help-block" data-bv-validator="remote" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Task Title Name Already Existed</small><span class="material-input"></span></div>
+								</div>
+							</div>                            
+							<div class="row">
+							<div class="col-md-4">
+								<div class="pull-left">
+									<label class="control-label"> Description</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group is-empty">
+									<textarea class="form-control" name="description" rows="5"></textarea>
+								<span class="material-input"></span></div>
+							</div>
+						</div>
+                            
+							<div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Assign To</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="col-md-12">
+										<select class="form-control assigndrp commondrp" name="assignToId" id="assignTo" autocomplete="off">
+											<option value="">Select User</option>
+											@*@for(appUser<-appUsers){*@
+												<option value="@@appUser.getId">@@appUser.getFullName</option>
+												 
+										</select>
+									</div>
+								</div>			 	   
+							</div>
+                          	<div class="col-md-12">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Add Users</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group is-empty">
+													<div class="col-md-12">
+														<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+															@*@for(appUser<-appUsers){*@
+																<option value="@@appUser.getId">@@appUser.getFullName</option>
+															 
+														</select>
+													</div>
+												<span class="material-input"></span></div>
+											</div>
+									</div>
+								</div>
+                          	<div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Project</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="form-group is-empty">
+											<div class="col-md-12">
+														<select class="form-control" name="projectId" id="projectId" autocomplete="off">
+															<option value="">Select Project</option>
+															@*for(project<-projects){*@
+																<option value="@@project.getId">@@project.getProjectName</option>
+														</select>
+													</div>
+										<span class="material-input"></span></div>
+									</div>
+								</div>
+							</div>
+                          <div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Chat Group</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group">
+										<div class="col-md-12">
+											<select class="form-control" name="chatGroupId" id="chatGroup">
+												<option value="">Select ChatGroup</option>
+													@*for(chatGroup<-chatGroups){*@
+													<option value="@@chatGroup.id">@@chatGroup.name</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+                        </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-success update-modal-data" data-dismiss="modal">save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                
+                  <div class="col-md-9 middle" style="height:93vh;background:#fff;">
+                  
+                 <div class="task_title well"></div>
+                    <input type="text" class="form-control srh" placeholder="fasdf"> 
+                     <div class="checkbox mychkbox"> 
+                         <p class="chat-wrapper"> </p> 
+                      </div>
+
+                  </div>
+                  <div class="col-md-3 hidden right " style="height:93vh;background:red">
+                  <br>
+                  <table class="table table-bordered tasktable">
+                  		<tbody>
+                  			<!-- <tr>
+                  				<td>
+	                  				<b>Title</b>
+	                  			</td>
+	                  			<td>
+	                  				<div class="task_title"></div>
+	                  			</td>	
+                  			</tr> -->
+                  			<tr>
+                  				<td>
+	                  				<b>Description</b>
+	                  			</td>
+	                  			<td>
+	                  				<div class="row">
+											<div class="col-md-12">
+													<textarea class="form-control" name="description" rows="2"></textarea>
+											</div>
+										</div>
+	                  			</td>	
+                  			</tr>
+                  			<tr>
+                  				<td>
+	                  				<b>Assign To</b>
+	                  			</td>
+	                  			<td>
+									<div class="row">
+										 <div class="col-md-12">
+											<select class="form-control assigndrp commondrp" name="assignToId" id="assignTo" autocomplete="off">
+												<option value="">Select User</option>
+												@*@for(appUser<-appUsers){*@
+													<option value="@@appUser.getId">@@appUser.getFullName</option>
+													 
+											</select>
+										</div>
+									</div>
+	                  			</td>	
+                  			</tr>
+                  			<tr>
+                  				<td>
+	                  				<b>Add Users:</b>
+	                  			</td>
+	                  			<td>
+	                  				<div class="row">
+	                  					<div class="form-group is-empty">
+												<div class="col-md-12">
+													<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+														@*for(appUser<-appUsers){*@
+															<option value="@@appUser.getId">@@appUser.getFullName</option>
+														 
+													</select>
+												</div>
+											</div>
+									</div>
+	                  			</td>	
+                  			</tr>
+                  			<tr>
+                  				<td>
+	                  				<b>Project:</b>
+	                  			</td>
+	                  			<td>
+	                  				<div class="row">
+	                  					<div class="col-md-12">
+												<select class="form-control" name="projectId" id="projectId" autocomplete="off">
+													<option value="">Select Project</option>
+													@*for(project<-projects){*@
+														<option value="@@project.getId">@@project.getProjectName</option>
+												</select>
+											</div>
+									</div>
+	                  			</td>	
+                  			</tr>
+                  			<tr>
+                  				<td>
+	                  				<b>Chat Group</b>
+	                  			</td>
+	                  			<td>
+	                  				<div class="col-md-12">
+										<select class="form-control" name="chatGroupId" id="chatGroup">
+											<option value="">Select ChatGroup</option>
+												@* for(chatGroup<-chatGroups){*@
+												<option value="@@chatGroup.id">@@chatGroup.name</option>
+										</select>
+									</div>
+	                  			</td>	
+                  			</tr>
+                  			
+                  		</tbody>
+                  		
+
+                  </table>     	
+                  <div class="row restore-pos">
+                  	<div class="col-md-4">
+     	                  <a class="restore"><i class="fa fa-arrow-circle-o-left"></i> restorsadf sdafe</a>
+                  	</div>
+                  	<div class="col-md-10">
+                  	</div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+      </div>
+      }
+      @footer(""){
+      <script type="text/javascript">
+     
+          $(".mychkbox").click(function(){
+              $(".middle").removeClass("col-md-9")
+              $(".middle").addClass("col-md-6");
+              $(".right").removeClass("hidden")
+          });
+          $(".restore").click(function(){
+              $(".middle").removeClass("col-md-6")
+              $(".middle").addClass("col-md-9");
+              $(".right").addClass("hidden");
+
+          })
+          $(".srh").keypress(function(){
+
+              var res = $(this).val(); 
+              $(".txt").html(res)
+          })
+         
+          $(".save-modal-data").click(function(){
+              var modal_name =$(".modal-name").val(); 
+              var res = "<div class='list-chanel'>"+modal_name+"<a href='#'><i class='fa fa-pencil-square-o pull-right panel-edit'></i></a></div>"
+              $(".modal-display").append(res);
+          })
+          $(document).on('dblclick','.list-chanel',function(){ 
+            var particularList = $(this);
+            var modal_name = '';
+            $('#myModal2').on('shown.bs.modal', function () {
+              $(".update-modal-data").click(function(){
+                  modal_name = $(".list-chanel").text(); 
+                  particularList.text(''); 
+                  var updateval=$(".eidt-modal-name").val();
+                  particularList.text(updateval); 
+              });
+            }).modal('show');
+          });
+          $(document).on('click','.list-chanel',function(){ 
+        	  
+        		var task_titleval = $(".list-chanel").text();
+        		$(".task_title").css("display","block")
+        		$(".task_title").html(task_titleval)
+         });
+				
+          var newMessage = ''; 
+            $('.srh').keyup(function(e){ 
+                newMessage = $(this).val();
+                //alert(newMessage); 
+                var code = (e.keyCode ? e.keyCode : e.which);
+                 if(code == 13) { //Enter keycode
+                    $(".mychkbox").css("display","block")
+                    var res ="<div class='chkboxwrap'>"+"<label><input type='checkbox'>"+newMessage+"</div>"
+                   $('.chat-wrapper').append(res);
+                   $('.message').val('');
+                   $(".srh").val("");
+                 }
+                  $(".chat-wrapper").click(function(){
+                    $(this).addClass("activemiddlediv")
+                  })
+                   $(".chat-wrapper").dblclick(function(){
+                    var right_contnet= $(this).text();
+                    console.log(right_contnet)
+                    $(this).removeClass("activemiddlediv")
+
+                  })
+                  $(document).on('click','.chkboxwrap',function(){
+                	  console.log("dsa")
+                	  
+                  })
+                $('.right-panel').scrollTop($('.right-panel')[0].scrollHeight);
+            });
+
+
+
+      </script> 
+      }

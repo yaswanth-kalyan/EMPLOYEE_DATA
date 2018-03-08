@@ -1,0 +1,2 @@
+ALTER TABLE app_user ADD experience character varying(3) DEFAULT 'No';
+ALTER TABLE app_user add CONSTRAINT ck_app_user_experience CHECK (experience::text = ANY (ARRAY['No'::character varying, 'Yes'::character varying]::text[]));

@@ -1,0 +1,212 @@
+@(appliedLeavesList : List[models.leave.AppliedLeaves])
+@import java.text.SimpleDateFormat;
+@import java.util.Date;
+@header("Leave Status",7){ 
+ 
+
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+               @secondNavbarLeaves(5)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Application Status </h3>
+                </div>
+                <div class="col-md-12">
+                	<div class="col-md-12">
+	                    <table class="table table-bordered table-striped entitlement-table" id="leaveStatus-table">
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Request On</th>
+                 				<th>Date From</th>
+                 				<th>Date To</th>
+                 				<th>No Of Days</th>
+                 				<th>Leave Type</th>
+                 				<th>Reason</th>
+                 				<th>Status</th>
+                 				<th>Approved/Rejected/Cancelled By</th>
+                 				<th>Cancel/Rejected Reason</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 		@for((appliedLeave, index) <- appliedLeavesList.zipWithIndex){
+                 			<tr>
+                 				<td>@(index+1)</td>
+                 				<td>@appliedLeave.createdOn.format("dd-MM-yyyy")</td>
+                 				<td>@appliedLeave.startDate.format("dd-MM-yyyy")</td>
+                 				<td>@appliedLeave.endDate.format("dd-MM-yyyy")</td>
+                 				<td>@appliedLeave.totalLeaves</td>
+                 				<td>
+                 				@if(appliedLeave.leaveType != null){
+                 					@appliedLeave.leaveType.leaveType
+                 				}else{
+                 					@if(appliedLeave.endDate.before(EngineerController.getTodayDate(new Date()))){
+	                 					@for(dleaves <- appliedLeave.deductLeaves){
+	                 						@dleaves.leaveType.leaveType - @dleaves.deductLeaves<br>
+	                 					}
+                 					}
+                 				}
+                 				</td>
+                 				<td>@appliedLeave.reason</td>
+                 				<td>@appliedLeave.leaveStatus.getLeaveStatus()</td>
+                 				<td>@if((appliedLeave.leaveStatus.equals(models.leave.LeaveStatus.APPROVED) || appliedLeave.leaveStatus.equals(models.leave.LeaveStatus.CANCELLED) || appliedLeave.leaveStatus.equals(models.leave.LeaveStatus.REJECTED)) && appliedLeave.approvedBy != null){@appliedLeave.approvedBy.getAppUserFullName()}</td>
+                 				<td align="center"> 
+                 					@if(appliedLeave.leaveStatus.equals(models.leave.LeaveStatus.PENDING_APPROVAL)){
+                 						@if(models.leave.AppliedLeaves.StatusLeave(appliedLeave.id)){
+                 						<a href="#" class="btn-cancel" applied_id="@appliedLeave.id"><i class="fa fa-times-circle-o fa-2x asterisk"></i></a>
+                 						}
+                 					}
+                 					
+                 					@if(appliedLeave.leaveStatus.equals(models.leave.LeaveStatus.REJECTED)){
+                 						@appliedLeave.rejectedReason
+                 					}
+                 				</td>
+                 			</tr>
+                 			}
+                 			
+                 			
+                 		</tbody>	
+                 	</table>
+	                </div>
+                </div>
+                
+                 <div class="col-md-12 heading-badge">
+                    	<h3 class="">Entitlement Status</h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                     <table class="table table-bordered table-striped entitlement-table" >
+                 		<thead>
+                 			<tr>
+                 				<th>Leave Type</th> 
+                 				<th>Year to Date Earned</th>
+                 				<th>Approved</th>
+                 				@*<th>Pending Approval</th>*@
+                 				<th>Available Balance</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 		@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    @defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+                 		@for(leave <- models.leave.Leaves.find.where().eq("appUser",Application.getLoggedInUser()).eq("year",date1).findList()){
+                 			@if(!leave.leaveType.leaveType.equals("Leave Without Pay")){
+                 			<tr>
+                 				<td><span class="ltype"><a href="#">@leave.leaveType.leaveType</a></span></td>
+	                    		<td>@if(leave != null){ @leave.addedLeaves}</td>
+	                    		@*<td>@models.leave.AppliedLeaves.approvedLeaves(Application.getLoggedInUser(),leave.leaveType)</td>*@
+	                    		<td>@leave.usedLeaves</td>
+	                    		@*<td>@models.leave.AppliedLeaves.appliedLeaves(Application.getLoggedInUser(),leaveType)</td>*@
+	                    		<td>@if(leave != null){@leave.remainingLeaves}</td>
+                 			</tr>
+                 			}
+                 			}
+                 			}
+                 			}
+                 			
+                 			
+                 			@*<tr>
+                 				<td>Total</td>
+                 				<td>@models.leave.Leaves.totalAddedLeaves(Application.getLoggedInUser())</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(Application.getLoggedInUser(),models.leave.LeaveStatus.APPROVED)</td>
+                 				@*<td>@models.leave.AppliedLeaves.totalLeaves(Application.getLoggedInUser(),models.leave.LeaveStatus.PENDING_APPROVAL)</td>*@
+                 				@*<td>@models.leave.Leaves.totalRemainingLeaves(Application.getLoggedInUser())</td>
+                 			</tr>*@
+                 		</tbody>	
+                 	</table>
+	                </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </form>
+</section>
+<!-- modal for cancel operation start-->
+ <div class="modal  fade" id="bulk-unblock-note" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      	<div class="modal-dialog modal-md">
+        	<div class="modal-content">
+            	<div class="modal-header">
+            	<input type="text" class="hidden" value="">
+               		<button type="button" class="close custom-close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                	<h3 class="modal-title fontweight_500" >Cancel Note</h3>
+           		 </div>
+            <div class="modal-body">
+                <div class="row margintop-10">
+                     <div class="col-md-12">
+                           <h5 class="fz-16">Are you sure you want to cancel ?</h5>
+                    </div>
+                    
+                    <div class="col-md-12 text-right">
+                    	
+                	</div> 
+               </div>
+             </div>
+             <form id="deleteForm">
+                <div class="modal-footer">
+                   <button type="button" class=" btn btn-danger   btn-sm btn-raised " data-dismiss="modal">NO</button>  
+                    	<button deleteButton="true" type="button" class="btn btn-success btn-sm btn-raised btn-cancel-confirm">YES</button>
+                </div>
+                </form>
+        </div>
+      </div>
+    </div>
+
+
+<div id="modalLeaveStatsu" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header heading-badge">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 id="lblTitleLeaveStatsu" class="modal-title " ></h3>
+            </div>
+            <div class="modal-body" id="appendLeaveStatsuForm">
+            </div>
+            <div class="modal-footer">
+               	<!-- <button id="btnYesConfirmYesNoAddVehicle" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo">Yes</button> -->
+                <button id="btnNoConfirmYesLeaveStatsu" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+} @footer(""){
+<script>
+
+$('.mydate1').datepicker({
+      format: 'dd-mm-yyyy',
+      endDate: new Date(),
+      autoclose: true
+ })
+  $('.mydate2').datepicker({
+	    format: ' yyyy',
+	    viewMode: 'years',
+	    minViewMode: 'years',
+	    endDate: new Date() /*specify current year */
+});
+$("#leaveStatus-table,#ldtable").dataTable();
+$(document).on('click','.btn-cancel',function(){
+	var appliedId = $(this).attr("applied_id");
+	$("#bulk-unblock-note").modal('show');
+	$(document).on('click','.btn-cancel-confirm',function(){
+		$(this).attr("disabled", true);
+		$("#bulk-unblock-note").modal('hide');
+		$.post("/cancel-leave/"+appliedId,function(data){
+			window.location.href="/leave/status";
+		});
+	});
+});
+
+$(document).on('click','.ltype',function(){
+	var leaveType = $(this).text();
+	$.get("/leavesStatusByType/"+leaveType,function(data){
+		$("#lblTitleLeaveStatsu").html(leaveType+' Tracking History');
+		$("#appendLeaveStatsuForm").html(data);
+		$("#modalLeaveStatsu").modal('show');
+	});
+});
+</script>
+ }
+ 
+ 

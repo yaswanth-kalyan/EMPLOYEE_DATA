@@ -1,0 +1,89 @@
+@(projects : List[Projects])
+@header(" All Project",2){
+	<section>
+        <div class="container">
+    <div class="panel">
+        <div class="col-md-12">
+						<a href="/all-project" class="btn text-orange">All project<div class="ripple-container"></div></a> |
+               			<a href="/add-project" class="btn ">+Add project</a> |
+				        <a href="/admin/manage-team-members" class="btn ">Manage Team Members</a> |
+				        
+        </div>
+        <div class="col-md-12 heading-badge">
+                    <h3>All Project </h3>
+                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="">
+                    <div class="bs-component">
+                          <div class="col-md-12">
+                              <table class="table table-bordered" id="dtable2">
+	                           <thead>
+	                               <tr>
+	                                   <th>S.No</th>
+	                                   <th>Name</th>
+	                                   <th>Client</th>
+	                                   <th>Project Manager</th>
+	                                   <th>Primary Contact Person</th>
+	                                   <th>Contact No</th>
+	                                   <th>Email ID</th>
+	                                   <th>Status</th>
+	                                   <th>Edit</th>
+	                                   <th>RoadMap</th>
+	                               </tr>
+	                           </thead>
+                                <tbody>
+                                @for((project,index)<- projects.zipWithIndex ) {
+										<tr>
+											<td>@{index+1}</td>
+											<td>@project.projectName</td>
+											<td>@project.client</td>
+											<td>@project.getProjectManager.getFullName() </td>
+											<td>@for((clientContect,index) <- project.getClientContect().zipWithIndex ) {
+												@if(index == 0) {
+												@clientContect.name</td>
+											<td>@clientContect.MoibileNo</td>
+											<td>@clientContect.email</td> }
+											}
+											<td>@project.status</td>
+											<td class="text-center">
+											   <a href="/editProjects/@project.id">
+		                                       		<i class="fa fa-pencil-square-o"></i>
+		                                       	</a>
+											</td>
+											<td>
+											@defining(models.pmo.RoadMap.find.where().eq("project_id",project.id).findList()){ roadmapList =>
+												<a href="@controllers.pmo.routes.RoadMapController.getRoadMapPage(project.id)" class="btn btn-warning btn-xs btn-raised margin-0">@roadmapList.size() </a>
+											}
+											</td>
+										</tr>
+										}
+                                </tbody>
+                              </table>
+                              
+                              
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    </div>  
+</section>
+	
+}
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable2").DataTable({
+			"aLengthMenu": [10, 25, 50,100,150,200,250,300 ],
+   		    "iDisplayLength": 100
+		 })
+	});
+</script>
+}

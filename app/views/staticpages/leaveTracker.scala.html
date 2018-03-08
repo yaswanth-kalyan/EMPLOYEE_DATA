@@ -1,0 +1,259 @@
+@header("configureLeaves",7){ 
+ 
+
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/leaveCalender" class="btn">Leave Calendar</a> |
+                    <a href="/leaveTracker" class="btn text-orange">Leave Tracker</a> |
+                    <a href="/configureLeaves" class="btn">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Tracker </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped" id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>S.No</th>
+	                    			<th>Requested On</th>
+	                    			<th>Employee ID</th>
+	                    			<th>Employee Name</th>
+	                    			<th>Status</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    		<tr>
+	                    			<td>2</td>
+	                    			<td>19-01-2015</td>
+	                    			<td>20</td>
+	                    			<td>pavna</td>
+	                    			<td> Approved</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>3</td>
+	                    			<td>14-01-2015</td>
+	                    			<td>02</td>
+	                    			<td>pankaj</td>
+	                    			<td>Taken</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>1</td>
+	                    			<td>18-01-2015</td>
+	                    			<td>23</td>
+	                    			<td>priyanka</td>
+	                    			<td>pending Approval</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>3</td>
+	                    			<td>14-01-2015</td>
+	                    			<td>02</td>
+	                    			<td>pankaj</td>
+	                    			<td>Taken</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>1</td>
+	                    			<td>18-01-2015</td>
+	                    			<td>23</td>
+	                    			<td>priyanka</td>
+	                    			<td>pending Approval</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                
+                 <div class="col-md-12 heading-badge">
+                 	<div  class="col-md-6">
+                    	<h3 class="text-right">Employee Id : 23   </h3>
+                    </div>
+                    <div  class="col-md-6">
+                    	<h3 class="">Employee Name : suresh   </h3>
+                    </div>
+                </div>
+                <h5 class="text-center">Leave Details</h5>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Last Leave Taken on
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			05-02-2015
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Leave Type
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			Earned leave
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Period
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			22-02-2015 To 23-02-2015 (2 Days)
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Reason
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			Sister Marriage
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Manager
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			Priyanka Mangala
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Status
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			Pending Approval
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-4">
+                		<div class='text-left'>
+                			Action
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			 <input type="radio" name="approve-reject">Approve  &nbsp;&nbsp;&nbsp;&nbsp; 
+                			  &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="approve-reject">Reject
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                	<div class="col-md-3 col-md-offset-3">
+                		<div class='text-right'>
+                			<input type="button" class="btn btn-primary btn-raised" value="submit" />
+                		</div>
+                	</div>
+                	<div class="col-md-3">
+                		<div class='text-left'>
+                			<input type="button" class="btn btn-warning  btn-raised" value="clear" />
+                		</div>
+                	</div>
+                </div>
+                
+                <div class="col-md-12 heading-badge">
+                    	<h3 class=""> Entitlement Status   </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-12">
+                	<div class="col-md-12">
+	                    <table class="table table-bordered table-striped" id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Last Year B/F</th>
+	                    			<th>Year To Date Earned</th>
+	                    			<th>Total Entitlement</th>
+	                    			<th>Year To Date Taken</th>
+	                    			<th>Future Appiled(Approved)</th>
+	                    			<th>Future Appiled(pending Approved)</th>
+	                    			<th>Availabe Balance</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    		<tr>
+	                    			<td>Earned</td>
+	                    			<td>2</td>
+	                    			<td>20</td>
+	                    			<td>2</td>
+									<td>2</td>
+	                    			<td>10</td>
+	                    			<td>0</td>
+	                    			<td>22</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Leave without Pay</td>
+	                    			<td>2</td>
+	                    			<td>10</td>
+	                    			<td>5</td>
+									<td>2</td>
+	                    			<td>1</td>
+	                    			<td>2</td>
+	                    			<td>10</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Compensatory Off</td>
+	                    			<td>2</td>
+	                    			<td>0</td>
+	                    			<td>3</td>
+									<td>2</td>
+	                    			<td>0</td>
+	                    			<td>0</td>
+	                    			<td>2</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Total</td>
+	                    			<td>6</td>
+	                    			<td>30</td>
+	                    			<td>10</td>
+									<td>6</td>
+	                    			<td>11</td>
+	                    			<td>2</td>
+	                    			<td>34</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	                	</div>
+	                </div>
+                </div> 
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+ 	<script>
+ 		$("#leave-Tracker-table").dataTable();
+ 	</script> 
+ }
+ 
+ 

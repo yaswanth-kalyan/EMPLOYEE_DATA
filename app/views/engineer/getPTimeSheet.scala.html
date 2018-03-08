@@ -1,0 +1,31 @@
+@(finalMap : Map[Date, List[Timesheet]])
+@import java.lang.Float; var nhrs=0.0f;var tthrs=0.0f;
+<center>
+@if(!finalMap.isEmpty) {
+	<table class="table">
+		<thead>
+			 <tr>
+                <th>Date</th>
+                <th>No.Of Hours</th>
+                      </tr>
+		</thead>
+  		 @for(date <- finalMap.keySet) {
+  		 	@(nhrs=0.0f)
+			<tr>
+				<td>@date.format("dd-MM-yyyy")</td>
+				<td>
+				@for(timeSheet <- finalMap.get(date)){
+					@timeSheet.hours
+					@(tthrs+=timeSheet.hours) 
+				}
+				</td>
+			</tr>
+   		}
+   		<tr>
+   			<td>Total No.Of Hours</td>
+   			<td>@tthrs
+   			</td> 
+  </table>
+} else {
+<p class="bold">There is no TimeSheet for this week</p>
+}

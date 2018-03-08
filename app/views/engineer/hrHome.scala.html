@@ -1,0 +1,201 @@
+@header("Home",0){
+  <section>
+    <div class="container">
+        <div class="panel">
+        <div class="panel-body">
+	        <div class="row heading-badge">
+	            <h3>HR DashBoard</h3>
+	        </div>
+        <div class="row">
+        	<div class="panel">
+					<div class="panel-body col-md-12">
+						<div class="col-md-6">
+							 <div align="center">
+        						<h3 style="font-weight: 600;font-family: arial, sans-serif;">Today’s Interview Schedule</h3>
+						       		   <div class="text-center  todayleaves">
+						       		   	<table class="table table-bordered" id="dtable1">
+			                           	 	<tbody>
+			                           	 	@if(!controllers.staticController.getTodayInterviewSchedule().isEmpty()){
+								       		   @for(Schedule <- controllers.staticController.getTodayInterviewSchedule().keySet){
+							       		  			<div class="text-center text-green-new" >
+							       		  				<tr><td colspan="3"><a href="#" class="text-green-new">@Schedule.interviewTypeName</a></td></tr>
+							       		  			</div>
+						       		  				@for(list <- controllers.staticController.getTodayInterviewSchedule().get(Schedule)){
+						       		  					<div class="text-center text-orange-new" >
+								       		  				<tr>
+								       		  					<td class="text-left"><a href="#" class="text-orange-new">@list.recruitmentApplicant.applicationId</a></td>
+								       		  					<td class="text-left"><a href="#" class="text-orange-new">@list.recruitmentApplicant.applicantName</a></td>
+								       		  					<td class="text-right"><a href="#" class="text-orange-new">@list.conductDate.format("hh:mm a")</a></td>
+								       		  				</tr>
+								       		  			</div>
+						       		  				}
+								       		  	}
+								       		 }else{
+													<div class="text-center  todayleaves">No Today’s Interview Schedule</div>						       		 
+								       		 }
+								       		</tbody>
+								       	</table>
+						          </div>
+						    </div>
+						</div>
+						<div class="col-md-6">
+							<h3 class="text-center" style="font-weight: 600;font-family: arial, sans-serif;">Leaves</h3>
+						<div class="text-center  todayleaves">
+			       		   	<table class="table table-bordered" id="dtable1">
+			       		   		<thead>
+			       		   			<tr>
+			       		   				<th class="text-center">Leave Type</th>
+			       		   				<th class="text-center">No .oF Leaves</th>
+			       		   			</tr>
+			       		   		</thead>
+                           		<tbody>
+                           	 		@for(Name <- controllers.staticController.getTotalLeaves().keySet){
+                           	 			<tr>
+                           	 				<td>
+                           	 					@if(Name.equals("TO_BE_APPLIED")){
+                           	 						<a href="#" class="text-green-new" data-toggle="popover" data-placement="top"  data-content="@staticController.getToBeAppliedDates"   data-trigger="hover">@Name</a>
+                           	 					}else{
+                           	 						<a href="/leave/status" class="text-green-new">@Name</a>
+                           	 					}
+                           	 				</td>
+                           	 				<td>
+                           	 					<a href="#" class="text-orange-new">@controllers.staticController.getTotalLeaves().get(Name)</a>
+                           	 				</td>
+                           	 			</tr>
+                           	 		}
+			       				</tbody>
+			       		 	</table>
+			          	</div>
+						</div>
+					</div>
+					<div class="panel-body col-md-12">
+						<div class="col-md-6">
+							<div id="chartContainer4" style="height: 300px; width: 100%;"></div>
+						</div>
+						<div class="col-md-6">
+							<div id="chartContainer5" style="height: 300px; width: 100%;"></div>
+						</div>
+					</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>    
+    </div>
+    </section>
+}
+@footer(""){
+<script type="text/javascript" src="/assets/js/canvasjs.min.js"></script>
+<script type="text/javascript">
+window.onload = function () {
+var array1 = [];
+var array2 = [];
+var array3 = [];
+$.get('/get-pieChart1',function(data){
+	 $.each(data,function(index,value){
+		 array1.push({  y: value, name: index.toString(), legendMarkerType: "triangle"});
+		 });
+	var chart1 = new CanvasJS.Chart("chartContainer1",
+	{
+		title:{
+			text: "Today's Daily Status",
+		},
+                animationEnabled: true,
+		legend: {
+			verticalAlign: "bottom",
+			horizontalAlign: "center"
+		},
+		theme: "theme1",
+		data: [
+		{        
+			type: "pie",
+			indexLabelFontFamily: "Garamond",       
+			indexLabelFontSize: 15,
+			indexLabelFontWeight: "bold",
+			startAngle:0,
+			indexLabelFontColor: "MistyRose",       
+			indexLabelLineColor: "darkgrey", 
+			indexLabelPlacement: "inside", 
+			toolTipContent: "{name}: {y}",
+			showInLegend: true,
+			indexLabel: "#percent%", 
+			dataPoints: array1
+		}
+		]
+	});
+	chart1.render();
+	 });
+	$.get('/get-pieChart2',function(data){
+	 $.each(data,function(index,value){
+		 array2.push({  y: value, name: index.toString(), legendMarkerType: "triangle"});
+		 });
+		var chart4 = new CanvasJS.Chart("chartContainer4",
+				{
+			title:{
+				text: "Current Job Openings' Status",
+			},
+	                animationEnabled: true,
+			legend: {
+				verticalAlign: "bottom",
+				horizontalAlign: "center"
+			},
+			theme: "theme1",
+			data: [
+			{        
+				type: "pie",
+				indexLabelFontFamily: "Garamond",       
+				indexLabelFontSize: 15,
+				indexLabelFontWeight: "bold",
+				startAngle:0,
+				indexLabelFontColor: "MistyRose",       
+				indexLabelLineColor: "darkgrey", 
+				indexLabelPlacement: "inside", 
+				toolTipContent: "{name}: {y}",
+				showInLegend: true,
+				indexLabel: "#percent%", 
+				dataPoints: array2
+			}
+			]
+		});
+	chart4.render();
+});
+	$.get('/get-pieChart7',function(data){
+		 $.each(data,function(index,value){
+			 array3.push({  y: value, name: index.toString(), legendMarkerType: "triangle"});
+			 });
+			var chart4 = new CanvasJS.Chart("chartContainer5",
+					{
+				title:{
+					text: "Current Applicant Status",
+				},
+		                animationEnabled: true,
+				legend: {
+					verticalAlign: "bottom",
+					horizontalAlign: "center"
+				},
+				theme: "theme1",
+				data: [
+				{        
+					type: "pie",
+					indexLabelFontFamily: "Garamond",       
+					indexLabelFontSize: 15,
+					indexLabelFontWeight: "bold",
+					startAngle:0,
+					indexLabelFontColor: "MistyRose",       
+					indexLabelLineColor: "darkgrey", 
+					indexLabelPlacement: "inside", 
+					toolTipContent: "{name}: {y}",
+					showInLegend: true,
+					indexLabel: "#percent%", 
+					dataPoints: array3
+				}
+				]
+			});
+		chart4.render();
+	});
+}
+</script>
+<script>
+	  $('[data-toggle="popover"]').popover();   
+	</script>
+}

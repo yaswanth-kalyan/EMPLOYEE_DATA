@@ -1,0 +1,266 @@
+@(project: Projects)
+@header(" Add Project",2){
+	<section>
+        <div class="container">
+        <div class="panel">
+            <div class="col-md-12">
+                		<a href="/all-project" class="btn ">All project<div class="ripple-container"></div></a> |
+               			<a href="/add-project" class="btn ">+Add project</a> |
+				        <a href="/admin/manage-team-members" class="btn ">Manage Team Members</a>
+            </div>
+             <div class="col-md-12 heading-badge">
+                    <h3>Edit Project Profile</h3>
+                </div>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="bs-component">
+                              <form class="form-horizontal" action="@routes.AdminController.updateProject()" method="post" id="addProject">
+                              <input type="hidden" name="pid" value="@project.id" required="required" id="pId">
+                                <div class="col-md-8 col-md-offset-2">
+                                <fieldset>
+                                 <div class="form-group">
+                                      <label for="inputEmail" class="control-label">Project Name<span class="asterisk"> * </span></label>
+                                      <input type="text" class="form-control" value="@project.projectName" name="projectName" id="inputEmail" required>
+                                  </div>
+                                    <div class="form-group">
+                                      <label for="inputEmail" class="control-label">Client<span class="asterisk"> * </span></label>
+                                      <input type="text" class="form-control" value="@project.client"  name="client" id="inputEmail" required>
+                                  </div>
+                                    <div class="form-group is-empty">
+                                          <label for="inputEmail" class="control-label">Project Manager<span class="asterisk"> * </span></label>
+                                            <select name="projectManagerId" class="form-control text-left" required="required">
+		                                        <option value="">select</option>
+							  						@for(RMU <- models.AppUser.getAppManager()) {
+							  							@if(project.projectManager != null && RMU.getId == project.projectManager.getId()){
+							  							<option value="@RMU.getId" selected="selected">@RMU.FullName</option>
+							  							} else {
+							  							<option value="@RMU.getId" >@RMU.FullName</option>
+							  							}
+							  						}
+		                                    </select>
+                                     <span class="material-input"></span></div> 
+                                    <div class="form-group">
+                                          <label for="inputEmail" class="control-label">Description</label>
+                                        <textarea class="form-control" name="description" rows="5" id="textArea"  value="@project.description">@project.description</textarea>
+                                    </div>
+                                     <div class="form-group">
+                                          <label for="inputEmail" class="control-label">Project Start Date</label>
+                                           <div class="row">
+                                              <div class="col-md-6">
+                                                    <div id="sandbox-container">
+	                                                    @if(project.startedDate != null) {
+	                                                        <input type="text" class="form-control mydate" value="@project.startedDate.format("dd-MM-yyyy")" name="startedDate" placeholder="DD-MM-YYYY" readonly />
+									  					} else {
+									  						<input type="text" class="form-control mydate" name="startedDate" placeholder="DD-MM-YYYY" readonly />
+									  					}
+                                                    </div>
+                                              </div>
+                                            </div>   
+
+                                    </div>
+                                    <div class="form-group">
+                                          <label for="inputEmail" class="control-label">Project End Date</label>
+                                           <div class="row">
+                                              <div class="col-md-6">
+                                                    <div id="sandbox-container">
+                                                    @if(project.endedDate != null) {
+	                                                        <input type="text" class="form-control mydate" value="@project.endedDate.format("dd-MM-yyyy")" name="endedDate" placeholder="DD-MM-YYYY" readonly />
+									  					} else {
+									  						<input type="text" class="form-control mydate" name="endedDate" placeholder="DD-MM-YYYY" readonly />
+									  					}
+                                                    </div>
+                                              </div>
+                                            </div>   
+                                    </div>
+                                    <div class="form-group">
+                                         <div class="row"> 
+                                            <div class="col-md-12">
+                                            <label for="inputEmail" class="control-label">Status  <span class="asterisk"> * </span> </label>
+                                             </div>
+                                            <div class="col-md-3">
+                                              <div class="radio radio-primary">
+                                                <label>
+                                                @if(project.status.equals(models.UserProjectStatus.Active) ) {
+                                                  	<input type="radio" name="status" value="@models.UserProjectStatus.Active" checked="checked"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Active
+                                                  } else{
+                                                  	<input type="radio" name="status" value="@models.UserProjectStatus.Active"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Active
+                                                  	
+                                                  }
+                                                </label>
+                                              </div>
+                                           </div>
+                                            <div class="col-md-3">
+                                              <div class="radio radio-primary">
+                                                <label>
+                                                @if(project.status.equals(models.UserProjectStatus.Inactive) ) {
+                                                  	<input type="radio" name="status" value="@models.UserProjectStatus.Inactive"  checked="checked"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Inactive
+                                                 } else{
+                                                 	<input type="radio" name="status" value="@models.UserProjectStatus.Inactive"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Inactive
+                                                  }
+                                                </label>
+                                              </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                              <div class="radio radio-primary">
+                                                <label>
+                                                @if(project.status.equals(models.UserProjectStatus.Completed) ) {
+                                                  	<input type="radio" name="status" value="@models.UserProjectStatus.Completed"  checked="checked"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Completed
+                                                 } else{
+                                                 	<input type="radio" name="status" value="@models.UserProjectStatus.Completed"><span class="circle"></span><span class="check"></span>@models.UserProjectStatus.Completed
+                                                  }
+                                                </label>
+                                              </div>
+                                            </div>
+                                          </div>     
+                                      </div>
+                                    </div>
+                                    <div class="col-md-10 col-md-offset-2">
+                                     <div class="form-group">
+                                          <label for="inputEmail" class="control-label">Contact details</label><br><br>
+                                            <div id="sandbox-container">
+                                                <div class="bs-component">
+                                              <table class="table table-striped " id="projectTable">
+                                                <thead>
+                                                <tr>
+                                                  <th>Type</th>
+                                                  <th>Name</th>
+                                                  <th>Contact Number</th>
+                                                  <th>Emial id</th>
+                                                  <th>+</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @for((client,index) <-project.clientContect.zipWithIndex) { 
+                                                <input type="hidden" name="id[]" value="@client.id" required="required">
+                                                <tr id="firstRow">
+                                                  <td>
+                                                  @if(index ==0){
+                                                  	<label for="inputEmail" class="control-label" id="primaryText">Primary<span class="asterisk">*</span></label>
+                                                  	} else{
+                                                  	<label for="inputEmail" class="control-label" id="primaryText">Secondary</label>
+                                                  	}
+                                                  </td>
+                                                  <td>
+                                                       <div class="form-group">
+                                                            <input type="text" class="form-control" name="name[]" value="@client.name" placeholder="Name" required />
+                                                        </div>
+                                                    </td>
+                                                  <td>
+                                                        <div class="form-group">
+                                                            <input type="tel" class="form-control" name="MoibileNo[]" value="@client.MoibileNo" pattern="^[0-9]*$" minlength="10" maxlength="15" placeholder="Contact Number" required />
+                                                        </div>
+                                                    </td>
+                                                  <td>
+                                                       <div class="form-group">
+                                                            <input type="text" class="form-control" name="email[]" value="@client.email" placeholder="Email Id" required />
+                                                        </div>
+                                                  </td>
+                                                  <td class="text-center">
+                                                      <center>
+                                                      @if(index ==0){
+                                                      <button type="button" class="btn btn-primary btn-raised btn-sm" id="addRow" />Add</button>
+                                                      } else{
+                                                      <a href="/deleteContact/@project.id/@client.id" class="btn "><button type="button" class="btn btn-danger btn-raised btn-sm ">x</button></a>
+                                                      }
+                                                      </center>
+                                                  </td>
+                                                </tr>
+								  				}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                            </div>
+
+                                    </div>
+                                    </div>
+                                  <div class="col-md-10 col-md-offset-2">
+                                      <div class="form-group">
+                                        <div class="text-center">
+                                          <button type="reset" class="btn btn-warning btn-raised">Clear</button>
+                                          <button type="submit" class="btn btn-primary btn-raised">Update</button>
+                                        </div>
+                                      </div>
+                                   </div>  
+                                </fieldset>
+                              </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        </div>
+    </section>
+	
+}
+@footer(""){
+	<script>
+	 $('.mydate').datepicker({
+    	autoclose: true,
+    	format: 'dd-mm-yyyy'
+	});
+	
+	$(document).on('click','#addRow',function(){
+	    var firstRow = $('#firstRow').clone();
+	    firstRow.find('input').val('');
+	    firstRow.find('input').removeAttr('required');
+	    firstRow.find('#primaryText').html('Secondary')
+	    firstRow.find('#addRow').parent().html(' <center><button type="button" class="btn btn-danger btn-raised btn-sm deleteRow">x</button></center>');
+	    $('#projectTable').append(firstRow)
+	});
+	$(document).on('click','.deleteRow',function(){
+		$(this).closest('tr').remove();
+	})
+	
+	$('#addProject').formValidation({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	projectName: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                },
+	                remote: {
+                    	message: 'Project-Name already  exist',
+                        type: 'POST',
+                        url: '/isExistProjectName',
+                        data: function(validator) {
+                            return {
+                            	projectName: validator.getFieldElements('projectName').val(),
+                            	id: $('#pId').val()
+                            }
+                        }
+                  
+                 }
+	            }
+	        },
+	        client: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                }
+	            }
+	        },
+	        projectManagerId: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                }
+	            }
+	        }
+	    }
+	});
+</script>
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</html>

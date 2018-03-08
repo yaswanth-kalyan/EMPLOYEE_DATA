@@ -1,0 +1,37 @@
+@(appUser : AppUser)
+@if(appUser != null) {	
+	<table class="table">
+		<thead>
+		@if(appUser.projects.isEmpty()){
+		<tr><th class="text-center">Role</th></tr>
+ 		<tr><td class="text-center"> 
+			 @for(User <- appUser.role) {
+				@User.role<br>
+			 }
+			</td></tr>
+ 			
+ 		} else {
+			<tr>
+				<th>Sno</th>
+				<th>Project</th>
+				<th>Role</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for(( project ,index) <- appUser.projects.zipWithIndex) {
+	 		  <tr>
+				<td>@{index+1}</td>
+				<td>@project.getProjectName() </td>
+				<td> 
+				 @for(User <- appUser.role) {
+					@User.role<br>
+				 }
+				</td>
+			  </tr>
+	 		}
+ 		}
+		</tbody>
+	</table>
+} else {
+<p>No Role</p>
+}

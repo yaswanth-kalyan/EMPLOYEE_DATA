@@ -1,0 +1,1446 @@
+@(applicants:List[models.recruitment.RecruitmentApplicant],appUsers:List[AppUser],jobRoles:List[models.recruitment.RecruitmentRole],jobCategories:List[models.recruitment.RecruitmentCategory],sources:List[models.recruitment.RecruitmentSource],applicant:models.recruitment.RecruitmentApplicant,jobs:List[models.recruitment.RecruitmentJob],editApplicant:models.recruitment.RecruitmentApplicant,flag : java.lang.Boolean)
+@import java.util.Collections;
+@import models.recruitment.RecruitmentInterviewType;
+@import models.recruitment.RecruitmentQuestionTemplate;
+@import models.recruitment.RecruitmentSelectionRound;
+@import models.recruitment.SelectionRoundStatus;
+@import models.recruitment.InterviewSelectionResult;
+@import models.recruitment.InterviewerAppUser;
+@import java.lang.Long; var roundId=11;
+@header(" Applicants",11){ 
+<style>
+body{
+	background:#fff !important;
+}
+</style>
+<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<section>
+<div class="alert alert-success mail-sucess text-center hidden">
+                @*<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>*@
+                <span ></span>
+            </div>
+   <div class="container-fluid padding-left0 padding-right0">
+   <div class="panel">
+    	<div class="col-md-12">
+	    	@if(session.get("AppUserRole") == "Admin" || session.get("AppUserRole") == "HR"){
+				<a href="/recruitment/openings" class="btn ">Openings<div class="ripple-container"></div></a> |
+	            <a href="/recruitment/applicants" class="btn text-orange ">Applicants</a> |
+				<a href="/recruitment/recruitmentlandingpage" class="btn ">Configure</a> |
+				<a href="/recruitment/jobReferralHistory" class="btn">Referrals</a>  |
+		    }
+		    @if(models.recruitment.InterviewerAppUser.checkAppUser(Long.parseLong(session.get("AppUserId")))){
+		        <a href="/recruitment/interviewerFeedback" class="btn ">Interviewer Feedback</a> |
+		    }
+		        <a href="/recruitment/jobOpening" class="btn">Refer a friend</a>
+        </div>
+        
+        <div class="col-md-12 heading-badge">
+        	<div class="col-md-9" >
+            	<h3>Manage Applicants </h3>
+             </div>
+             @if(applicant != null || flag.equals(false)) {
+		     	<div class="col-md-3 text-right">
+		     		<input type="button" id="addNewApplicant" value="Add New Applicant" url="/recruitment/addNewApplicant" class="btn btn-primary btn-raised marginAll0px"/>
+		     	</div>
+		     }
+        </div>
+        
+        	
+        	 @* ************* Left Side Code ***************** *@
+         @if(flag.equals(false)) {
+         	@if(editApplicant == null){
+        	<div class="row" id="allSummary">
+	            <div class="col-md-12 @*openingwellshadow*@">
+	                	  <h4 class="text-center font-weight-400 recruit-side-heading"> Summary</h4>
+	            	<div class="row">
+	                </div>
+	            	<div class="col-md-12">
+	                  <div class="row leftLabel">
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+		                  			<b>
+		                  			<i class="fa fa-circle-thin fg-yellow" aria-hidden="true"></i>
+		                  			</b>
+		                  			Registered
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Registered).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+		                  			<b>
+		                  			<i class="fa fa-circle-thin fg-orange" aria-hidden="true"></i>
+		                  			</b>
+		                  			Shortlisted
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Shortlisted).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+		                  			<b>
+		                  			<i class="fa fa-circle-thin fg-red" aria-hidden="true"></i>
+		                  			</b>
+		                  			Abandoned
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Abandoned).findRowCount()</div>
+	                  		</div>
+	                  </div>
+	                  <div class="row leftLabel ">
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+		                  			<b>
+		                  			<i class="fa fa-circle-thin fg-pink" aria-hidden="true"></i>
+		                  			</b>
+		                  			Selected
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Selected).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+	                  				<b>
+		                  			<i class="fa fa-circle-thin fg-gray" aria-hidden="true"></i>
+		                  			</b>
+		                  			Rejected
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Rejected).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+	                  				<b>
+		                  			<i class="fa fa-circle-thin fg-lblue" aria-hidden="true"></i>
+		                  			</b>Offered
+	                  			</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Offered).findRowCount()</div>
+	                  		</div>
+	                  </div>
+	                  <div class="row leftLabel ">
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">
+	                  				<b>
+		                  			<i class="fa fa-circle-thin fg-blue" aria-hidden="true"></i>
+		                  			</b>
+			                  		Offer Accepted
+		                  		</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Offered_Accepted).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">	<b>
+		                  			<i class="fa fa-circle-thin fg-green" aria-hidden="true"></i>
+		                  			</b>
+		                  			Joined
+		                  		</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.Joined).findRowCount()</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">	<b>
+		                  			<i class="fa fa-circle-thin fg-purple" aria-hidden="true"></i>
+		                  			</b>
+		                  			Not Joined
+		                  		</div>
+	                  		</div>
+	                  		<div class="col-md-2">
+	                  			<div class="text-left">@models.recruitment.RecruitmentApplicant.find.where().eq("status", models.recruitment.ApplicantStatus.NotJoined).findRowCount()</div>
+	                  		</div>
+	                  </div>
+	            	</div>
+	            </div>
+	           </div>
+	           	}
+	            @* ************* Middle Side Code : All Apllicant ***************** *@
+	          <div class="col-md-12">
+	            <div class="row" @*style="background: linear-gradient(135deg, rgb(66, 103, 145) 0%, rgb(48, 35, 60) 100%) !important;height:100vh !important"*@>
+                	<div class="col-md-12 table-responsive ">
+                    	@if(editApplicant == null){
+                        	<h4 class="text-center recrumentbold  recruit-side-heading">All Applicants</h4>
+                            	<table class="table table-bordered tableApplicant" id="dtable2">
+	                           		<thead>
+	                               		<tr>
+	                               			<th hidden="">S ID</th>
+	                                   		<th>Applicant ID</th>
+	                                   		<th>Name</th>
+	                                   		<th>Email ID</th>
+	                                   		<th>Contact No.</th>
+	                                   		<th>Category-Role</th>
+	                                   		@*<th>Job ID</th>*@
+	                                   		<th>Source</th>
+	                                   		<th>Current Location</th>
+	                                   		<th>Preferred Location</th>
+	                                   		<th>Exp.</th>
+	                                   		@*<th>Current Company</th>*@
+	                                   		<th>Notice Period</th>
+	                                   		<th>Current CTC</th>
+	                                   		<th>Expected CTC</th>
+	                                   		<th>Interview Type</th>
+	                                   		<th>Interview Schedule</th>
+	                                   		<th>Interview Status</th>
+	                                   		<th>Created BY</th>
+	                                   		<th>Updated BY</th>
+	                                   		<th>Status</th>
+	                                   		<th>Option</th>
+	                               		</tr>
+	                           		</thead>
+                                <tbody>
+                                	@for(applicant<-applicants){
+                                		@applicant.status.toString() match{
+											case "Registered"=> {
+												<tr class="fg-yellowtr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Shortlisted" => {
+												<tr class="fg-orangetr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Abandoned" => {
+												<tr class="fg-redtr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Selected" => {
+												<tr class="fg-pinktr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Rejected" => {
+												<tr class="fg-graytr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Offered" => {
+												<tr class="fg-lbluetr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Offered_Accepted" => {
+												<tr class="fg-bluetr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "Joined" => {
+												<tr class="fg-greentr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+											case "NotJoined" => {
+												<tr class="fg-purpletr" ondblclick="window.document.location='/updateApplicant/@applicant.id';">
+											}
+										}
+													<td hidden="">@applicant.id</td>
+													<td id="app@applicant.id">@applicant.applicationId</td>
+													<td>@applicant.applicantName</td>
+													<td>@applicant.emailId</td>
+													<td>@applicant.contactNo</td>
+													<td>
+														@if(applicant.recruitmentRole!=null&&applicant.applicantCategory!=null){
+											  				@applicant.applicantCategory.jobCategoryName-@applicant.recruitmentRole.jobRoleName
+														}
+													</td>
+												@*	<td>
+														@if(applicant.recruitmentJob!=null){
+															@applicant.recruitmentJob.jobId
+														}
+													</td>*@
+													<td>
+														@if(applicant.recruitmentSource != null){
+															@applicant.recruitmentSource.sourceName
+														}
+													</td>
+													<td>@applicant.currentLocation</td>
+													<td>
+														@if(applicant.preferedLocation != null){
+															@applicant.preferedLocation
+														}
+													</td>
+													<td>@applicant.exprience</td>
+													@*<td>@applicant.currentCompany</td>*@
+													<td>@applicant.NoticePeriod</td>
+													<td>@applicant.CurrentCTC</td>
+													<td>@applicant.ExpectedCTC</td>
+													<td>
+														@if(applicant.recruitmentSelectionRounds != null && !applicant.recruitmentSelectionRounds.isEmpty()){
+															@applicant.recruitmentSelectionRounds.get(applicant.recruitmentSelectionRounds.size() - 1).recruitmentInterviewType.interviewTypeName
+														}
+													</td>
+													<td>
+														@if(applicant.recruitmentSelectionRounds != null && !applicant.recruitmentSelectionRounds.isEmpty()){
+															@applicant.recruitmentSelectionRounds.get(applicant.recruitmentSelectionRounds.size() - 1).conductDate.format("dd-MM-yyyy hh:mm a")
+														}
+													</td>
+													<td>
+														@if(applicant.recruitmentSelectionRounds != null && !applicant.recruitmentSelectionRounds.isEmpty()){
+															@applicant.recruitmentSelectionRounds.get(applicant.recruitmentSelectionRounds.size() - 1).selectionStatus
+														}
+													</td>
+													<td>
+														@if(applicant.createdBy != null){
+															@applicant.createdBy.getFullName
+														}
+													</td>
+													<td>
+														@if(applicant.updatedBy != null){
+															@applicant.updatedBy.getFullName
+														}
+													</td>
+													<td>@applicant.status</td>
+													<td>
+														<button type="button" class="btn btn-primary btn-sm btn-raised marginAll0px" id="addRounds" value="@applicant.id"><i class="fa fa-life-ring" aria-hidden="true"></i></button>
+														@if(applicant.sendIntroMailFlag.equals(false)){
+														<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px sendIntroMail@applicant.id"  id="sendIntroMail" value="@applicant.id"><i class="fa fa-envelope-o" aria-hidden="true"></i></button>
+														}else{
+														<button type="button" class="btn btn-danger btn-sm btn-raised marginAll0px sendIntroMail@applicant.id"  id="sendIntroMail" value="@applicant.id"><i class="fa fa-envelope-o" aria-hidden="true"></i></button>
+														}
+													</td>
+												</tr>
+									}
+                                </tbody>
+                              </table>
+                             }else{
+                             
+                             @* ************* Middle Side Code : Add Round Apllicant ***************** 
+                             <div class="well well-sm text-center">Applicant ID - Name : <span class="fontweight-500">@editApplicant.applicationId - @editApplicant.applicantName</span></div>*@
+		                       <div id="updateRoundForm"></div>
+                             		<div  id="addRoundsForm" class="">
+	                        			<div class="col-md-12 ow well well-sm">   
+		                         			<form class="form-horizontal" id="addRoundPostForm" action="/recruitment/addRound" method="post">
+		                         				@if(editApplicant !=null){
+		                          					<input type="hidden" value="@editApplicant.id" name="recruitmentId">
+		                          				}
+		                          				<div class="row tabContent">
+				                 				<div class="col-md-12 heading-badge">
+				                    				<div class="col-md-12">
+				                    					<div class="col-md-2"><h3>Selection Process</h3></div>
+				                    					 <div class="col-md-8 text-center" id="round">
+				                    					 	<h3>Applicant ID - Name : <span class="fontweight-500">@editApplicant.applicationId - @editApplicant.applicantName</span></h3>
+				                    					 </div>
+				                    					 <div class="col-md-2 text-right">
+		     													<input type="button" id="addNewRound" value="Add New Round" class="btn btn-primary btn-raised marginAll0px"/>
+		     											</div>
+				                    				</div> 		          		 
+             					  				</div>
+		                          				<div class="col-md-6 col-md-offset-3" id="addNewRoundForm">
+		                            				<div class="row">
+			                           					<div class="form-group is-empty">
+			                                 				<label for="inputEmail" class="control-label">Interview Type <span class="asterisk"> * </span></label>
+			                                   					<select name="interviewType" class="form-control text-left" >
+				                                					<option value="">Select</option>
+				                                						@for(interviewType <- RecruitmentInterviewType.find.all){
+				                               								<option value="@interviewType.id">@interviewType.interviewTypeName</option>
+				                               							}
+				                             					</select>
+			                            				</div> 
+				                  					</div>
+									                <div class="row">
+								                         <div class="form-group is-empty">
+								                                 <label for="inputEmail" class="control-label">Interviewer <span class="asterisk"> * </span></label>
+								                                 	<div class="row">
+									                                 	<div class="col-md-9">
+										                                   <select name="interviewer[]" id="interviewer" multiple="multiple" class=" chosen form-control text-left " required="required">
+										                               			@for(appUser<-InterviewerAppUser.find.all){
+										                               			<option value="@appUser.id">@appUser.interviewer.getFullName</option>
+										                               			}
+										                             		</select>
+										                             	</div>
+										                             	<div class="col-md-3">
+													             			  <button type="button" class="btn btn-primary btn-sm btn-raised marginAll0px" id="addInterviewer">Add Interviewer</button>  
+										                             	</div>
+										                             </div>		
+								                            </div> 
+									                </div> 
+					                                <div class="row"> 
+					                                	<div class="form-group is-empty">
+								                           	<label for="inputEmail" class="control-label"> Select Date & Time <span class="asterisk"> * </span></label> 
+							                                    <div id="sandbox-container">
+							                                        <input class="form-control" name="interviewConductDate" value="@models.DailyReport.getTodayDate()"  type="text" id="datewisePicker" autocomplete="off" >
+							                                    </div> 
+							                             </div>  
+					                          	    </div>
+					                          	     <div class="row"> 
+					                                	<div class="form-group is-empty">
+								                           	<label for="inputEmail" class="control-label"> Interview Venue <span class="asterisk"> * </span></label> 
+							                                    <div id="sandbox-container">
+							                                        <select name="interviewVenue" id="" class="form-control text-left" >
+							                                        	<option value="">Select</option>
+						                                			@for(interviewVenue <- models.recruitment.InterviewVenue.values()){
+						                               					<option value="@interviewVenue">@interviewVenue</option>
+						                               				}
+						                             			</select>
+							                                    </div> 
+							                             </div>  
+					                          	    </div>
+						                            <div class="row">
+						                            	<div class="form-group is-empty">
+						                                  	<label>Remarks</label>   
+						                                	<textarea class="form-control" name="remark" rows="5" id="textArea"></textarea>
+						                                </div>	 
+						                            </div>
+					                             	<div class="row">
+						                           		<div class="form-group is-empty">
+						                                 	<label for="inputEmail" class="control-label">Interview Status <span class="asterisk"> * </span></label>
+						                                   		<select name="selectionRoundStatus" id="selectionRoundStatus" class="form-control text-left" >
+						                                			@for(selectionRoundStatus<-SelectionRoundStatus.values()){
+						                               					<option value="@selectionRoundStatus">@selectionRoundStatus</option>
+						                               				}
+						                             			</select>
+						                            	</div> 
+							                  		</div>
+							                  		<div class="row hidden" id="interviewSelectionResultId">
+						                           		<div class="form-group is-empty">
+						                                 	<label for="inputEmail" class="control-label">Interview Result</label>
+						                                  		 <select name="interviewSelectionResult" id="interviewSelectionResult" class="form-control text-left" >
+						                               				 <option value="">Select</option>
+						                                				@for(selectionResult<-InterviewSelectionResult.values()){
+						                               						<option value="@selectionResult">@selectionResult</option>
+						                               					}
+						                             			</select>
+						                            	</div> 
+							                  		</div>
+					                           		<div class="row">
+					                                	<div class="col-md-12 text-center" >
+					                                    	<input type="submit" value="Submit" class="btn btn-primary btn-raised">
+					                                	</div>
+					                            	</div>
+	                           					</div> 
+	                           					</div>
+                            				</form>
+                            			
+                            		
+                            		
+		                           @* ************* Middle Side Code : All Round Apllicant table ***************** *@	
+				                    <br>
+				                    <h3 class="text-center">All Round Data</h3>
+				                    <div class="col-md-12">
+						                <table class="table table-bordered " id="dtable2">
+					                    	<thead>
+					                    		<tr>
+					                    			<th>Round</th>
+					                    			<th>Date & Time</th>
+					                    			<th>Interview Type</th>
+					                    			<th>Interview Venue</th>
+					                    			<th>Interviewers</th>
+					                    			<th>Interviewer's FeebBack - Remarks</th>
+					                    			<th>Status</th>	
+					                    			<th>Round Result</th>	
+					                    			<th>Remarks</th>
+					                    			<th>Options</th>
+					                    		</tr>
+					                    	</thead>
+					                    	<tbody>
+					                    	@for((rounds,index) <-RecruitmentSelectionRound.find.orderBy("id").where.eq("recruitmentApplicant",editApplicant).findList.zipWithIndex){
+					                    		<tr><butto class="hidden"  id="round@rounds.id" value="@editApplicant.applicationId"></button>
+					                    			<td>@{index+1}</td>
+					                    			<td>@rounds.conductDate.format("dd-MM-yyyy hh:mm a")</td>
+					                    			<td>@rounds.recruitmentInterviewType.interviewTypeName</td>
+					                    			<td>@rounds.interviewVenue</td>
+					                    			<!-- <td><div class="col-md-2">
+					            	       	        <button type="button" id="viewQuestionTemplate" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+					            	               </div> </td> -->
+					                    			<td>@if(rounds.interviewer != null){
+					                    				@for(interviewer<-rounds.interviewer){
+					                    				@interviewer.interviewer.getFullName <br>
+					                    				}
+					                    				}</td>
+					                    			
+					                    			<!-- <td>@rounds</td> -->
+					                    			<td>
+					                    			@for(interviewerFeedback<-rounds.recruitmentInterviewerFeedbacks){
+					                    				@interviewerFeedback.interviewerAppUser.interviewer.getFullName : @interviewerFeedback.feedBack (@interviewerFeedback.remark)<br>
+					                    				}</td>
+					                    			<td>@rounds.selectionStatus</td>
+					                    			<td>@rounds.selectionResult</td>
+					                    			<td>@rounds.remark</td>
+					                    			
+					                    			<td>
+					                    				<button class="btn btn-primary btn-sm btn-raised marginAll0px" id="editRoundPopup" onclick="editInterviewRound(@rounds.id)"><i class="fa fa-edit" ></i></button>
+						                    			<button class="btn btn-warning btn-sm btn-raised  taskdelbtn deleteSelectionRound marginAll0px" url1= "/selectionRoundDelete/@rounds.id" 
+						                    						data-id="deleteSelectionRound" id ="deleteSelectionRound" userName="@rounds.recruitmentInterviewType.interviewTypeName" ><i class="fa fa-trash"></i></button>
+								                   		@if((rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.Scheduled) && rounds.sendMailApplicantFlag.equals(false))
+								                   			|| (rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.ReScheduled) && rounds.sendMailInterviewerFlag.equals(false))){
+								                   			@*<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px" id="dumpLink" value="@rounds.id"><i class="fa fa-eye" aria-hidden="true"></i></button>*@
+								                   			<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px sendMailCalendar@rounds.id" value="@rounds.id" id="sendMailCalendar">
+								                   				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+								                   			</button>
+								                   		} else {
+								                   			@if((rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.Scheduled) && rounds.sendMailApplicantFlag.equals(true))
+								                   			|| (rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.ReScheduled) && rounds.sendMailInterviewerFlag.equals(true))){
+								                   			@*<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px" id="dumpLink" value="@rounds.id"><i class="fa fa-eye" aria-hidden="true"></i></button>*@
+								                   			<button type="button" class="btn btn-danger btn-sm btn-raised marginAll0px sendMailCalendar@rounds.id" value="@rounds.id" id="sendMailCalendar">
+								                   				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+								                   			</button>
+								                   		} 
+								                   		}
+								                   		@if(rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.Cancelled) && rounds.sendNotificationFlag.equals(false)){
+								                   			<button type="button" class="btn btn-success btn-sm btn-raised marginAll0px sendMailCalendarCancelled@rounds.id" value="@rounds.id" id="sendMailCalendarCancelled">
+								                   				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+								                   			</button>
+								                   		}else {
+								                   			@if(rounds.selectionStatus.equals(models.recruitment.SelectionRoundStatus.Cancelled) && rounds.sendNotificationFlag.equals(true)){
+									                   			<button type="button" class="btn btn-danger btn-sm btn-raised marginAll0px sendMailCalendarCancelled@rounds.id" value="@rounds.id" id="sendMailCalendarCancelled">
+									                   				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+									                   			</button>
+									                   		}
+								                   		}
+								                   </td>
+					                    		</tr>
+					                    	}
+					                    </tbody>
+					                  </table>
+				               		</div> 
+				               		</div>  
+				               		</div>
+	            			}
+	             
+                   	</div>
+	            </div>
+	          }  
+	            @* ************* Right Side Code : Add Apllicant *********<i class="fa fa-calendar" aria-hidden="true"></i>******** *@
+	           
+	            @if(applicant == null && flag.equals(true)){
+	           		<form action="/recruitment/addApplicant" method ="post" enctype="multipart/form-data" id="addApplicantForm">
+	            	<div class="">
+	            		<div class="col-md-12 rightPanel">
+	        	    			<div class="row">
+		                  			<h4 class="text-center font-weight-400 recruit-side-heading"> New Applicant</h4>
+		                  		</div>
+		                  		<div class="col-md-8 col-md-offset-4">
+		                  			<div class="col-md-2"> 
+		                           		<div class="form-group is-empty">
+		                                 	<label for="inputEmail" class="control-label">Name<span class="asterisk"> * </span></label>
+		                                 		<input type="text" class="form-control" name="applicantName" required="required">
+		                            	</div> 
+		                  			</div>
+			                  		<div class="col-md-2"> 
+			                        	<div class="form-group is-empty">
+			                            	<label for="inputEmail" class="control-label">Contact No.<span class="asterisk"> * </span></label>
+			                                	<input type="tel" name="contactNo" class="form-control" pattern="^[0-9]*$"  minlength="10" maxlength="15"  id="inputEmail" title="please enter a 10 digit number " required>
+			                            </div> 
+			                  		</div>
+			                  		<div class="col-md-2"> 
+		                           		<div class="form-group is-empty">
+		                                 	<label for="inputEmail" class="control-label">Email ID<span class="asterisk"> * </span></label>
+		                        	         <input type="email" class="form-control" name="emailId" required="required">
+		                          		</div> 
+			                  		</div>
+		                  		</div>
+		                  		<div class="col-md-8 col-md-offset-4">
+		                  			<div class="col-md-2"> 
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">DOB</label>
+		                                 <div id="sandbox-container">
+	                                           <input type="text" name="dateOfBirth" class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+	                                     </div>
+		                           </div> 
+			                  	</div>
+			                  	<div class="col-md-2">
+		                        	<div class="form-group is-empty">
+		                            	<label for="inputEmail" class="control-label">Source</label>
+		                                	<select name="sourceid" id="source" class="form-control text-left" >
+		                               			<option value="">Select</option>
+		                               				@for(source<-sources){
+		                             					<option value="@source.id">@source.sourceName</option>
+		                             				}
+		                           			</select>
+		                          	</div> 
+			                  	</div>
+			                  	<div class="col-md-2 hidden" id="referedBy">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Referred By</label>
+		                                   <select name="referedById" class="form-control text-left" >
+		                                 		<option value="">Select</option>
+		                                			@for(appUser<-appUsers){
+		                               					<option value="@appUser.id">@appUser.getFullName</option>
+		                               				}
+		                            		</select>
+		                            </div> 
+			                  	</div>
+			                  	<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Category Applied For</label>
+		                                   <select name="applicantCategoryid" class="form-control text-left">
+		                                 		<option value="">Select</option>
+		                                 			@for(category<-jobCategories){
+		                               					<option value="@category.id">@category.jobCategoryName</option>
+		                               				}
+		                             	  </select>
+		                            </div> 
+			                  	</div>
+		                  		</div>
+		                  		<div class="col-md-8 col-md-offset-4">
+		                  			<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Role Applied For</label>
+		                                   <select name="jobRoleid" class="form-control text-left" >
+		                                 		<option value="">Select</option>
+		                                  			@for(role<-jobRoles){
+		                               				<option value="@role.id">@role.jobRoleName</option>
+		                               				}
+		                             		</select>
+		                            </div> 
+			                  	</div>
+				                <div class="col-md-2">
+			                    	<div class="form-group is-empty">
+			                        	<label for="inputEmail" class="control-label">Preferred Location</label>
+			                            	<select name="preferLocation" class="form-control text-left">
+			                                	<option value="">Select</option>
+			                                	@for(location <- models.recruitment.JobLocation.values()) { 
+			                                        <option value="@location">@location</option>
+					                           	}
+			                             	</select>
+			                         </div> 
+				                </div>
+			                  	<div class="col-md-2">
+			                    	<div class="form-group is-empty">
+			                        	<label for="inputEmail" class="control-label">Current Location</label>
+			                            	<input type="text" name="currentLocation" class="form-control" />
+			                         </div> 
+				                </div>
+		                  		</div>
+		                  		<div class="col-md-8 col-md-offset-4">
+		                  			<div class="col-md-2">
+			                    	<div class="form-group is-empty">
+			                        	<label for="inputEmail" class="control-label">Current Company</label>
+			                            	<input type="text" name="currentCompany"  class="form-control" />
+			                         </div> 
+				                </div>
+			                  	<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Relevant Experience</label>
+		                        	         <input type="text" name="exprience" min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+		                           </div> 
+			                  	</div>
+			                   	<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Notice period (days)</label>
+		                        	          <input type="text" name="NoticePeriod" min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+		                           </div> 
+			                  	</div>
+		                  		</div>
+		                  		<div class="col-md-8 col-md-offset-4">
+		                  			<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Current CTC (INR lacs)</label>
+		                                  <input type="text" name="CurrentCTC" min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+		                           </div> 
+			                  	</div>
+			                   	<div class="col-md-2">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">Expected CTC (INR lacs)</label>
+		                          	        <input type="text" name="ExpectedCTC" min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+		                           </div> 
+			                  	</div>
+			                  	<div class="col-md-3">
+		                           <div class="form-group is-empty">
+		                                 <label for="inputEmail" class="control-label">JOB ID</label>
+		                                     <select name="jobid" class="chosen form-control text-left" >
+		                                 		<option value="">Select</option>
+		                                  		@for(job<-jobs){
+		                               				<option value="@job.jobId">@job.jobId ( @job.recruitmentCategory.jobCategoryName - @job.recruitmentRole.jobRoleName )</option>
+		                               			}
+		                             		</select>
+		                           </div> 
+			                  	</div>
+		                  		</div>
+	                  		<div class="col-md-2 col-md-offset-5">
+		                   	<div class="row">
+	                           <div class="form-group is-empty">
+	                                 <label for="inputEmail" class="control-label">Applicant Status</label>
+	                                     <select name="status" class="form-control text-left" required="required">
+	                                     	@for(applicantStatus <- models.recruitment.ApplicantStatus.values()) { 
+		                                        <option value="@applicantStatus">@applicantStatus</option>
+				                           	}
+	                             		</select>
+	                           </div> 
+		                  	</div>
+		                  		<div class="row">
+                            	<div class="form-group is-empty">
+                                  	<label>Remarks</label>   
+                                	<textarea class="form-control" name="applicantRemark" rows="5" id="textArea"></textarea>
+                                </div>	 
+                            </div>
+		            		<div class="row">
+		            			<span style="color: red">Note : Upload .Pdf .doc .docx format files only</span>
+		            	 		<div id="img_text" ></div>
+		            	     		<div class="file-input-wrapper text-center">
+					              		<button class="btn-file-input">Upload Resume </button> 
+					              		<input type="file" name="resume" id="image" value="" accept=".doc,.docx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />      
+					         		</div>
+		          			</div>  
+		          			<div class="row">
+		          				<div class="text-center">
+		          					<input type="submit" value="Submit" class="btn btn-primary btn-raised btn-sm"/>
+		          				</div>
+		          			</div>  
+       					</div>
+        				</div>
+        				</div>
+        			</form>
+        		}else{ 
+        			@if(applicant != null && flag.equals(true)){
+        		@* ************* Right Side Code : Update Apllicant ***************** *@
+        		
+        			<form action="/recruitment/editApplicant" method ="post" enctype="multipart/form-data" id="editApplicantForm">
+	            	<div class="">
+	            		<div class="col-md-12 ">
+	            			<div class="row">
+		                  		<h4 class="text-center font-weight-400 recruit-side-heading" > Update Applicant</h4>
+	                  		</div>
+	                  			<input type="hidden" value="@applicant.id" name="id" id="applicantId">
+	        	        		<input type="hidden" value="@applicant.applicationId" name="applicationId">
+		                  		<div class="well well-sm text-center">Applicant ID - <span class="fontweight-500">@applicant.applicationId</span></div>
+	                  		<div class="col-md-8 col-md-offset-4">
+	                  			<div class="col-md-2"> 
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Name<span class="asterisk"> * </span></label>
+	                                 	<input type="text" class="form-control" value="@applicant.applicantName" name="applicantName">
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2"> 
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Contact No.<span class="asterisk"> * </span></label>
+	                                 	<input type="tel" name="contactNo" value="@applicant.contactNo" class="form-control" pattern="^[0-9]*$"  minlength="10" maxlength="15"  id="inputEmail" title="please enter a 10 digit number " required>
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2"> 
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Email ID<span class="asterisk"> * </span></label>
+	                                 	<input type="email" class="form-control" value="@applicant.emailId" name="emailId" required="required">
+	                            	</div> 
+		                  		</div>
+	                  		</div>
+	                  		<div class="col-md-8 col-md-offset-4">
+	                  			<div class="col-md-2"> 
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">DOB</label>
+	                                 	<div id="sandbox-container">
+	                                  		@if(applicant.dob!=null){
+                                           		<input type="text" name="dateOfBirth" value="@applicant.dob.format("dd-MM-yyyy")" class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+                                      		 }else{
+                                       			<input type="text" name="dateOfBirth"  class="form-control mydate1" placeholder="DD-MM-YYYY"  readonly>
+                                       		}
+                                       	</div>
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2">
+	                         		<div class="form-group is-empty">
+	                               		<label for="inputEmail" class="control-label">Source</label>
+	                                 		<select name="sourceid" id="source" class="form-control text-left" >
+	                               				<option value="">Select</option>
+	                               				@for(source<-sources){
+	                               	      			@if(applicant.recruitmentSource==source){
+	                             						<option value="@source.id" selected="selected">@source.sourceName</option>
+	                             					}else{
+	                             						<option value="@source.id">@source.sourceName</option>
+	                             					}
+	                             				}
+	                           				</select>
+	                          		</div> 
+		                  		</div>
+		                  		<div class="col-md-2 hidden" id="referedBy">
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Refered By</label>
+	                                   	<select name="referedById" class="form-control text-left" >
+	                                 		<option value="">Select</option>
+	                                 		@for(appUser<-appUsers){
+	                                 	 		@if(applicant.referedBy==appUser){
+	                               					<option value="@appUser.id" selected="selected">@appUser.getFullName</option>
+	                               				}else{
+	                               					<option value="@appUser.id">@appUser.getFullName</option>
+	                               				}
+	                               			}
+	                             		</select> 
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2">
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Category Applied For</label>
+	                                   	<select name="applicantCategoryid" class="form-control text-left" >
+	                                 		<option value="">Select</option>
+	                                 		@for(category<-jobCategories){
+	                                 	    	@if(applicant.applicantCategory==category){
+	                               					<option value="@category.id" selected="selected">@category.jobCategoryName</option>
+	                               				}else{
+	                               				<option value="@category.id">@category.jobCategoryName</option>
+	                               				}
+	                               			}
+	                             		</select>
+	                            	</div> 
+		                  		</div>
+	                  		</div>
+	                  		<div class="col-md-8 col-md-offset-4">
+	                  			<div class="col-md-2">
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Role Applied For</label>
+	                                   	<select name="jobRoleid" class="form-control text-left" >
+	                                 		<option value="">Select</option>
+	                                 			@for(role<-jobRoles){
+	                                  				@if(applicant.recruitmentRole==role){
+	                               						<option value="@role.id" selected="selected">@role.jobRoleName</option>
+	                               					}else{
+	                               						<option value="@role.id">@role.jobRoleName</option>
+	                               					}
+	                               				}
+	                             		</select>
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2">
+	                           		<div class="form-group is-empty">
+	                                 	<label for="inputEmail" class="control-label">Preferred Location</label>
+	                                   	<select name="preferLocation" class="form-control text-left">
+	                                 		<option value="">Select</option>
+	                                 			@for(location <- models.recruitment.JobLocation.values()) { 
+			                                        @if(applicant.preferedLocation==models.recruitment.JobLocation.Hyderabad){
+	                               						<option value="@location" selected="selected">@location</option>
+	                               					}else{
+	                               						<option value="@location" >@location</option>
+	                               					}
+					                           	}
+	                             		</select>
+	                            	</div> 
+		                  		</div>
+		                  		<div class="col-md-2">
+			                    	<div class="form-group is-empty">
+			                        	<label for="inputEmail" class="control-label">Current Location</label>
+			                            	<input type="text" name="currentLocation" class="form-control" value="@applicant.currentLocation"/>
+			                         </div> 
+				                </div>
+	                  		</div>
+	                  		<div class="col-md-8 col-md-offset-4">
+	                  			<div class="col-md-2">
+			                    	<div class="form-group is-empty">
+			                        	<label for="inputEmail" class="control-label">Current Company</label>
+			                            	<input type="text" name="currentCompany"  class="form-control" value="@applicant.currentCompany"/>
+			                         </div> 
+				                </div>
+				                  <div class="col-md-2">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">Relevent Experience</label>
+			                                  <input type="text" value="@applicant.exprience" name="exprience"  min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+			                            </div> 
+				                  </div>
+				                  <div class="col-md-2">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">Notice period (days)</label>
+			                                  <input type="text" value="@applicant.NoticePeriod" name="NoticePeriod"  min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+			                            </div> 
+				                  </div>
+	                  		</div>
+	                  		<div class="col-md-8 col-md-offset-4">
+	                  			<div class="col-md-2">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">Current CTC (INR lacs)</label>
+			                                  <input type="text" value="@applicant.CurrentCTC" name="CurrentCTC"  min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+			                            </div> 
+				                  </div>
+				                  <div class="col-md-2">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">Expected CTC (INR lacs)</label>
+			                                  <input type="text" value="@applicant.ExpectedCTC" name="ExpectedCTC" min="0"  pattern="^\d*(\.\d{1,2})?$" title="This should be a number with up to 2 decimal places."  class="form-control" />
+			                            </div> 
+				                  </div>
+				                  <div class="col-md-3">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">JOB ID</label>
+			                                 <select name="jobid" class="chosen form-control text-left">
+			                                 	<option value="">Select</option>
+			                                  	@for(job<-jobs){
+			                                  	    @if(applicant.recruitmentJob!=null&&applicant.recruitmentJob.jobId!=null&&applicant.recruitmentJob.jobId==job.jobId){
+			                               			<option value="@job.jobId" selected="selected">@job.jobId ( @job.recruitmentCategory.jobCategoryName - @job.recruitmentRole.jobRoleName )</option>
+			                               			}else{
+			                               			<option value="@job.jobId">@job.jobId ( @job.recruitmentCategory.jobCategoryName - @job.recruitmentRole.jobRoleName )</option>
+			                               			}
+			                               		}
+			                             	</select>
+			                            </div> 
+				                  </div>
+	                  		</div>
+	        	    		<div class="col-md-2 col-md-offset-5" >
+				                   <div class="row">
+			                           <div class="form-group is-empty">
+			                                 <label for="inputEmail" class="control-label">Applicant Status</label>
+			                                     <select name="status" class="form-control text-left" required="required">
+			                                     	@for(applicantStatus<- models.recruitment.ApplicantStatus.values()) { 
+			                                        	@if(applicantStatus == applicant.status){
+			                               					<option value="@applicantStatus" selected="selected" >@applicantStatus</option>
+			                               				}else{
+			                               					<option value="@applicantStatus" >@applicantStatus</option>
+			                               				}
+					                           		}
+			                             		</select>
+			                            </div> 
+				                  </div>
+				                  <div class="row">
+	                            	<div class="form-group is-empty">
+	                                  	<label>Remarks</label>   
+	                                	<textarea class="form-control" name="applicantRemark" rows="5" id="textArea">@applicant.applicantRemark</textarea>
+	                                </div>	 
+	                            </div>
+				            	<div class="row" >
+				            		@if(applicant.fileName!=null){
+				            	    	<div class="row" id="fileName">
+				            	     		<div class="col-md-8 padding-left0"> 
+				            	      			<div id="img_text_update">@applicant.fileName</div>
+				            	      		</div>
+				            	      		<div class="col-md-2">	
+				            	      			<button type="button">
+				            	      				<a href="/downloadApplicantResume/@applicant.id"><i class="fa fa-download" aria-hidden="true"></i></a>
+				            	      			</button>
+				            	      		</div>
+				            	      		<div class="col-md-2">
+				            	      			@if(models.recruitment.RecruitmentApplicant.getFileType(applicant.id)) {	
+				            	      				<button type="button" id="viewResume"><i class="fa fa-eye" aria-hidden="true"></i></button>
+				            	      			}
+				            	      		</div>
+				            	  		</div> 
+		            	  			}
+		            	  			<span style="color: red">Note : Upload .Pdf .doc .docx format files only</span>
+		            	   			<div id="img_text" ></div>
+		            	     		<div class="file-input-wrapper text-center">
+					              		<button class="btn-file-input">Upload Resume</button>
+					              		<input type="file" name="resume" id="image" value="" accept=".doc,.docx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>      
+					         		</div>
+		          				</div>  
+		          				<div class="row">
+		          					<div class="text-center">
+		          						<input type="submit" value="Update" class="btn btn-primary btn-raised btn-sm"/>
+		          					</div>
+		          				</div>  
+        					</div>
+        				</div>
+        				</div>
+        			</form>
+        			}
+        		} 
+    		</div>  
+    	</div></div>
+    	@* ************* Model Class ***************** *@
+    	
+    <div id="modalConfirmYesNo" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">View Resume</h3>
+	            </div>
+	            <div class="modal-body">
+	            @if(applicant !=  null){
+	               <iframe src="/getResume/@applicant.id" style="width:100%;min-height:600px;" frameborder="0"></iframe>
+	               }
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>*@
+	                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>  
+	
+	<div id="modalConfirmYesNo1" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">View Question Template</h3>
+	            </div>
+	            <div class="modal-body">
+	            @if(editApplicant !=  null){
+	              <div id="setUrl"></div>
+	               }
+	            </div>
+	            <div class="modal-footer">
+	               @* <button id="btnYesConfirmYesNo" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>*@
+	                <button id="btnNoConfirmYesNo" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	<div id="modalConfirmYesNo4" class="modal fade">
+	    <div class="modal-dialog ">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title text-center">select Interviewer</h3>
+	            </div>
+	            <form class="form-horizontal" id="addInterviewerForm" action="/recruitment/addInterviewer" method="post">
+		            <div class="modal-body">
+			            @if(editApplicant!=null){
+			             	<input type="hidden" value="@editApplicant.id" name="applicantId">
+			             }
+			             <div class="row">
+				             	<div class="col-md-12">
+			                           <div class="form-group is-empty">
+		                                   <label for="inputEmail" class="control-label">AppUser List</label>
+		                                   <select name="ids[]" id="addInterviewerSelect" multiple="multiple" class=" chosen form-control text-left" required="required" >
+		                               			 @for(appUser<-AppUser.find.where.eq("status",UserProjectStatus.Active).findList){
+		                               			 	  @if(!InterviewerAppUser.getAppUserListThoseAreInterviewer.contains(appUser)){
+		                               					<option value="@appUser.id">@appUser.getFullName</option>
+		                               					}
+		                               			}
+		                             		</select>
+			                           </div> 
+			                           <div class="text-center"><br />
+							            	<button type="button" class="btn btn-primary btn-sm btn-raised marginAll0px" id="addInterviewerSubmit" >Add</button>
+							           </div> 
+			                  	</div>
+		                  </div>
+			        </div>
+	            </form>
+	        </div>
+	    </div>
+	</div>
+	
+	<div id="modalConfirmYesNo3" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title">Delete Confirmation</h3>
+	            </div>
+	            <div class="modal-body">
+	                <h5 id="lblMsgConfirmYesNo3"></h5>
+	            </div>
+	            <div class="modal-footer">
+	                <button id="btnYesConfirmYesNo3" type="button" class="btn btn-success btn-sm btn-raised btnYesConfirmYesNo3">Yes</button>
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>  
+	
+	<div id="loading-spinner" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-body">
+	            	<center>
+	            	<img src="/assets/images/loaderimage.gif" width="30">
+	            	Please wait while we are sending email ...
+	            	</center>
+	            	 
+	            </div>
+	        </div>
+	    </div>
+	</div>  
+	<div id="previewMailContent" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title" align="center">Preview Mail Content</h3>
+	            </div>
+	            <form action="/recruitment/sendMailCalendarApplicant" method ="post" enctype="multipart/form-data" id="previewMailContentSend">
+		            <div class="modal-body" style="width:100%;min-height:600px;">
+		            	<div class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail" class="control-label">Subject<span class="asterisk"> * </span></label>
+	                        </div> 
+	                        <div class="col-md-10 text-right form-group">
+	                        	<input class="form-control" type="tel" name="SubjectName" class="form-control" id="SubjectName"  required>
+	                        </div>
+	                	</div>
+	                	@*<div  class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail"  class="control-label">To <span class="asterisk"> * </span></label>
+	                        </div> 
+	                        <div   class="col-md-10 text-left form-group">
+	                        	 <select name="toMailingList[]" multiple="multiple"  class=" chosen form-control text-left" required="required">
+                                        @for(to <- models.recruitment.MailingList.find.all()) { 
+                                      			<option value="@to.appUser.getEmail()" selected="selected">@to.appUser.getEmail()</option>
+                                         }
+                                  </select>
+	                        </div>
+	                	</div>*@
+	                	<div class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail" class="control-label">Body<span class="asterisk"> * </span></label>
+	                        </div>
+	                        <div class="col-md-10 text-right form-group">
+	                        	<textarea class="form-control bodyName" name="BodyName"  id="BodyName" required="required"></textarea>
+	                        </div> 
+	                	</div>
+		            </div>
+	            </form>
+	            <div class="modal-footer">
+	                <button id="previewMailContentSubmit" type="button" class="btn btn-success btn-sm btn-raised">Send</button>
+	                <button id="" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Cancel</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>	
+	<div id="previewIntroMailContent" class="modal fade">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	                <h3 id="lblTitleConfirmYesNo" class="modal-title" align="center">Preview Intro Mail Content</h3>
+	            </div>
+	            <form action="/recruitment/sendMailApplicant" method ="post" enctype="multipart/form-data" id="previewIntroMailContentSend">
+		            <div class="modal-body" style="width:100%;min-height:600px;">
+		            	<div class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail" class="control-label">Subject<span class="asterisk"> * </span></label>
+	                        </div> 
+	                        <div class="col-md-10 text-right form-group">
+	                        	<input class="form-control" type="tel" name="SubjectName" class="form-control" id="IntroSubjectName"  required>
+	                        </div>
+	                	</div>
+	                	@*<div  class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail"  class="control-label">To <span class="asterisk"> * </span></label>
+	                        </div> 
+	                        <div  class="col-md-10 text-left form-group">
+	                        	 <select name="toMailingList[]" multiple="multiple"  class=" chosen form-control text-left" required="required">
+                                        @for(to <- models.recruitment.MailingList.find.all()) { 
+                                      			<option value="@to.appUser.getEmail()" selected="selected">@to.appUser.getEmail()</option>
+                                         }
+                                  </select>
+	                        </div>
+	                	</div>*@
+	                	<div class="col-md-12"> 
+	                     	<div class="col-md-2">
+	                         	<label for="inputEmail" class="control-label">Body<span class="asterisk"> * </span></label>
+	                        </div>
+	                        <div class="col-md-10 text-right form-group">
+	                        	<textarea class="form-control bodyName" name="BodyName"  id="IntroBodyName" required="required"></textarea>
+	                        </div> 
+	                	</div>
+		            </div>
+	            </form>
+	            <div class="modal-footer">
+	                <button id="previewIntroMailContentSubmit" type="button" class="btn btn-success btn-sm btn-raised">Send</button>
+	                <button id="" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Cancel</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>	
+			<div id="modalConfirmRoundCancelled" class="modal fade">
+			    <div class="modal-dialog">
+			        <div class="modal-content">
+			            <div class="modal-header">
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			                <h3 id="lblTitleConfirmRoundCancelled" class="modal-title">Send Notification Round Cancelled Confirmation</h3>
+			            </div>
+			            <div class="modal-body">
+			                <h5 id="lblMsgConfirmRoundCancelled"></h5>
+			            </div>
+			            <div class="modal-footer">
+			                <button id="btnYesConfirmRoundCancelled" type="button" class="btn btn-success btn-sm btn-raised">Yes</button>
+			                <button id="btnNoConfirmRoundCancelled" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">No</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>			              
+</section>
+
+} @footer(""){
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+<script>
+$('.chosen').chosen();
+
+@*$('.mail-sucess').addClass('hidden')*@
+$('#datewisePicker').datetimepicker({format: 'DD-MM-YYYY hh:mm A'});
+$('#addInterviewer').click(function(e){
+	$('#modalConfirmYesNo4').modal('show');
+});
+
+$(document).on('click', '#sendMailCalendar', function() {
+		var id=$(this).attr('value');
+		var rid=$('#round'+id).attr('value');
+		var sid = 'sendMailCalendar'+id;
+		$.get('/recruitment/previewMailContent/' + id, function(data) {
+			$.each(data,function(index,value){
+		 		if (index == "Subject") {
+    				$('#SubjectName').val(value);
+				}else{
+					$('#BodyName').text(value);
+				}
+		 	});
+	    });
+	 $('#previewMailContent').modal('show');
+	 $('#previewMailContentSubmit').click(function(e){
+	 		$('#previewMailContent').modal('hide');
+		 	$('#loading-spinner').modal({backdrop:'static',keyboard:false, show:true});
+				$.post('/recruitment/sendMailCalendarApplicant/'+id,$('#previewMailContentSend').serialize(), function(data) {
+			      $('.mail-sucess').removeClass('hidden')
+			      if(data == 'Intro Mail successfully sent to Applicant '+rid){
+			      	$('.'+sid).removeClass('btn-success');
+			      	$('.'+sid).addClass('btn-danger');
+			      }
+			      $('.mail-sucess span').text(data)
+			      $('#loading-spinner').modal('hide');
+			    });
+	 });
+});
+
+$(document).on('click', '#sendIntroMail', function() {
+		var id=$(this).attr('value');
+		var aid=$('#app'+id).text();
+		var sid = 'sendIntroMail'+id;
+		$.get('/recruitment/previewIntroMailContent/' + id, function(data) {
+			$.each(data,function(index,value){
+		 		if (index == "Subject") {
+    				$('#IntroSubjectName').val(value);
+				}else{
+					$('#IntroBodyName').text(value);
+				}
+		 	});
+	    });
+	 $('#previewIntroMailContent').modal('show');
+	 $('#previewIntroMailContentSubmit').click(function(e){
+	 		$('#previewIntroMailContent').modal('hide');
+		 	$('#loading-spinner').modal({backdrop:'static',keyboard:false, show:true});
+				$.post('/recruitment/sendMailApplicant/'+id,$('#previewIntroMailContentSend').serialize(), function(data) {
+			      $('.mail-sucess').removeClass('hidden')
+			      if(data != 'Event Notification Not Successfully Send'){
+			      	$('.'+sid).removeClass('btn-success');
+			      	$('.'+sid).addClass('btn-danger');
+			      }
+			      $('.mail-sucess span').text(data)
+			      $('#loading-spinner').modal('hide');
+			    });
+	 });
+	  
+});
+
+$(document).on('click', '#sendMailCalendarCancelled', function() {
+		var id=$(this).attr('value');
+		var rid=$('#round'+id).attr('value');
+		var sid = 'sendMailCalendar'+id;
+	 $('#modalConfirmRoundCancelled').modal('show');
+	 $('#btnYesConfirmRoundCancelled').click(function(e){
+	 		$('#modalConfirmRoundCancelled').modal('hide');
+		 	$('#loading-spinner').modal({backdrop:'static',keyboard:false, show:true});
+				$.post('/recruitment/sendNotificationEventCancelled/'+id, function(data) {
+			      $('.mail-sucess').removeClass('hidden')
+			      if(data == 'Successfully send Notification Event Cancelled to Applicant '+rid){
+			      	$('.'+sid).removeClass('btn-success');
+			      	$('.'+sid).addClass('btn-danger');
+			      }
+			      $('.mail-sucess span').text(data)
+			      $('#loading-spinner').modal('hide');
+			    });
+			 //   alert("not complete functionality");
+	 });
+});
+
+$('#addInterviewerSubmit').click(function(e){
+	$.post('/recruitment/addInterviewer', $('#addInterviewerForm').serialize()).done(function(data){
+	     jQuery('#btnNoConfirmYesNo4').click();
+	     location.reload();
+	    });
+});
+$(document).on('change', '#selectionRoundStatus', function() {
+	//alert($("#source").text())
+	if($("#selectionRoundStatus option:selected").text()=='@SelectionRoundStatus.Completed')
+	{
+		$("#interviewSelectionResultId").removeClass("hidden");
+	}
+	else{
+		$("#interviewSelectionResultId").addClass("hidden");
+	}
+});
+$('.chosen').chosen();
+ function editInterviewRound(id){ 
+	  $.get('/editRecruitmentSelectionRound/' + id, function(data) {
+		  $("#addRoundsForm").addClass('hidden');
+		  $("#updateRoundForm").removeClass('hidden');
+	        $("#updateRoundForm").html(data);
+	    });
+}
+$('.deleteSelectionRound').click(function(e) {
+    var name = $(this).attr('userName');
+    var url = $(this).attr('url1');
+    $('#lblMsgConfirmYesNo3').html("Are you sure, you want to delete Selection Round : " + name);
+    $('#modalConfirmYesNo3').modal('show');
+    $(document).on('click', '#btnYesConfirmYesNo3', function(e) {
+        window.location.href = url;
+    });
+});
+$('#viewResume').click(function(e){
+	$('#modalConfirmYesNo').modal('show');
+});
+function getQuestionTemplate(id){
+	 $("#setUrl").html("<iframe src=/recruitment/getQuestionTemplate/"+id+" frameborder='0' style='width:100%;min-height:600px;' ></iframe>")
+	 $('#modalConfirmYesNo1').modal('show');
+}
+$(document).on('click', '#addRoundsButton', function() {
+	$("#updateRoundForm").addClass('hidden');
+	$("#addRoundsForm").removeClass('hidden');
+	
+});
+/*$(document).on('click', '#addRoundsButton', function() {
+	$("#modalConfirmYesNo5").modal('show');
+});*/
+
+$(document).on('click', '#addRounds', function() {
+	var id=$(this).attr('value');
+	window.location.href = "/recruitment/applicants/addRounds/"+id;
+});
+$(document).on('click', '#addNewApplicant', function() {
+	var url=$(this).attr('url');
+	window.location.href = url
+});
+$(document).on('change', '#source', function() {
+	//alert($("#source option:selected").text())
+	if($("#source option:selected").text()=="Employee Referral")
+	{
+		$("#referedBy").removeClass("hidden");
+	}
+	else{
+		$("#referedBy").addClass("hidden");
+	}
+});
+	$(document).ready(function() {
+        $("#addNewRoundForm").hide(); 
+		$("#addNewRound").click(function(){ 
+	        $("#addNewRoundForm").slideToggle("slow");  
+	    });
+		
+		$("#dtable2").DataTable({
+			"order": [ 0, 'desc' ],
+			"aLengthMenu": [10, 25, 50,100,150,200,250,300 ],
+   		    "iDisplayLength": 100
+		 })
+		 
+	 
+		 $('.mydate1').datepicker({
+			 format: 'dd-mm-yyyy',
+		     autoclose: true
+		 })
+		 $("#dtable2 tbody tr").click(function(){
+			 var res = $(this).closest("tr").html()
+			 
+			  $(this).addClass("activeme")
+			$("tr").not(this).removeClass("activeme")
+		 });
+	});
+	(function($){       
+        $('input[type="file"]').bind('change',function(){  
+            $("#fileName").addClass("hidden");         
+            $("#img_text").html($('input[type="file"]').val());
+        });
+    })(jQuery)
+    
+   
+	  $('#addApplicantForm,#editApplicantForm').bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	applicantName: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Enter Name'
+		                }
+		            }
+		        },
+		    	emailId: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Enter Email-Id'
+		                },
+		                remote: {
+		                    	message: 'Email-Id Already Existed',
+		                        type: 'POST',
+		                        url: '/isExistApplicantEmailId',
+		                        data: function(validator) {
+		                            return {
+		                                email: validator.getFieldElements('emailId').val(),
+		                                id: $('#applicantId').val()
+		                            }
+		                        }
+		                }
+		            }
+		        },
+		        contactNo: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Enter Contact No'
+		                },
+		                remote: {
+		                    	message: 'Mobile-No Already Existed',
+		                        type: 'POST',
+		                        url: '/isExistContactNo',
+		                        data: function(validator) {
+		                            return {
+		                            	mobileNo : validator.getFieldElements('contactNo').val(),
+		                            	id: $('#applicantId').val()
+		                            }
+		                        }
+		                }            
+		            }
+		        }/*,
+		        resume: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please upload Resume'
+		                },
+		                remote: {
+		                    	message: 'Upload .Pdf .doc .docx format files only',
+		                        type: 'POST',
+		                        url: '/recruitment/checkResumeFormat',
+		                        data: function(validator) {
+		                            return {
+		                            	mobileNo : validator.getFieldElements('resume').val()
+		                            }
+		                        }
+		                }            
+		            }
+		        }*/
+		      
+		    }
+		});
+		
+ $('#addRoundPostForm').bootstrapValidator({
+		    framework: 'bootstrap',
+		    // This option will not ignore invisible fields which belong to inactive panels
+		    excluded: ':disabled',
+		    fields: {
+		    	interviewType: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose interviewType'
+		                }
+		            }
+		        },
+		        'interviewer[]': {
+            		validators: {
+                		notEmpty: {
+                    		message: 'Please Choose interviewer'
+                		}
+            		}
+        		},
+		        selectionRoundStatus: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose Selection Round Status'
+		                }            
+		            }
+		        },
+		        interviewVenue: {
+		            validators: {
+		                notEmpty: {
+		                    message: 'Please Choose interview Venue'
+		                }            
+		            }
+		        }
+		    }
+		});
+
+	
+
+</script>
+}

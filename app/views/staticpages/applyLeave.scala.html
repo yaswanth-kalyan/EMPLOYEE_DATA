@@ -1,0 +1,123 @@
+@header("",1){  
+
+<section>
+    <form class="form-horizontal" id="#" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/leaveCalender" class="btn">Leave Calendar</a> |
+                    <a href="/leaveTracker" class="btn">Leave Tracker</a> |
+                    <a href="/applyLeave" class="btn text-orange">Apply Leave </a> |
+                    <a href="/configureLeaves" class="btn">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Tracker </h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Available Balance</th>
+	                    			<th></th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    		<tr>
+	                    			<td>Earned</td>
+	                    			<td>8</td>
+	                    			<td><input type="button" class="btn btn-success btn-sm btn-raised" value="Apply" /></td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Leave Without Pay</td>
+	                    			<td>20</td>
+	                    			<td><input type="button" class="btn btn-success btn-sm btn-raised" value="Apply" /></td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Compensatory Off</td>
+	                    			<td>0</td>
+	                    			<td><input type="button" class="btn btn-success btn-sm btn-raised disabled" value="Apply" /></td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Total</td>
+	                    			<td>28</td>
+	                    			<td></td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                
+                 <div class="col-md-12 heading-badge">
+                    	<h3 class="">Apply Leave</h3>
+                </div>
+                <div class="row">
+                	<div class="col-md-6 col-md-offset-3">
+	                    <table class="table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>Leave Type</th>
+	                    			<th>Earned</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    		<tr>
+	                    			<td>From</td>
+	                    			<td>
+	                    				<div class="row">
+	                    					<div class="col-md-6">	
+	                    						<input type="text" name="Date" class="form-control mydate1" required readonly>
+	                    					</div>
+	                    				</div>
+	                    			</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>To Date </td>
+	                    			<td>
+	                    				<div class="row">
+	                    					<div class="col-md-6">	
+	                    						<input type="text" name="Date" class="form-control mydate2" required readonly>
+	                    					</div>
+	                    				</div>		
+	                    			</td>
+	                    		</tr>
+	                    		<tr>
+	                    			<td>Reason</td>
+	                    			<td><textarea class='form-control'></textarea> </td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                   <div class="row">
+                        <div class="col-md-2 col-md-offset-4">
+                            <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                        </div>
+                        <div class="col-md-1">
+                            <button type='clear' class="btn btn-warning btn-raised" >Reset</button>
+                        </div>
+                    </div>
+                
+                
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+$('.mydate1').datepicker({
+    format: 'dd-mm-yyyy',
+    endDate: new Date(),
+    autoclose: true
+})
+$('.mydate2').datepicker({
+	 format: 'dd-mm-yyyy', 
+	 autoclose: true
+});
+</script>
+ }
+ 
+ 

@@ -1,0 +1,66 @@
+@(list1:List[Attendance],from:String,to:String,id:Long) 
+				<div class="col-md-12">
+					<br>
+					@if(!list1.isEmpty){
+					<div class="col-md-12" id="dailyReportweek">
+						<table class="table">
+							  <thead>
+								<tr>
+									<th>S.No.</th>
+									<th>Date</th>
+									<th>Status</th>
+									<th>In Time</th>
+									 <th>Essl In Time</th>
+		                             <th>Out Time</th>
+		                             <th>Essl Out Time</th>
+		                             <th>Hours</th>
+		                             <th>Essl Hours</th>
+		                             <th>Time In Office</th>
+		                             <th>Essl Break Time</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+									@for((attendance,index) <- list1.zipWithIndex) {
+									<tr>
+										<td>@{index+1}</td>
+										<td>@attendance.getDate.format("dd-MM-yyyy")</td>
+										<td>@attendance.getStatus</td>
+										<td>@if(attendance.getInTime!=null){
+										@attendance.getInTime.format("hh:mm a")}</td>
+										<td>@if(attendance.getEsslIntime!=null){
+										@attendance.getEsslIntime.format("hh:mm a")}</td>
+										<td>@if(attendance.getOutTime!=null){
+										@attendance.getOutTime.format("hh:mm a")}</td>
+										<td>@if(attendance.getEsslOuttime!=null){
+										@attendance.getEsslOuttime.format("hh:mm a")}</td>
+										<td>@if(attendance.getSpendTime!=null){
+										@attendance.getSpendTime}
+										</td>	
+		                               <td>@if(attendance.esslSpendtime!=null){
+		                                  @attendance.esslSpendtime}</td>
+                                         <td>@if(attendance.timeInOffice!=null){
+		                                  @attendance.timeInOffice}</td>
+		                                   <td>@if(attendance.esslBreakTime!=null){
+		                                  @attendance.esslBreakTime}</td>
+									</tr>
+									}
+								</tbody>
+						</table>
+					</div>
+					
+					
+				 <div align="center">
+							@*<a href='http://158.85.160.189:8080/jasperserver/flow.html?_flowId=viewReportFlow&standAlone=true&_flowId=viewReportFlow&ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FAverage_Main_Report_Datewise&from=@from&to=@to&id=@id&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>*@
+							<a href='@utils.ConstructReportUrl.urlCommonPart()ParentFolderUri=%2Freports%2FBB8_Reports&reportUnit=%2Freports%2FBB8_Reports%2FAverage_Main_Report_Datewise&from=@from&to=@to&id=@id&output=pdf&j_username=jasperadmin&j_password=jasperadmin' target="_new"><button class="btn btn-raised btn-warning btn-sm"><i class="fa fa-file-pdf-o"  style="font-size:16px"></i>   Generate Report </button></a>
+							
+						</div>
+						
+					}else{
+					<h3 class="text-center">No report this week</h3>
+					}
+				</div>
+			
+	
+
+

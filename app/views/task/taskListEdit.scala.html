@@ -1,0 +1,99 @@
+@(appUsers:List[AppUser],taskLists:List[TaskList])
+@header("Task",8){ 
+<div class="modal fade" id="myModal" role="dialog">
+                      <form class="form-horizontal"  action="@routes.TaskController.addTaskList()" method="post">
+                      <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <div class="row">
+								<div class="col-md-4">
+	                                <div class="pull-left leave-label">  <label>List Name <span class="asterisk"> * </span></label></div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group is-empty">
+										<input type="text" class="form-control modal-name" name="title" required="required" data-bv-field="title">
+								     	<small class="help-block" data-bv-validator="notEmpty" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Please fill title</small><small class="help-block" data-bv-validator="remote" data-bv-for="title" data-bv-result="NOT_VALIDATED" style="display: none;">Task Title Name Already Existed</small><span class="material-input"></span></div>
+								</div>
+							</div>                            
+							<div class="row">
+							<div class="col-md-4">
+								<div class="pull-left">
+									<label class="control-label"> Description</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group is-empty">
+									<textarea class="form-control" name="description" rows="5"></textarea>
+								<span class="material-input"></span></div>
+							</div>
+						</div>
+                            
+                          	<div class="col-md-12">
+										<div class="col-md-4">
+											<div class="pull-left">
+												<label class="control-label"> Add Users</label>
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="form-group is-empty">
+													<div class="col-md-12">
+														<select class="chosen form-control mychosen commondrp" multiple="multiple"  name="assignFromIds[]" id="addUser" autocomplete="off">
+															@for(appUser<-appUsers){
+																<option value="@appUser.getId">@appUser.getFullName</option>
+																}
+															 
+														</select>
+													</div>
+												</div>
+											</div>
+									</div>
+								</div>
+                         <!--  @*	<div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Project</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="form-group is-empty">
+											<div class="col-md-12">
+												<select class="form-control" name="projectId" id="projectId" autocomplete="off">
+													<option value="">Select Project</option>
+												
+														<option value="project.getId">project.getProjectName</option>
+												</select>
+											</div>
+										<span class="material-input"></span></div>
+									</div>
+								</div>
+							</div>
+                          <div class="col-md-12">
+								<div class="col-md-4">
+									<div class="pull-left">
+										<label class="control-label"> Chat Group</label>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="form-group">
+										<div class="col-md-12">
+											<select class="form-control" name="chatGroupId" id="chatGroup">
+												<option value="">Select ChatGroup</option>
+													
+													<option value="chatGroup.id">chatGroup.name</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>*@ -->
+                        </div>
+                          <div class="modal-footer">
+                           <input type="submit"  value="save">
+                            <input type="submit"  value="Close">
+                          </div>
+                        </div>
+                        </form>
+                      </div>
+}                      

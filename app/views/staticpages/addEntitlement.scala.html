@@ -1,0 +1,147 @@
+@header("configureLeaves",7){ 
+<section>
+    <form class="form-horizontal" id="addentitlementform" action=""  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/leaveCalender" class="btn ">Leave Calendar</a> |
+                    <a href="/leaveTracker" class="btn">Leave Tracker</a> |
+                    <a href="/configureLeaves" class="btn text-orange">Configure Leaves</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Add Entitlement </h3>
+                </div>
+                <div class="row paddingbot-30">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                   <div class="pull-left leave-label"> Employee</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control"  name>
+                                    	<option> All</option>
+                                    	<option> Half day</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">Leave Type</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select  class="form-control" >
+                                    	<option> Compensatory day</option>
+                                    	<option> Earned leave</option>
+                                    	<option> leave with out pay</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                   <div class="pull-left leave-label"> Leave Period</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" name="jDate" class="form-control mydate" required readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <div class="pull-left leave-label">Number OF day's</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" min="0" required >
+                                </div>
+                            </div>
+						<br/> 
+                            <br/>
+                             <div class="row">
+                                <div class="col-md-2 col-md-offset-4">
+                                    <input type='submit' value="Submit" class="btn btn-primary btn-raised" />
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="reset" class="btn btn-warning btn-raised" >Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md-12 heading-badge">
+		                    <h3 class="">Entiltlment Record History</h3>
+		                </div>
+                    </div>
+                    <br><br><br>
+                	<div class="text-center">
+                		<br><br><br>
+                	</div>
+                	<div class="col-md-10 col-md-offset-1">
+                	<table class="table table-bordered table-striped entitlement-table" >
+                 		<thead>
+                 			<tr>
+                 				<th>S.No</th>
+                 				<th>Date</th>
+                 				<th>Employee</th>
+                 				<th>Leave Type</th>
+                 				<th>Leave Period</th>
+                 				<th>Days</th>
+                 				<th>Options</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			<tr>
+                 				<td>1</td>
+                 				<td>14-oct-2016</td>
+                 				<td> all</td>
+                 				<td>Leave with out pay</td>
+                 				<td>25-oct-2016</td>
+                 				<td>10</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a>    <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			<tr>
+                 				<td>1</td>
+                 				<td>14-oct-2016</td>
+                 				<td> john</td>
+                 				<td>Leave with out pay</td>
+                 				<td>25-oct-2016</td>
+                 				<td>10</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a>    <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			<tr>
+                 				<td>3</td>
+                 				<td>14-oct-2016</td>
+                 				<td> siva</td>
+                 				<td>Leave with out pay</td>
+                 				<td>25-oct-2016</td>
+                 				<td>10</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a>    <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			<tr>
+                 				<td>4</td>
+                 				<td>14-oct-2016</td>
+                 				<td> rama</td>
+                 				<td>Leave with out pay</td>
+                 				<td>25-oct-2016</td>
+                 				<td>10</td>
+                 				<td align="center"><a href="#"><i class="fa fa-edit"></i></a>    <a href="#"><i class="fa fa-times"></i></a></td>
+                 			</tr>
+                 			
+                 		</tbody>	
+                 	</table>
+                 	</div>
+                 
+                     </div>          
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+	<script>
+		$(".entitlement-table").dataTable();
+		 $('.mydate').datepicker({
+		       format: 'dd-mm-yyyy',
+		       endDate: ' new Date()',
+		       autoclose: true
+		  })
+		  //addentitlementform
+	</script>
+ }

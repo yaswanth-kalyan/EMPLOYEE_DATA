@@ -1,0 +1,81 @@
+@(leadStatus : models.lead.LeadStatus)
+@header("Lead Status",6){ 
+<section>
+    <form class="form-horizontal" id="LeadStatusForm" action="/lead/updateLeadStatus"  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/all-leads" class="btn">Leads</a> |
+                    <a href="/all-companies" class="btn">Companies</a> |
+                    <a href="/all-contacts" class="btn">Contacts</a> |
+                    <a href="/configure-lead" class="btn text-orange">Configure Status</a>
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Add New Status </h3>
+                </div>
+                <div class="row">
+                <div class="col-md-12">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                    <div class="pull-left leave-label">  <label>Status <span class="asterisk"> * </span></label></div>
+                                </div>
+                                <div class="col-md-4">
+                                	 <input type="hidden" name="id" value="@leadStatus.id" id="statusId" required="">
+                                    <input type="text" name="status" value="@leadStatus.status" class="form-control upload" id="inputEmail" required="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-3">
+                                <div class="pull-left leave-label">  <label>Description</label> </div>
+                                </div>
+                                <div class="col-md-4">
+                                	<textarea class="form-control" name="description"  rows="5" id="textArea">@leadStatus.description</textarea>
+                                </div>
+                            </div>
+                           <div class="row">
+                                <div class="col-md-12" >
+                                    <input type="submit" value="Update" class="btn btn-primary btn-raised">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</section>
+
+} @footer(""){
+<script>
+$("#allLeadTable").DataTable(); 
+$('#LeadStatusForm').bootstrapValidator({
+    framework: 'bootstrap',
+    // This option will not ignore invisible fields which belong to inactive panels
+    excluded: ':disabled',
+    fields: {
+    	status: {
+            validators: {
+                notEmpty: {
+                    message: 'Please fill Status'
+                },
+               	remote: {
+                	message: 'Lead Status Name Already Existed',
+                    type: 'POST',
+                    url: '/isExistLeadStatus',
+                    data: function(validator) {
+                        return {
+                        	status: validator.getFieldElements('status').val(),
+                        	id: $('#statusId').val()
+                        }
+                    }
+           		 }
+            }
+        }
+    }
+});
+</script>
+ }
+ 
+ 

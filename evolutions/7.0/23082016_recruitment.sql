@@ -1,0 +1,1 @@
+ALTER TABLE public.recruitment_reference add candidate_email character varying(255);

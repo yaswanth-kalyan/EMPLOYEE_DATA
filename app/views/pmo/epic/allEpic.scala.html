@@ -1,0 +1,43 @@
+@(epicList:List[models.pmo.Epic])
+<div class="row">
+    <div class="col-md-10"> 
+         <table class="table table-bordered" id="dtable2">
+             <thead>
+                 <tr>
+                     <th>S.No</th>
+                     <th>Name</th>
+                     <th>UserStory</th>
+                     <th>Tasks</th>
+                     <th>Test Secnarios</th>
+                     <th>Test Cases</th>
+                     <th>Total Estimate</th>
+                     <th>Total Done</th>
+                     <th>%Done</th>
+                     <th>Action</th>
+                     <th>Tasks</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 @for((epic,index) <- epicList.zipWithIndex){ 
+                  <tr>
+                      <td>@{index+1}</td>
+                      <td><a href="#" onclick="editEpic(@epic.getId())">@epic.name</a></td>
+                      <td><a href="@controllers.pmo.routes.UserStoryController.loadPage(epic.id)">@epic.userStories.size()</a></td>
+                      <td>no data</td>
+                      <td>no data</td>
+                      <td>no data</td>
+                      <td>5</td>
+                      <td> 2 </td>
+                      <td>30%</td>
+                      <td>
+                          <button type="button" onClick="deleteEpic(@epic.getId())" class="btn btn-warning btn-xs btn-raised margin-0" id="delete-epic">Delete </button>
+                      </td>
+                      <td>
+                          <a type="button" href="@controllers.pmo.routes.TaskController.createTask()" class="btn btn-primary btn-xs btn-raised margin-0">Task</a>
+                      </td>    
+                   </tr>
+                  }
+             </tbody>
+         </table> 
+    </div>
+</div>

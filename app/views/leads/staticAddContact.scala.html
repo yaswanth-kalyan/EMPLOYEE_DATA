@@ -1,0 +1,154 @@
+<style>
+.datepicker-dropdown{
+    z-index: 99999 !important;
+}
+</style>
+   <div class="modal fade" id="contact-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" style="margin:0 !important;">New Contact</h4>
+			      </div>
+			      <div class="modal-body">
+			       		 <form class="form-horizontal" id="addContactForm" action="/lead/addCompanyContact"  method="post">
+                <div class="row">
+               		<div class="col-md-12">
+               		 <div class="row">
+                          <div class="col-md-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Name</label> <span class="asterisk"> * </span></div>
+                          </div>
+                          <div class="col-md-6">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="contactName" id="contactName" class="form-control" required="">
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Contact Number</label></div>
+                          </div>
+                          <div class="col-md-9 appendhere">
+                          	<div class="row" >
+								<div class="myContact form-group">
+	                          		<div class="col-md-4">
+	                          			<select class="form-control" name="contactType[]" autocomplete="off">
+	                          				@for(contactType <- models.lead.ContactType.values()) {
+	                          				<option value="@contactType">@contactType </option>
+	                          				}
+	                          			</select>
+	                          		</div>
+	                          		<div class="col-md-2">
+		                          		<input type="tel" name="countryCode[]" class="form-control margin-top-10" placeholder="CCode" maxlength="3">
+	                          		</div>
+	                          		<div class="col-md-4">
+		                          		<input type="tel" name="contactNo[]" class="form-control margin-top-10">
+	                          		</div>
+	                          		<div class="col-md-2 myclose">
+		                          		<input type="button" class="btn btn-primary btn-xs  margin-top-10 btn-raised" id="addCt" value="+" />
+	                          		</div>
+	                          	</div>	
+                          	</div>
+                          </div>
+                      </div><br>
+                      <div class="row">
+                          <div class="col-md-3 ">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Email Id</label></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"> 
+                          		<input type="email" name="emailID" class="form-control">
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Location</label></div>
+                          </div>
+                          <div class="col-md-6">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="location" class="form-control">
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Birthday</label></div>
+                          </div>
+                          <div class="col-md-6">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="dob" class="form-control birthdaydate" placeholder="DD-MM-YYYY" readonly>
+                          	</div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Anniversary</label></div>
+                          </div>
+                          <div class="col-md-6">
+                          	<div class="form-group is-empty"> 
+                          		<input type="text" name="anniversaryDate" class="form-control anniversaryDate" placeholder="DD-MM-YYYY"  readonly>
+                          	</div>
+                          </div>
+                      </div>
+                        <div class="row">
+                          	<div class="col-md-12" align="center">
+                          			<input type="hidden" class="form-control"  name="leadId" value="1" required="required"/>
+	                          	 <button type="submit" id="addConta" class="btn btn-primary btn-raised">Submit</button>
+	                             
+	                       </div>    
+                         </div>  
+                     </div>
+                  </div> 
+    			</form>
+			      </div>
+			      <div class="modal-footer">
+			      @*  <button type="button" class="btn btn-success" onclick="AddContact();">Yes</button>
+			        <button type="button" class="btn btn-warning btn-raised" data-dismiss="modal">Cancle</button> *@
+			      </div>
+			    </div>
+			  </div>
+			</div>
+    
+
+ <script >
+ $('#addContactForm').bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	contactName: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill Contact Name'
+	                },
+	               	remote: {
+	                	message: 'Contact Name Already Existed',
+	                    type: 'POST',
+	                    url: '/isExistContactName',
+	                    data: function(validator) {
+	                        return {
+	                        	contactName: validator.getFieldElements('contactName').val()
+	                        }
+	                    }
+	           		 }
+	            }
+	        },
+	        'contactNo[]': {
+	            validators: {
+	            	regexp: {
+	                    regexp: /^[0-9]+$/i,
+	                    message: 'please enter 10 to 15 numbers'
+	                },
+	                stringLength: {
+                     message: 'please enter 10 to 15 numbers',
+                     max: 15,
+                     min:10
+                 }
+	            }
+	        }
+	    }
+	});
+</script>
+ 
+ 

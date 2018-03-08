@@ -1,0 +1,1 @@
+delete from biometric_attendance where date BETWEEN '2016-08-26 00:00:00' and '2016-09-15 00:00:00';

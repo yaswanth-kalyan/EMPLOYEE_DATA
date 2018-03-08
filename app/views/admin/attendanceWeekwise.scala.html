@@ -1,0 +1,119 @@
+ @header("Attendance week Wise",5){
+  	<section>
+    <div class="container">
+        <div class="panel">
+		         <div class="col-md-12">
+                <a href="/add-attendence" class="btn">Add Data</a> |
+                @if(session.get("AppUserRole") == "HR"){
+                <a href="/attendance-history" class="btn">My History</a> |
+                }
+                <a href="/user-wise-attendance" class="btn">User-wise-report</a> |
+                <a href="/date-wise-attendance" class="btn text-orange">Week-wise-report</a> 
+            </div>
+                 <div class="col-md-12 heading-badge">
+                    <h3>Attendance By Week</h3>
+		        </div>
+           		 <div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<div class="form-group is-empty">
+                                <div class="row">
+                                <label for="inputEmail" class="control-label col-md-4"> Select Week</label>
+                                    <div class="col-md-6">
+                                        <div id="sandbox-container">
+                                            <input class="form-control mydate" name="startedDate" placeholder="DD-MM-YYYY-DD-MM-YYYY" value="@models.DailyReport.getTodayDate()" type="text" id="datewise" autocomplete="off"> 
+                                          <!--   <input type="text" class="form-control mydate" placeholder="DD-MM-YYYY - DD-MM-YYYY" autocomplete="off" readonly> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="material-input"></span>
+                            </div>
+					</div>
+					<div class="col-md-12">
+					<BR><BR>
+					<div id="reportData" class="col-md-12">
+						<table class="table" id="dtable1">
+							  <thead>
+								<tr>
+									<th>S.No.</th>
+									<th>Date</th>
+									<th>Average In Time</th>
+									<th>Average Out Time</th>
+									<th>Average Spent Hours</th>
+									<th>Average Essl In Time</th>
+									<th>Average Essl Out Time</th>
+									<th>Average Essl spent Hours</th>
+									<th>Essl Present</th>
+									<th>Register Present</th>
+									<th>Absent</th>
+									<th>WFH</th>
+									<th>Not Filled</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					</div>
+        </div>
+    </div>    
+    </div>
+   </section>
+
+} @footer(""){
+
+<script>
+    $(document).ready(function() {
+        $('.mydate').datepicker({
+            format: 'dd-mm-yyyy',
+            endDate: ' new Date()',
+            autoclose: true
+        });
+    });
+    //$("#dtable1").DataTable()
+    
+    $(document).on('change', '#userList', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/getdailyReport/' + projectVal, function(data) {
+                console.log(data)
+                $("#currentProjects").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });
+    
+    $('.mydate').on('changeDate', function (e) {
+	    value = $(".mydate").val();
+	    firstDate = moment(value, "DD-MM-YYYY").day(1).format("DD-MM-YYYY");
+	    lastDate =  moment(value, "DD-MM-YYYY").day(7).format("DD-MM-YYYY");
+	    console.log(firstDate);
+	    var dateVar = firstDate + "   -   " + lastDate;
+	    console.log(dateVar);
+	    setTimeout(function(){
+	    	changeDate(dateVar)
+		    },10);
+	    $(".mydate").val(dateVar);
+	    
+	    $.get('/weekllyAttendance/' + firstDate + '/' + lastDate , function(data) {
+	         console.log(data)
+	         $("#reportData").html(data);
+	     });
+	});
+    function changeDate(dateVar){
+		$(".mydate").val(dateVar);
+    }
+  /*  $(document).on('change', '#datewise', function() {
+        var projectVal = $(this).val();
+        if (projectVal != '0') {
+            $.get('/attendanceDatewise/'+projectVal, function(data) {
+                console.log(data)
+                $("#reportData").html(data);
+            });
+        } else {
+            alert("Select UserName");
+        }
+    });*/
+</script>
+
+}

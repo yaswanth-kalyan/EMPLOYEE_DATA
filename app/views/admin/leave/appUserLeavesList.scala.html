@@ -1,0 +1,19 @@
+@* appUserLeavesList Template File *@
+@(leaves : List[models.leave.Leaves])
+
+<div class="col-md-12 heading-badge">
+       	<h3 class="text-center">Approve Leave from </h3>
+</div>
+@for(leave <- leaves){
+	@if(!leave.leaveType.leaveType.equals("Leave Without Pay")){
+	<div class="row form-group">
+		<div class="col-md-6 text-right">
+		<p>@leave.leaveType.leaveType - @leave.remainingLeaves</p>
+		<input type="hidden" name="leaveid[]" class="form-control" value="@leave.id">
+		</div>
+		<div class="col-md-2 text-left">
+		<input type="text" name="deLeave[]" class="form-control checkMaxLimit" ltype="@leave.leaveType.leaveType" min="0" pattern="^\d*(\.\d{1})?$" placeholder="0">
+		</div>
+	</div>
+	}
+}

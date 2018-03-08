@@ -1,0 +1,117 @@
+@(appliedLeavesList : List[models.leave.AppliedLeaves], leaveStatusType : models.leave.LeaveStatus)
+@import java.text.SimpleDateFormat;
+@header("Leave Tracker",7){ 
+ <style>
+.modalbody-scroll-on {
+    height: auto;
+    max-height: 793px;
+    overflow-y: auto;
+}
+</style>
+
+<section>
+    
+        <div class="container">
+            <div class="panel">
+                @secondNavbarLeaves(2)
+                <div class="col-md-12 heading-badge">
+                    <h3 class="">Leave Tracker </h3>
+                </div>
+                <form action="/get-leave-tracker" id="formSendType" method="post">
+	                <div class="row">
+						<div class="col-md-2 col-md-offset-3">
+							<div class="pull-left leave-label"><b>Leave Status Type</b></div>
+						</div>
+						<div class="col-md-3 text-center">
+							<select class="form-control chosen" name="leaveStatusType" id="entitle-Type" onchange="this.form.submit()">
+								 @for(leaveStatus <- models.leave.LeaveStatus.values()) { 
+								 		@if(leaveStatus.equals(leaveStatusType)){
+								 			<option value="@leaveStatus" selected="selected">@leaveStatus.getLeaveStatus()</option>
+								 		}else{
+		                                 <option value="@leaveStatus">@leaveStatus.getLeaveStatus()</option>
+		                                 }
+				                  }
+							</select>
+						</div>
+					</div>
+				</form><br><br>
+                <div class="row">
+                	<div class="col-md-8 col-md-offset-2">
+	                    <table class="table table-bordered table-striped table-hover"  id="leave-Tracker-table">
+	                    	<thead>
+	                    		<tr>
+	                    			<th>S.No</th>
+	                    			<th>Requested On</th>
+	                    			<th>Employee ID</th>
+	                    			<th>Employee Name</th>
+	                    			<th>Status</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody>
+	                    	
+	                    	@for((leave,index)<- appliedLeavesList.zipWithIndex){
+	                    	<tr data-href="@leave.id">
+		                    			<td>@(index+1)</td>
+		                    			<td>@(new SimpleDateFormat("dd-MM-yyyy - hh:mm a").format(leave.createdOn))</td>
+		                    			
+		                    			<td>@if(leave.appUser.getEmployeeId() != null && !leave.appUser.employeeId.isEmpty &&  !leave.appUser.getEmployeeId().isEmpty ){@leave.appUser.getEmployeeId()}</td>
+		                    			<td>@leave.appUser.getAppUserFullName()</td>
+		                    			
+		                    			<td>@leave.leaveStatus.getLeaveStatus()</td>
+	                    		</tr>
+	                    	}
+	                    		
+	                    	</tbody>
+	                    </table>
+	                </div>
+                </div>
+                <div class="text-center" id="">
+      
+            </div>
+            </div>
+        </div>
+
+	<div id=status-alert class="modal fade">
+	     <div class="modal-dialog modal-lg">
+			<div class="modal-content">
+	            <div class="modal-body modalbody-scroll-on">
+	               <div class="col-md-12 text-center" id="employe-div" style="width:100%;min-height:700px; !important"></div>
+	            </div>
+	            <div class="modal-footer">
+	                <button id="btnNoConfirmYesNo3" type="button" class="btn btn-danger btn-sm btn-raised" data-dismiss="modal">Ok</button>
+	            </div>
+	        </div>
+	    </div>
+	</div> 
+   
+</section>
+
+} @footer(""){
+ 	<script>
+ 	$('.chosen').chosen();
+ 		$("#leave-Tracker-table").DataTable({
+ 			"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300,350,400,450,500 ],
+ 		    "iDisplayLength": 100
+ 		});
+ 		$(document).on('click','#leave-Tracker-table tr', function(){
+ 			var ne = $(this).attr('data-href');
+ 			$.get("/secure-get-employe-details/"+ne,function(data){
+ 				$("#employe-div").html(data);
+ 				$('#status-alert').modal('show');
+ 			});
+ 		});
+ 		
+ 	@*	$(document).on("change", "#entitle-Type", function() {
+ 			if ($(this).val() == "0") {
+ 				//$("#entitle-div").html('');
+ 			} else {
+ 				$.get("/user-entitlement/" + $(this).val(), function(data) {
+ 					$("#entitle-div").html(data);
+ 				});
+ 			}
+ 		});*@
+ 		
+ 	</script> 
+ }
+ 
+ 

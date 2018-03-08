@@ -1,0 +1,56 @@
+@(appUser : models.AppUser)
+@import java.text.SimpleDateFormat;
+<table class="table table-bordered table-striped"
+										id="leave-Tracker-table">
+										<thead>
+											<tr>
+												<th>Leave Type</th>
+												<th class="hidden">Last Year B/F</th>
+												<th>Year To Date Earned</th>
+												<th class="hidden">Total Entitlement</th>
+												<th class="hidden">Year To Date Taken</th>
+												<th>Approved</th>
+												<th>Pending Approval</th>
+												<th>Available Balance</th>
+												<th>To Be Applied</th>
+											</tr>
+										</thead>
+										<tbody >
+									@for(leaveType <- models.leave.LeaveType.find.all()){
+	                    		<tr>
+	                    			<td>@leaveType.leaveType</td>
+	                    			<td class="hidden">2</td>
+	                    			@defining((new SimpleDateFormat("yyyy").format(new Date()))){date =>
+	                    			@defining((new SimpleDateFormat("yyyy").parse(date))){date1 =>
+	                    			@defining(models.leave.Leaves.find.where().eq("leaveType",leaveType).eq("appUser",appUser).eq("year",date1).findUnique()){leave =>
+	                    			<td>@if(leave != null){@leave.addedLeaves}</td>
+	                    			<td class="hidden">2</td>
+									<td class="hidden">@models.leave.AppliedLeaves.takenLeaves(appUser,leaveType)</td>
+	                    			<td>@models.leave.AppliedLeaves.approvedLeaves(appUser,leaveType)</td>
+	                    			<td>@models.leave.AppliedLeaves.appliedLeaves(appUser,leaveType)</td>
+	                    			<td>@if(leave != null){@leave.remainingLeaves}</td>
+	                    			<td></td>
+	                    			}
+	                    			}
+	                    			}
+	                    		</tr>
+	                    		}
+	                    		<tr>
+                 				<td>Total</td>
+                 				<td class="hidden">2</td>
+                 				<td>@models.leave.Leaves.totalAddedLeaves(appUser)</td>
+                 				<td class="hidden">38</td>
+                 				<td class="hidden">@models.leave.AppliedLeaves.totalLeaves(appUser,models.leave.LeaveStatus.TAKEN)</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(appUser,models.leave.LeaveStatus.APPROVED)</td>
+                 				<td>@models.leave.AppliedLeaves.totalLeaves(appUser,models.leave.LeaveStatus.PENDING_APPROVAL)</td>
+                 				<td>@models.leave.Leaves.totalRemainingLeaves(appUser)</td>
+                 				<td>@AdminLeaveController.getToBeAplliedLeaves(appUser.id)
+                 				</td>
+                 			</tr>
+                 			</tbody>
+						</table>
+						<div class="text-center">
+							@if(AdminLeaveController.getToBeAplliedLeaves(appUser.id) > 0 && models.leave.Leaves.totalRemainingLeaves(appUser) >= AdminLeaveController.getToBeAplliedLeaves(appUser.id)){
+                 						<button type="button" class="btn btn-success btn-sm btn-raised " id="applySendMail" value="@appUser.id" >Send Reminder Mail</button>
+              					}
+						</div>

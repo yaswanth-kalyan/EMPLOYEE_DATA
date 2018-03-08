@@ -1,0 +1,154 @@
+@header("Home",0){
+    <section>
+    <div class="container">
+        <div class="panel">
+        <div class="panel-body">
+	        <div class="row heading-badge">
+	            <h3>Admin Home</h3>
+	        </div>
+	        <br><br><br><br>
+        <div class="row">
+        	<div class="panel">
+					<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/add-user" class="panel panel-success">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-users fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Users</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/add-project" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Projects</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/daily-status" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-hourglass-start fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Daily Status</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/time-sheets" class="panel panel-primary">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-file-text-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Time Sheet</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="panel-body col-md-12">
+						<div class="col-md-3">
+							<a  href="/date-wise-attendance" class="panel panel-danger">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-6 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-building-o fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-6 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Attendence</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/chat/connect" class="panel panel-info">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-comment fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Chat</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/allCompany" class="panel panel-success">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-user-secret fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Leads</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+						<div class="col-md-3">
+							<a  href="/leaves-panel" class="panel panel-warning">
+								<div class="panel-heading text-center alert">
+									<div class="row row-table">
+			                        <div class="col-xs-5 text-center bg-primary-dark pv-lg borderright1 landinCards">
+			                           <h4><i class="fa fa-list fa-2x"></i></h4>
+			                        </div>
+			                        <div class="col-xs-7 pv-lg landinCards">
+			                           <div class="text-uppercase"><h5>Leaves</h5></div>
+			                        </div>
+			                     	</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>    
+    </div>
+    </section>
+}
+@footer(""){
+<script>
+ $('.mydate').datepicker({
+       format: 'dd-mm-yyyy',
+       endDate: ' new Date()',
+       autoclose: true
+  });  
+ $(".alert").eq(1).hide(0).delay(500).fadeIn(1400);
+ $(".alert").eq(2).hide(0).delay(1000).fadeIn(1800);
+ $(".alert").eq(3).hide(0).delay(1500).fadeIn(2200);
+ $(".alert").eq(4).hide(0).delay(2000).fadeIn(3000);
+ $(".alert").eq(5).hide(0).delay(2500).fadeIn(3500);
+ $(".alert").eq(6).hide(0).delay(3000).fadeIn(4000);
+ $(".alert").eq(7).hide(0).delay(3500).fadeIn(4500);
+ $(".alert").eq(8).hide(0).delay(4000).fadeIn(5000);
+ 
+
+</script>
+}

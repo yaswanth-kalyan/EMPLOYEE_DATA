@@ -1,0 +1,77 @@
+@header("All Notifications",0){
+	<section>
+        <div class="container">
+    <div class="panel">
+        <div class="col-md-12">
+        <a href="/lead/allNotification" class="btn  text-orange">All Notifications</a>
+        </div>
+        <div class="col-md-12 heading-badge">
+             <div class="col-md-10">
+                    	<h3 class="">All Notifications </h3>
+                    </div>
+                    <div class="col-md-2">
+                    	<a href="/lead/markAllReadNoti">
+		                		<button type="button" class="btn btn-primary btn-raised margin-0">Mark All As Read</button>
+		                	</a>
+                     </div>	
+        </div>
+               
+			        <div class="row">
+			            <div class="col-md-12">
+			                <div class="">
+			                    <div class="bs-component">
+			                          <div class="col-md-12">
+			                              <table class="table table-bordered" id="dtable1">
+				                           <thead>
+				                               <tr>
+				                                   <th>Date & Time</th>
+				                                   <th>All Notifications</th>
+				                                   
+				                               </tr>
+				                           </thead>
+			                                <tbody>
+			                                @for((notificationnew) <- models.lead.NotificationAlert.getListNotificationsAll){
+			                                	<tr class="rowlink" onclick="window.document.location='/update-notification/@notificationnew.id';" >
+			                                		<td align="left">
+			                                			@if(notificationnew.notificationDate != null){@notificationnew.notificationDate.format("MMM dd, yyyy HH:mm:ss")}
+			                                		</td>
+													<td align="left">
+														@notificationnew.notification @if(!models.lead.NotificationAlert.getTrue(notificationnew.id)) {<span class="label label-info" > New</span>}
+													</td>
+												</tr>				                                	
+			                                }
+			                                </tbody>
+			                              </table>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>  
+			    </div>  
+</section>
+	
+}
+
+@footer(""){
+<script>
+	$(document).ready(function() {
+		$('.mydate').datepicker({
+			format : 'dd-mm-yyyy',
+			endDate : ' new Date()',
+			autoclose : true
+		});
+		$("#dtable1").DataTable({
+			"order": [ 0, 'desc' ],
+			"aLengthMenu": [5,10,15, 25,35, 50,100,150,200,250,300 ],
+		    "iDisplayLength": 100
+		});
+	});
+	
+	$(document).on('click','#markAll',function(e){
+	     $.get('/lead/markAllReadNoti',function(data) {
+	    	 $("#readALl").html(data);
+	     }); 
+});
+</script>
+}

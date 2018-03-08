@@ -1,0 +1,236 @@
+@(company : models.lead.Company,contacts : List[models.lead.CompanyContacts],listContacts : List[models.lead.CompanyContactInfo])
+@header("Update Company Details",6){
+<section>
+    <form class="form-horizontal" id="addCompanyForm" action="/lead/updateCompany"  method="post">
+        <div class="container">
+            <div class="panel">
+                <div class="col-md-12">
+                    <a href="/all-leads" class="btn">Leads</a> |
+                    <a href="/all-companies" class="btn text-orange">Companies</a> |
+                    <a href="/all-contacts" class="btn">Contacts</a> 
+                    @if(session.get("AppUserRole") == "Admin") {|
+                    <a href="/configure-lead" class="btn">Configure Status</a>
+                    }
+                </div>
+                <div class="col-md-12 heading-badge">
+                    <div class="col-md-10">
+                    	<h3 class="">Edit Companies </h3>
+                    </div> 
+                </div>
+                <div class="row">
+               		<div class="col-md-12">
+        			 <div class="row cmpnyname">
+                         <div class="col-md-2 col-md-offset-3">
+                             <div class="pull-left leave-label">  
+                             	<label  class="control-label">Company Name</label>
+                              <span class="asterisk"> * </span></div>
+                         </div>
+                         <div class="col-md-4">
+                         	 <div class="form-group">
+                         	 	<input type="hidden" class="form-control" name="id" id="companyId" value="@company.id" required="required"/>
+	                         	 <input type="text" class="form-control" name="companyName" value="@company.companyName" required="required"/>
+                             </div>
+                         </div>
+                     </div>
+                     <br>
+                   	<div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                          <div class="pull-left leave-label"> 	<label  class="control-label"> Address</label> <span class="asterisk"> * </span></div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"><textarea class="form-control" name="address" rows="5" id="textArea" required="required">@company.address</textarea><span class="material-input"></span></div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-2 col-md-offset-3">
+                        	  <div class="pull-left leave-label">  	
+                        	  	<label  class="control-label">Website </label>
+                        	  </div>
+                          </div>
+                          <div class="col-md-4">
+                          	<div class="form-group is-empty"><input type="text" class="form-control" name="website" value="@company.website"/></div>
+                          </div>
+                      </div>
+                   </div>
+              </div>  
+              <br><br>  
+               <div class="col-md-12 heading-badge">
+                    <h3 class="">Contact Details </h3>
+                </div> 
+               <div class="row">
+               	<div class="col-dm-6 col-md-offset-3">
+               		<div class="row">
+               			<div class="col-md-8">
+                 			<table class="table " id="addLeadTable">
+			                   	<thead>
+			                   		<tr>
+			                   			<th>Name</th>
+			                   			<th class="jobtitle" style="display: table-cell;">Job Title</th>
+			                   			<th></th> 
+			                   		</tr>
+			                   	</thead>
+			                   	<tbody>
+			                   	@if(!listContacts.isEmpty){
+			                   		@for((companyContactInfo,index) <-listContacts.zipWithIndex){
+			                   		<tr id="firstRow">
+			                   			<td><br>
+			                   				<select class="form-control nameDrop selections" name="cid[]" autocomplete="off">
+			                   				 @if(!contacts.isEmpty){
+			                   				 	<option value=""> Select Contact</option>
+			                   				 	@for(contact <- contacts){
+			                   				 		@if(companyContactInfo.companyContacts.id != null && companyContactInfo.companyContacts.id == contact.id) {
+			                   				 			<option value="@contact.id" selected="selected"> @contact.contactName</option>
+			                   				 		}else {
+				                             			<option value="@contact.id"> @contact.contactName</option>
+				                             		}
+				                             	}
+				                             }else{
+				                             	<option>No Contacts</option>
+				                             }
+				                            </select>
+			                   			</td>
+			                   			<td> 
+			                   				<input type="text" class="form-control margintop-10" name="jobTitle[]" value="@companyContactInfo.jobTitle" placeholder="job Title">
+			                   			</td>
+			                   			<td class="text-center">
+			                   			@if(index ==0){
+			                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow" value="+">
+			                   			} else{
+                                             <a href="/lead/deleteCompanyContact/@company.id/@companyContactInfo.id" class="btn "><button type="button" class="btn btn-danger btn-raised btn-sm ">x</button></a>
+                                               }
+			                   			</td>
+			                   		</tr>
+			                   		}
+			                   	}else{
+			                   		<tr id="firstRow">
+			                   			<td><br>
+			                   				 <select class="form-control nameDrop selections" name="cid[]" autocomplete="off">
+			                   				 @if(!contacts.isEmpty){
+			                   				 	<option value=""> Select Contact</option>
+			                   				 	@for(contact <- contacts){
+				                             	<option value="@contact.id"> @contact.contactName</option>
+				                             	}
+				                             }else{
+				                             	<option>No Contacts</option>
+				                             }
+				                             </select> 
+			                   			</td>
+			                   			<td> 
+			                   				<input type="text" class="form-control margintop-10" name="jobTitle[]" placeholder="job Title" >
+			                   			</td>
+			                   			<td class="text-center">
+			                   				<input type="button" class="btn btn-primary btn-raised btn-sm" id="addRow" value="+">
+			                   			</td>
+			                   		</tr>
+			                   	} 
+			                   	</tbody>
+		                   </table>
+						</div>
+					</div>
+               	</div>
+					<div class="text-center">
+                       <button type="reset" class="btn btn-warning btn-raised">Clear</button>
+                       <button type="submit" class="btn btn-primary btn-raised">Update</button>
+                     </div>
+             </div>
+          </div>
+     </div>
+ </form>
+</section>
+
+} @footer(""){
+<script>
+	$('.selections').chosen({
+		width : "100%"
+	});
+	$(document)
+			.on(
+					'click',
+					'#addRow',
+					function() {
+						$('.selections').chosen('destroy');
+						var firstRow = $('#firstRow').clone();
+						firstRow.find('input').val('');
+						firstRow.find('.nameDrop').val('');
+						firstRow.find('input').removeAttr('required');
+						firstRow.find('#primaryText').html('Secondary')
+						firstRow
+								.find('#addRow')
+								.parent()
+								.html(
+										' <center><button type="button" class="btn btn-danger btn-raised btn-sm deleteRow">x</button></center>');
+						disableFields()
+						$('#addLeadTable').append(firstRow);
+						$(".selections").chosen();
+					});
+	$(document).on('change', '.nameDrop', function() {
+		disableFields()
+	});
+	$(document).on('click', '.deleteRow', function() {
+		$(this).closest('tr').remove();
+		disableFields()
+	});
+
+	function disableFields() {
+		$('.nameDrop option').removeAttr('disabled');
+		$('.nameDrop option').prop('disabled', false);
+		$('.nameDrop option:selected').each(function() {
+			var x = $(this).val();
+			$('.nameDrop option[value="' + x + '"]').attr('disabled');
+			$('.nameDrop option[value="' + x + '"]').prop('disabled', true);
+			$(this).removeAttr('disabled');
+			$(this).prop('disabled', false);
+		});
+		$('.nameDrop option[value=""]').removeAttr('disabled');
+	}
+
+	$('#addCompanyForm')
+			.bootstrapValidator(
+					{
+						framework : 'bootstrap',
+						// This option will not ignore invisible fields which belong to inactive panels
+						excluded : ':disabled',
+						fields : {
+							companyName : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill Company Name'
+									},
+									remote : {
+										message : 'Company Name Already Existed',
+										type : 'POST',
+										url : '/isExistCompanyName',
+										data : function(validator) {
+											return {
+												companyName : validator
+														.getFieldElements(
+																'companyName')
+														.val(),
+												id : $('#companyId').val()
+											}
+										}
+									}
+								}
+							},
+							address : {
+								validators : {
+									notEmpty : {
+										message : 'Please fill  Company Address'
+									}
+								}
+							}
+						}
+					});
+	$(document).on('chosen:showing_dropdown', '.selections', function() {
+		//alert();
+		$('body').mCustomScrollbar('destroy');
+	});
+	$(document).on('chosen:hiding_dropdown', '.selections', function() {
+		//alert();
+		$('body').mCustomScrollbar();
+	});
+</script>
+ }
+ 
+ 
+ 

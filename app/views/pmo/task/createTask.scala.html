@@ -1,0 +1,133 @@
+@()
+@header("Tasks",2){
+ 
+<div class="container">
+	<div class="panel">
+		<br />
+		<div class="col-md-12 heading-badge">
+			<h3>Create Task</h3>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group col-md-9">
+					<form action="@controllers.pmo.routes.TaskController.saveTask()" method="post" id="foam-id">
+						<div class="row">
+							<div class="col-md-5 col-md-offset-1">
+					    	Name:	<input type="text" class="form-control" id="formGroupExampleInput"  name="name" placeholder="" required="required">
+					    	</div>
+					    	<div class="col-md-3 text-left">
+					    	Estimated Time:	<input type="text" class="form-control margin-0" name="estimatedTime" value="0">
+					    	</div>	
+					    	<div class="col-md-1 text-left">
+					    		<button type="submit" class="btn btn-warning btn-raised btn-sm margin-0" id="task">Create Task</button>
+					    	</div>	
+					   	</div>
+					   	<input type="hidden" name="userStId" value="">
+					</form><br>
+					<div class="row">
+							<div class="" id="task-div">
+								 	
+							</div> 
+					</div>
+				</div> 
+				<div class="col-md-3">
+				<div class="hidden editshowtask">
+						<h5>Edit Task</h5>
+					</div>
+					<div  id="right-panel">
+					
+					</div>	
+				</div>
+			</div>	
+		</div>	
+	</div>
+</div>
+}
+@footer(""){
+<script>
+$(document).ready(function(){
+
+	$("#foam-id").bootstrapValidator({
+	    framework: 'bootstrap',
+	    // This option will not ignore invisible fields which belong to inactive panels
+	    excluded: ':disabled',
+	    fields: {
+	    	name: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                } 
+	            }
+	        },
+	        estimatedTime: {
+	            validators: {
+	                notEmpty: {
+	                    message: 'Please fill this field'
+	                },
+					stringLength : {
+						min : 0,
+						max : 24,
+						message : 'The EstimatedTime must be more than 0 and less than 24 characters long'
+					},
+					regexp : {
+						regexp : /^\d*(\.\d{1,2})?$/,
+						message : 'The EstimatedTime can only Numbers and Two decimals'
+					} 
+	            }
+	        } 
+	    }
+	});
+	
+	$('.startDate').datepicker({
+    	autoclose: false,
+    	format: 'dd-mm-yyyy',
+        minDate : new Date()
+	});
+	$('.endDate').datepicker({
+    	autoclose: false,
+    	format: 'dd-mm-yyyy'
+	});
+	allTask();
+});
+
+function allTask(){
+	$.get("/task/list",function(data){
+		if(data.status){
+			$('#task-div').empty();
+			$('#task-div').append(data.page);
+			$("#dtable2").DataTable();
+			}
+		});
+}
+
+function taskByUserStory(userStId){
+	$.get("/task/list-by-suer-story/"+userStId,function(data){
+		if(data.status){
+			$('#task-div').empty();
+			$('#task-div').append(data.page);
+			$("#dtable2").DataTable();
+			}
+		});
+}
+
+function deleteTask(taskId){
+	$.post("/task/delete/"+taskId,function(data){
+		if(data.status){
+			allTask();
+			alert(data.message);
+		}else{
+			alert(data.message);
+			}
+		});
+}
+
+function editTask(taskId){
+	$.get("/task/edit/"+taskId,function(data){
+			$('#right-panel').empty();
+			$('#right-panel').append(data.page);
+			$(".editshowtask").removeClass("hidden")
+		});
+	allTask();
+}
+</script>
+}

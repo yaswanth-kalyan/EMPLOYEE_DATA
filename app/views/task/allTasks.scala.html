@@ -1,0 +1,232 @@
+@(allTask:List[Task],taskLists:List[TaskList])
+<style>
+.strik{
+	text-decoration: line-through;
+	width:97% !important; 
+}
+</style>
+@import bean.AddTaskBean 
+				<div class="search col-md-12"  id="search">
+              		<div class="row"> 
+					     <div class="col-md-12" style="max-height:75vh;overflow:auto;">
+					         <div class="lead-chat">
+					         
+							     <div class="col-md-12  srhmsg" style="margin-bottom:3px"  >
+							      @if(taskLists!=null){
+                                   @for(taskList<-taskLists){
+							     	@if(AddTaskBean.compare(allTask,taskList.getTasks)){
+							     		<div class="row">
+								     		<div class="col-md-4">
+									     		<div class="well well-sm" style="background:#f89e34;margin-top:22px ;margin-bottom:6px ">
+									     				@taskList.getTaskListName
+									     		</div>		
+								     		</div>
+								     	</div>	
+							          @for(task<-allTask){
+							          	 
+							          	@if(taskList.equals(task.getTaskList)){
+									      
+							        		 @if(task.isTaskMark()==true && task.getStatus.getStatus.equals("open")){
+							        		 	
+							        			 <div class="well well-sm  top" style="margin-bottom:2px;">
+							        			 	<div class="taskopencls padding-left0 floatleft">
+							        			 		<i class='fa fa-square-o chkunchk ' onclick = "taskIdForEdit1(@task.getId)" ></i>
+							        			 	</div>
+							        			 	<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+							        			 		<div class=""   onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+							        			 	</div>
+							        			 	<div class="pull-right padding-right0 taskMarkUnMark floatleft">
+							        			 		<div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+						                    		        <i class="fa fa-star taskstar-bg"  id="markUnMark"></i>
+						                    		    </div> 
+							        			 	</div>
+							        			  </div>	
+												 
+												 }
+										
+										}
+									}		
+								      @for(task<-allTask){
+								      	@if(taskList.equals(task.getTaskList)){
+									     
+							        		 @if(task.getStatus.getStatus.equals("open") && task.isTaskMark()==false){
+							        			 <div class="well well-sm  top" style="margin-bottom:2px"  >
+													<div class="taskopencls padding-left0 floatleft">
+														<i class='fa fa-square-o chkunchk ' onclick = "taskIdForEdit1(@task.getId)" ></i>
+													</div>	
+													<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+														<div class=""  onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+													</div>	
+													<div class="pull-right padding-right0 taskMarkUnMark floatleft">
+														 <div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+							                    		        <i class="fa fa-star-o taskstar-brdr"  id="markUnMark"></i>
+		                    		        			</div>
+		                    		        		</div>	 
+	                    		         
+												 </div>	
+												 
+												 }
+										
+										}
+									}		
+							   
+								 	@for(task<-allTask){
+								 		@if(taskList.equals(task.getTaskList)){
+												  
+											@if(task.getStatus.getStatus.equals("close")&& task.isTaskMark()==true){
+												
+												<div class="well well-sm  bottom " style="margin-bottom:2px"  >
+													<div class="taskopencls padding-left0 floatleft">	
+														<i class='fa fa-check-square-o chkunchk'  onclick = "taskIdForEdit1(@task.getId)" ></i>
+													</div>	
+													<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+														<div class="strik" onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+													</div>	
+													<div class="pull-right padding-right0 taskMarkUnMark floatleft">
+														 <div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+						                    		        <i class="fa fa-star taskstar-bg"  id="markUnMark"></i>
+						                    		     </div>   
+	                    		        			</div>  
+									            </div>
+								           } 
+									   
+									     }
+							     	 }
+							     	 
+										     	 	@for(task<-allTask){
+												 		@if(taskList.equals(task.getTaskList)){
+																@if(task.getStatus.getStatus.equals("close")&&task.isTaskMark()==false){
+																	<div class="well well-sm  bottom " style="margin-bottom:2px"  >
+																		<div class="taskopencls padding-left0 floatleft">
+																			<i class='fa fa-check-square-o chkunchk'  onclick = "taskIdForEdit1(@task.getId)" ></i>
+																		</div>	
+																		<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+																			<div class="strik"  onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+																		</div>	
+																		 <div class="pull-right padding-right0 taskMarkUnMark floatleft">
+																			 <div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+											                    		      	<i class="fa fa-star-o taskstar-brdr"  id="markUnMark"></i>
+											                    		      </div>	
+						                    		        			</div>  
+														            </div>
+													             } 
+													     }
+										     		 }
+							     	 }
+							     	 
+							     	 }
+							     	 }else{
+							     	 	@if(allTask!=null){						     
+							          @for(task<-allTask){
+							        		 @if(task.isTaskMark()==true && task.getStatus.getStatus.equals("open")){
+							        			 <div class="well well-sm  top" style="margin-bottom:2px;"  >
+							        			 	<div class="taskopencls padding-left0 floatleft">
+							        			 		<i class='fa fa-square-o chkunchk ' onclick = "taskIdForEdit1(@task.getId)" ></i>
+							        			 	</div>
+							        			 	<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+							        			 		<div class=""   onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+							        			 	</div>
+							        			 	<div class="pull-right padding-right0 taskMarkUnMark floatleft">
+							        			 		<div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+						                    		        <i class="fa fa-star taskstar-bg"  id="markUnMark"></i>
+						                    		    </div> 
+							        			 	</div>
+							        			  </div>
+												 }
+									}		
+									
+									
+							     
+								      @for(task<-allTask){
+									     
+							        		 @if(task.getStatus.getStatus.equals("open") && task.isTaskMark()==false){
+							        			 <div class="well well-sm  top" style="margin-bottom:2px"   >
+													<div class="taskopencls padding-left0 floatleft">
+														<i class='fa fa-square-o chkunchk' onclick = "taskIdForEdit1(@task.getId)"></i>
+													</div>	
+													<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+														<div class="" onclick = "taskIdForEdit(@task.getId)" >&nbsp;@task.getTitle</div>
+													</div>	
+													 <div class="pull-right padding-right0 taskMarkUnMark floatleft">
+							        			 		<div class="pull-right" onclick = "taskIdForEdit2(@task.getId)"> 
+					                    		        	<i class="fa fa-star-o taskstar-bg"  id="markUnMark"></i> 
+					                    				</div>
+					                    			</div>	        
+												 </div>	
+												 
+												 }
+										
+									}		
+									<p style="margin:11px 0 10px">		 
+										<a link="asdf" class="showhidelink ">Show/Hide Completed Tasks</a>
+									</p>	
+							 	<div class="showhidewrap">
+								     @for(task<-allTask){
+												@if(task.getStatus.getStatus.equals("close")&& task.isTaskMark()==true){
+														<div class="well well-sm  bottom " style="margin-bottom:2px"    >
+															<div class="taskopencls padding-left0 floatleft">
+																<i class='fa fa-check-square-o chkunchk ' onclick = "taskIdForEdit1(@task.getId)"></i>
+															</div>
+															<div class="col-md-12 taskmiddle padding-left0  floatleft" >	
+																<div class="strik"  onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+															</div>	
+															<div class="pull-right padding-right0 taskMarkUnMark floatleft">
+																 <div class="pull-right" onclick = "taskIdForEdit2(@task.getId)" >
+							                    		        	<i class="fa fa-star taskstar-brdr"  id="markUnMark" ></i>
+							                    		        </div>
+							                    		    </div>
+						                    			</div>  
+		                    		         
+									           } 
+								     	 }
+						           
+							     
+								 	@for(task<-allTask){
+											@if(task.getStatus.getStatus.equals("close")&&task.isTaskMark()==false){
+													<div class="well well-sm  bottom " style="margin-bottom:2px"  >
+														<div class="taskopencls padding-left0 floatleft">
+															<i class='fa fa-check-square-o chkunchk'  onclick = "taskIdForEdit1(@task.getId)" ></i>
+														</div>	
+														<div class="col-md-12 taskmiddle padding-left0  floatleft" >
+															<div class="strik" onclick = "taskIdForEdit(@task.getId)">&nbsp;@task.getTitle</div>
+														</div>
+														<div class="pull-right padding-right0 taskMarkUnMark floatleft">	
+															 <div class="pull-right" onclick = "taskIdForEdit2(@task.getId)">
+						                    		        	<i class="fa fa-star-o taskstar-bg"  id="markUnMark" ></i>
+						                    		        </div>
+						                    			</div>  
+										            </div>
+								           } 
+							     	 }
+							     	 }
+							     	 }
+							     </div>	 
+							     </div> 
+					     	   </div> 
+					  	</div> 
+					</div>	
+           	    </div>
+           	   
+          
+<script>
+
+
+/*$('.deleteTaskButton').click(function(e){
+	var name = $(this).attr('userName');
+	var url = $(this).attr('url');
+	$('#lblMsgConfirmYesNo').html("Are You sure wnt to delete Task with name : "+name);
+	$('#modalConfirmYesNo').modal('show');
+	$(document).on('click','#btnYesConfirmYesNo',function(e){
+			   $.get('/deleteTask/'+taskId2 ,function(data){
+				   $("#taskList").html(data);
+				   taskId2=null;
+				   
+			   
+			});
+			   $('#modalConfirmYesNo').modal('hide');
+	});
+});	*/
+
+
+
+</script>
